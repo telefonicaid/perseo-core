@@ -18,8 +18,9 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
+import com.telefonica.iot.perseo.RulesServlet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.eclipse.jetty.server.Server;
-import es.tid.fiware.perseo.test.Help;
+import com.telefonica.iot.perseo.test.Help;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -18,7 +18,7 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo.test;
+package com.telefonica.iot.perseo.test;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

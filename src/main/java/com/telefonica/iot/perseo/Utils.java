@@ -18,7 +18,7 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
 import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.client.EPServiceProvider;
