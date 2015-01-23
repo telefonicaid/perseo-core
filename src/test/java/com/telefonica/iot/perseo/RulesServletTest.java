@@ -18,8 +18,9 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
+import com.telefonica.iot.perseo.RulesServlet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.eclipse.jetty.server.Server;
-import es.tid.fiware.perseo.test.Help;
+import com.telefonica.iot.perseo.test.Help;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -59,6 +60,7 @@ public class RulesServletTest {
 
     /**
      * Test of doGet method, of class RulesServlet.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoGet() throws Exception {
@@ -79,6 +81,7 @@ public class RulesServletTest {
 
     /**
      * Test of doPost method, of class RulesServlet.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoPost() throws Exception {
@@ -106,6 +109,7 @@ public class RulesServletTest {
 
     /**
      * Test of doPut method, of class RulesServlet.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoPut() throws Exception {
@@ -123,6 +127,28 @@ public class RulesServletTest {
             jr.put("name", "test doPost rule 2");
             jr.put("text", Help.ExampleRules[1]);
             Help.Res r = Help.sendPut(url, ja.toString(2));
+            assertEquals(200, r.code);
+        } finally {
+            server.stop();
+        }
+    }
+/**
+     * Test of testDoPut method, of class RulesServlet.
+     * 
+     * It tests a big rule set
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testDoPutLongSet() throws Exception {
+        System.out.println("doPutLongSet");
+        Server server = Help.getServer(RulesServlet.class);
+        server.start();
+        try {
+            String url = String.format("http://127.0.0.1:%d", Help.PORT);
+            String longSet = Help.longRuleSet();
+            System.out.println("doPutLongSet set size=" + longSet.length());
+            Help.Res r = Help.sendPut(url, longSet);
             assertEquals(200, r.code);
         } finally {
             server.stop();

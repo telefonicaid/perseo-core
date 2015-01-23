@@ -18,7 +18,7 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
 import java.io.FileInputStream;
 import java.io.IOException;

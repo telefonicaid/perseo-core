@@ -18,13 +18,16 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
+import com.telefonica.iot.perseo.Result;
+import com.telefonica.iot.perseo.RulesManager;
+import com.telefonica.iot.perseo.Constants;
 import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
-import es.tid.fiware.perseo.test.Help;
+import com.telefonica.iot.perseo.test.Help;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.After;

@@ -18,10 +18,12 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
-import es.tid.fiware.perseo.test.ServletContextMock;
-import es.tid.fiware.perseo.test.EventBeanMock;
+import com.telefonica.iot.perseo.Utils;
+import com.telefonica.iot.perseo.Constants;
+import com.telefonica.iot.perseo.test.ServletContextMock;
+import com.telefonica.iot.perseo.test.EventBeanMock;
 import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
@@ -30,7 +32,7 @@ import com.espertech.esper.client.EventBean;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import es.tid.fiware.perseo.test.Help;
+import com.telefonica.iot.perseo.test.Help;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
