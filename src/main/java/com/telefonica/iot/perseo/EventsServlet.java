@@ -1,26 +1,28 @@
 /**
-* Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
-*
-* This file is part of perseo-core project.
-*
-* perseo-core is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
-* General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
-* option) any later version.
-*
-* perseo-core is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-* implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
-* for more details.
-*
-* You should have received a copy of the GNU Affero General Public License along with perseo-core. If not, see
-* http://www.gnu.org/licenses/.
-*
-* For those usages not covered by the GNU Affero General Public License please contact with
-* iot_support at tid dot es
-*/
-
+ * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
+ * 
+ * This file is part of perseo-core project.
+ * 
+ * perseo-core is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ * 
+ * perseo-core is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with perseo-core. If not, see http://www.gnu.org/licenses/.
+ * 
+ * For those usages not covered by the GNU Affero General Public License please
+ * contact with iot_support at tid dot es
+ */
 package com.telefonica.iot.perseo;
 
 import com.espertech.esper.client.EPServiceProvider;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -28,14 +30,12 @@ import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.MDC;
 import org.json.JSONException;
-
 import org.json.JSONObject;
 
 /**
@@ -82,11 +82,14 @@ public class EventsServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             response.setContentType("application/json;charset=UTF-8");
-            ServletInputStream sis = request.getInputStream();
-            byte[] b = new byte[request.getContentLength()];
-            sis.read(b, 0, b.length);
-            sis.close();
-            String eventText = new String(b);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = request.getReader();
+            String read = br.readLine();
+            while (read != null) {
+                sb.append(read);
+                read = br.readLine();
+            }
+            String eventText = sb.toString();
             logger.info("incoming event:" + eventText);
             org.json.JSONObject jo = new JSONObject(eventText);
             logger.debug("event as JSONObject: " + jo);

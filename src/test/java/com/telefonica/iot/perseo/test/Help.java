@@ -29,6 +29,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -133,5 +135,25 @@ public class Help {
         server.setHandler(handler);
         handler.addServletWithMapping(klzz, "/*");
         return server;
+    }
+ 
+    /**
+     * Creates a big rule set as a JSON array.
+     * 
+     * @return String representing the JSON for the rule set
+     */
+    public static String longRuleSet() {
+        final int ruleNumber = 100000; // ~45MB
+        JSONArray ja = new JSONArray();
+        JSONObject rule = new JSONObject();
+        for (int i = 0; i < ruleNumber; i++) {
+            rule.put("name", "manyrules_a_" + i);
+            rule.put("text", ExampleRules[0]);
+            ja.put(rule);
+            rule.put("name", "manyrules_b_" + i);
+            rule.put("text", ExampleRules[1]);
+            ja.put(rule);
+        }
+        return ja.toString();
     }
 }
