@@ -83,13 +83,7 @@ public class EventsServlet extends HttpServlet {
         try {
             response.setContentType("application/json;charset=UTF-8");
             StringBuilder sb = new StringBuilder();
-            BufferedReader br = request.getReader();
-            String read = br.readLine();
-            while (read != null) {
-                sb.append(read);
-                read = br.readLine();
-            }
-            String eventText = sb.toString();
+            String eventText = Utils.getBodyAsString(request);
             logger.info("incoming event:" + eventText);
             org.json.JSONObject jo = new JSONObject(eventText);
             logger.debug("event as JSONObject: " + jo);

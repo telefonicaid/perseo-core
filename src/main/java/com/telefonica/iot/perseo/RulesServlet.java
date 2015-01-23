@@ -102,14 +102,8 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         PrintWriter out = response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = request.getReader();
-        String read = br.readLine();
-        while (read != null) {
-            sb.append(read);
-            read = br.readLine();
-        }
-        Result r = RulesManager.make(epService, sb.toString());
+        String body = Utils.getBodyAsString(request);
+        Result r = RulesManager.make(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
         out.close();
@@ -129,14 +123,8 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         PrintWriter out = response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = request.getReader();
-        String read = br.readLine();
-        while (read != null) {
-            sb.append(read);
-            read = br.readLine();
-        }
-        Result r = RulesManager.updateAll(epService, sb.toString());
+        String body = Utils.getBodyAsString(request);
+        Result r = RulesManager.updateAll(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
         out.close();

@@ -226,4 +226,22 @@ public class Utils {
         MDC.put(Constants.TRANSACTION_ID, transId);
         MDC.put(Constants.CORRELATOR_ID, correlatorId);
     }
+    /**
+     * Return body as a String
+     *
+     * @param request HttpServletRequest incomming request
+     * @return String (body of the request)
+     * @throws java.io.IOException
+     *
+     */
+    public static String getBodyAsString(HttpServletRequest request) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = request.getReader();
+        String read = br.readLine();
+        while (read != null) {
+            sb.append(read);
+            read = br.readLine();
+        }
+        return sb.toString();
+    }
 }
