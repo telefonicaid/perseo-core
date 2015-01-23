@@ -135,7 +135,7 @@ public class RulesServletTest {
 /**
      * Test of testDoPut method, of class RulesServlet.
      * 
-     * It test a big rule set
+     * It tests a big rule set
      * 
      * @throws java.lang.Exception
      */
