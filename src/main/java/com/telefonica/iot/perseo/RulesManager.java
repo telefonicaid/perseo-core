@@ -18,14 +18,13 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
 import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPStatement;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;

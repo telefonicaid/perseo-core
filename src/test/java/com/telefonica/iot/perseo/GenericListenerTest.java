@@ -18,24 +18,25 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
-import es.tid.fiware.perseo.test.Help;
-import org.eclipse.jetty.server.Server;
+import com.telefonica.iot.perseo.GenericListener;
+import com.espertech.esper.client.EventBean;
+import com.telefonica.iot.perseo.test.EventBeanMock;
+import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author brox
  */
-public class EventsServletTest {
+public class GenericListenerTest {
 
-    public EventsServletTest() {
+    public GenericListenerTest() {
     }
 
     @BeforeClass
@@ -55,22 +56,21 @@ public class EventsServletTest {
     }
 
     /**
-     * Test of doPost method, of class EventsServlet.
+     * Test of update method, of class GenericListener.
      */
     @Test
-    public void testDoPost() throws Exception {
-        System.out.println("doPost");
-        Server server = Help.getServer(EventsServlet.class);
-        server.start();
-        try {
-            String url = String.format("http://127.0.0.1:%d", Help.PORT);
-            Help.Res r = Help.sendPost(url, Help.ExampleNotices[0]);
-            assertEquals(200, r.code);
-            r = Help.sendPost(url, "<<this is invalid JSON>>");
-            assertEquals(400, r.code);
-        } finally {
-            server.stop();
-        }
+    public void testUpdate() {
+        System.out.println("update");
+        EventBean[] newEvents = new EventBean[0];
+        EventBean[] oldEvents = new EventBean[0];
+        GenericListener instance = new GenericListener();
+        instance.update(newEvents, oldEvents);
+        HashMap<String, Object> m = new HashMap();
+        m.put("one", "1");
+        m.put("two", 2);
+        EventBean event = new EventBeanMock(m);
+        newEvents = new EventBean[]{event};
+        instance.update(newEvents, oldEvents);
     }
 
 }
