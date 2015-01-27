@@ -18,14 +18,14 @@
 * iot_support at tid dot es
 */
 
-package es.tid.fiware.perseo;
+package com.telefonica.iot.perseo;
 
 import com.espertech.esper.client.EPServiceProvider;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -102,12 +102,8 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         PrintWriter out = response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
-        ServletInputStream sis = request.getInputStream();
-        byte[] b = new byte[request.getContentLength()];
-        sis.read(b, 0, b.length);
-        String text = new String(b);
-        logger.info("post rule " + text);
-        Result r = RulesManager.make(epService, text);
+        String body = Utils.getBodyAsString(request);
+        Result r = RulesManager.make(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
         out.close();
@@ -127,12 +123,8 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         PrintWriter out = response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
-        ServletInputStream sis = request.getInputStream();
-        byte[] b = new byte[request.getContentLength()];
-        sis.read(b, 0, b.length);
-        String text = new String(b);
-        logger.info("put rule " + text);
-        Result r = RulesManager.updateAll(epService, text);
+        String body = Utils.getBodyAsString(request);
+        Result r = RulesManager.updateAll(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
         out.close();
