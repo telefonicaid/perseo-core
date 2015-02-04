@@ -12,20 +12,9 @@
 			<param name="ConversionPattern" value="time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSzzz} | lvl=%p | corr=%X{correlatorId} | trans=%X{transactionId} | op=%M | comp=perseo-core | msg=%m%n" />
 		</layout>
 	</appender>
-
-	<appender name="file" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="/var/log/perseo/perseo-core.log" />
-		<param name="Append" value="true" />
-		<param name="MaxFileSize" value="20000KB" />
-		<param name="MaxBackupIndex" value="10" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSzzz} | lvl=%p | corr=%X{correlatorId} | trans=%X{transactionId} | op=%M | comp=perseo-core | msg=%m%n" />
-		</layout>
-	</appender>
-
 	<root>
-		<priority value="info" />
-		<appender-ref ref="file" />
+		<priority value="fatal" />
+		<appender-ref ref="console" />
 	</root>
 
 </log4j:configuration>
