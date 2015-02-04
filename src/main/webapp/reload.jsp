@@ -22,7 +22,7 @@
 
 --%>
 
-<%@page import="es.tid.fiware.perseo.Configuration"%>
+<%@page import="com.telefonica.iot.perseo.Configuration"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
