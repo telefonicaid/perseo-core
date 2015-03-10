@@ -28,14 +28,18 @@ that should return a 200 OK  and a body similar to
         <title>Esper Server</title>
     </head>
     <body>
-        <h1>Welcome to Esper Server!</h1>
+        <h1>Welcome to perseo core!</h1>
+        <dl>
+            <dt>Version</dt>
+            <dd>0.1.1</dd>
+        </dl>
     </body>
 </html>
 ```
 
 After a change in the configuration file, a configuration reload can be asked for with
 ```
-curl -v localhost:8080/perseo-core/index.jsp
+curl -v localhost:8080/perseo-core/reload.jsp
 ```
 
 that will return a body with
@@ -44,3 +48,11 @@ reload: true
 ```
 in its content
 
+What version is deployed can be checked with
+```
+curl -v localhost:8080/perseo-core/version
+```
+that returns a text/plain like
+```
+0.1.1
+```

@@ -105,6 +105,7 @@ public class RulesManager {
 
             logger.debug("rule as JSONObject: " + jo);
             String name = jo.optString("name", "");
+            logger.info("post rule: " + name);
             if ("".equals(name.trim())) {
                 return new Result(HttpServletResponse.SC_BAD_REQUEST,
                         "{\"error\":\"missing name\"}");
@@ -129,7 +130,7 @@ public class RulesManager {
                 String oldEpl = prevStmnt.getText();
                 logger.debug("old epl: " + oldEpl);
                 if (!newEpl.equals(oldEpl)) {
-                    logger.info("found changed statement: " + name);
+                    logger.debug("found changed statement: " + name);
                     prevStmnt.destroy();
                     logger.debug("deleted statement: " + name);
                     statement = epService.getEPAdministrator().createEPL(newEpl, name);
@@ -137,7 +138,7 @@ public class RulesManager {
                     logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
                     statement.addListener(new GenericListener());
                 } else {
-                    logger.info("found repeated statement: " + name);
+                    logger.debug("found repeated statement: " + name);
                     statement = prevStmnt;
                 }
             }
@@ -173,6 +174,7 @@ public class RulesManager {
             logger.debug("rule block text: " + text);
             org.json.JSONArray ja = new JSONArray(text);
             logger.debug("rules as JSONArray: " + ja);
+            logger.info("put rules+contexts: " + ja.length());
             Map<String, String> newOnes = new LinkedHashMap<String, String>();
             Set<String> oldOnesNames = new HashSet<String>();
 
@@ -205,7 +207,7 @@ public class RulesManager {
                     EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
                     String oldEPL = prevStmnt.getText();
                     if (!oldEPL.equals(newOnes.get(n))) {
-                        logger.info("found changed statement: " + n);
+                        logger.debug("found changed statement: " + n);
                         prevStmnt.destroy();
                         logger.debug("deleted statement: " + n);
                         EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
@@ -213,7 +215,7 @@ public class RulesManager {
                         logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
                         statement.addListener(new GenericListener());
                     } else {
-                        logger.info("identical statement: " + n);
+                        logger.debug("identical statement: " + n);
                     }
                     oldOnesNames.remove(n);
                 }
@@ -221,11 +223,11 @@ public class RulesManager {
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
                 EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
-                logger.info("unexpected statement: " + o);
+                logger.debug("unexpected statement: " + o);
                 if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
                     logger.debug("unexpected statement, too old: " + o);
                     prevStmnt.destroy();
-                    logger.info("deleted garbage statement: " + o);
+                    logger.debug("deleted garbage statement: " + o);
                 }
             }
             return new Result(HttpServletResponse.SC_OK, "{}");
@@ -255,19 +257,19 @@ public class RulesManager {
         try {
 
             ruleName = ruleName == null ? "" : ruleName;
-            logger.debug("rule asked for " + ruleName);
+            logger.debug("delete rule: " + ruleName);
             EPAdministrator epa = epService.getEPAdministrator();
 
             if (ruleName.length() != 0) {
                 EPStatement st = epa.getStatement(ruleName);
                 //Allow to delete inexistent rule
                 if (st != null) {
-                    logger.info("deleted statement: " + ruleName);
+                    logger.debug("deleted statement: " + ruleName);
                     st.destroy();
                     return new Result(HttpServletResponse.SC_OK,
                             Utils.Statement2JSONObject(st).toString());
                 } else {
-                    logger.info("asked for deleting inexistent statement: " + ruleName);
+                    logger.debug("asked for deleting inexistent statement: " + ruleName);
                     return new Result(HttpServletResponse.SC_OK, "{}");
                 }
 
