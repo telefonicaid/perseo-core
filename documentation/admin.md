@@ -50,7 +50,7 @@ in its content
 
 What version is deployed can be checked with
 ```
-curl -v localhost:8080/perseo-core/version.jsp
+curl -v localhost:8080/perseo-core/version
 ```
 that returns a text/plain like
 ```
