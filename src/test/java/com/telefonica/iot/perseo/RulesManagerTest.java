@@ -52,7 +52,7 @@ public class RulesManagerTest {
         def.put("id", String.class);
         def.put("type", String.class);
         def.put(Constants.SUBSERVICE_FIELD, String.class);
-        def.put(Constants.TENANT_FIELD, String.class);
+        def.put(Constants.SERVICE_FIELD, String.class);
         ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
         cfg.addEventType("iotEvent", def);
 

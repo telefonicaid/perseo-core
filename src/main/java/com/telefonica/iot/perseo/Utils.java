@@ -70,7 +70,7 @@ public class Utils {
             def.put("id", String.class);
             def.put("type", String.class);
             def.put(Constants.SUBSERVICE_FIELD, String.class);
-            def.put(Constants.TENANT_FIELD, String.class);
+            def.put(Constants.SERVICE_FIELD, String.class);
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
