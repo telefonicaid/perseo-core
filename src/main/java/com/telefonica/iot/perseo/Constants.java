@@ -27,7 +27,7 @@ package com.telefonica.iot.perseo;
 public final class Constants {
     private Constants() { };
     public static final String TENANT_FIELD = "tenant";
-    public static final String SERVICE_FIELD = "service";
+    public static final String SUBSERVICE_FIELD = "subservice";
     public static final String CORRELATOR_HEADER = "unica-correlator";
     public static final String TRANSACTION_ID = "transactionId";
     public static final String CORRELATOR_ID = "correlatorId";
