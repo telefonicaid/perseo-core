@@ -1,5 +1,5 @@
 Add /version.jsp path for checking version
 Decrease log level for rules
 Fix perseo-core.properties for reference missing from WAR file (#19)
-
+Fix Use service/subservice (#21)
 
