@@ -2,4 +2,5 @@ Add /version.jsp path for checking version
 Decrease log level for rules
 Fix perseo-core.properties for reference missing from WAR file (#19)
 Fix Use service/subservice (#21)
+Fix Use UTF-8 in responses and default encoding for request (#3)
 
