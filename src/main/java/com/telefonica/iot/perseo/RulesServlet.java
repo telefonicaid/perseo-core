@@ -73,8 +73,9 @@ public class RulesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Utils.putCorrelatorAndTrans(request);
-        PrintWriter out = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         logger.info("get rule " + request.getPathInfo());
         String ruleName = request.getPathInfo();
         //request.getPathInfo() returns null or the extra path information
@@ -100,8 +101,9 @@ public class RulesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Utils.putCorrelatorAndTrans(request);
-        PrintWriter out = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         String body = Utils.getBodyAsString(request);
         Result r = RulesManager.make(epService, body);
         response.setStatus(r.getStatusCode());
@@ -121,8 +123,9 @@ public class RulesServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Utils.putCorrelatorAndTrans(request);
-        PrintWriter out = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         String body = Utils.getBodyAsString(request);
         Result r = RulesManager.updateAll(epService, body);
         response.setStatus(r.getStatusCode());
@@ -142,8 +145,9 @@ public class RulesServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Utils.putCorrelatorAndTrans(request);
-        PrintWriter out = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         logger.info("delete rule " + request.getPathInfo());
         String ruleName = request.getPathInfo();
         Result r = RulesManager.delete(epService, ruleName.substring(1));

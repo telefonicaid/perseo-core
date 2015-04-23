@@ -79,9 +79,10 @@ public class EventsServlet extends HttpServlet {
             throws ServletException, IOException {
         Utils.putCorrelatorAndTrans(request);
         logger.debug("events doPost");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            response.setContentType("application/json;charset=UTF-8");
             StringBuilder sb = new StringBuilder();
             String eventText = Utils.getBodyAsString(request);
             logger.info("incoming event:" + eventText);
