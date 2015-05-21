@@ -17,4 +17,4 @@ This is the code repository for the EPL-server, named perseo-core.
 
 ## License
 
-Perseo Core is licensed under Affero General Public License (GPL) version 3.
+Perseo Core is licensed under General Public License (GPL) version 2.
