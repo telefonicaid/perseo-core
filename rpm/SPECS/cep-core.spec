@@ -100,6 +100,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Fri May 22 2015 Daniel Moran <daniel.moranjimenez@telefonica.com> 0.2.0
+- Add /version.jsp path for checking version
+- Decrease log level for rules
+- Fix perseo-core.properties for reference missing from WAR file (#19)
+- Fix Use service/subservice (#21)
+- Fix Use UTF-8 in responses and default encoding for request (#3)
+
 * Mon Jan 19 2015 Carlos Romero Brox <brox@tid.es> 0.1.1
 - Fix: change log format. Add time level. Remove class and line number from message
 
