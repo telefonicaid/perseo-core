@@ -47,7 +47,7 @@ rm -Rf $RPM_BUILD_ROOT && mkdir -p $RPM_BUILD_ROOT
 [ -d %{_build_root_project} ] || mkdir -p %{_build_root_project}
 
 #FIXME: this line should be adjusted by the release.sh (not yet in the repo). Once the release.sh is ok with this, please remove this fixme line
-cp -ax %{_topdir}/../target/fiware-perseo-core-0.1.1-SNAPSHOT.war %{_build_root_project}/perseo-core.war
+cp -ax %{_topdir}/../target/perseo-core-%{_product_version}.war %{_build_root_project}/perseo-core.war
 
 cp -R %{_topdir}/SOURCES/etc %{buildroot}
 
