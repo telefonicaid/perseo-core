@@ -1,5 +1,3 @@
-Dockerfile
-ubuntu@ip-172-31-17-152:~/cepcore$ cat Dockerfile 
 FROM centos:6
 
 WORKDIR /opt
