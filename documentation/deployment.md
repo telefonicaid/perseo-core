@@ -4,6 +4,14 @@
 
 The only dependecy for perseo-core is the servlet engine container for its WAR file, in particular, a Tomcat 7.
 
+### Installation using Docker
+
+Every development version of Perseo Core is uploaded to Docker Hub for every PR merged into the `develop` branch.
+In order to start Perseo Core as a deamonized Docker component use the following command:
+```
+docker run -d fiwareiotplatform/perseocore
+```
+
 ### Installation from RPM
 
 This project provides the specs to create the RPM Package for the project, that may (in the future) be installed in a
