@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
-* Wed  Dec 09 2015 Fermin Galan <fermin.galanmarquez@telefonica.com> 0.3.0
+* Wed Dec 09 2015 Fermin Galan <fermin.galanmarquez@telefonica.com> 0.3.0
 - Minor changes and fixes in RPM packaging
 
 * Fri May 22 2015 Daniel Moran <daniel.moranjimenez@telefonica.com> 0.2.0
