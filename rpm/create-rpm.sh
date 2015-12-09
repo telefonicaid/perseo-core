@@ -21,7 +21,7 @@
 
 CEP_VERSION=$2
 if [ -z "$CEP_VERSION" ]; then
-  CEP_VERSION=0.2.0-SNAPSHOT
+  CEP_VERSION=0.3.0
 fi
 CEP_RELEASE=$1
 if [ -z "$CEP_RELEASE" ]; then
