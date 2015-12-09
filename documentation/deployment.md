@@ -43,13 +43,13 @@ To generate the RPM, checkout the project to a machine with the RPM Build Tools 
 execute the following command:
 
 ```
-./create-rpm.sh 0.1 1
+./create-rpm.sh 1 0.1
 ```
 
 The create-rpm.sh script uses the following parameters:
 
-* Perseo-core version (0.1 in the example above), which is the base version of the software
 * Perseo-core release (1 in the example above), tipically set with the commit number corresponding to the RPM.
+* Perseo-core version (0.1 in the example above), which is the base version of the software
 
 This command will generate some folders, including one called RPMS, holding the RPM created for every architecture
 (x86_64 is currently generated).
