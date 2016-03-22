@@ -19,7 +19,6 @@
 
 package com.telefonica.iot.perseo;
 
-import com.telefonica.iot.perseo.GenericListener;
 import com.espertech.esper.client.EventBean;
 import com.telefonica.iot.perseo.test.EventBeanMock;
 import java.util.HashMap;
