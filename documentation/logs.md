@@ -23,6 +23,11 @@ Logs for errors can show additional info in the message, giving a hint of the ro
  In order to have logs that can enable alarms being raised and ceased, `INFO` level should be set in the configuration file.
 With `ERROR` level, alarms could be raised but not ceased.
 
+The log level can be changed at run-time, with an HTTP PUT request
+
+```
+ curl --request PUT <host>:<port>/perseo-core/admin/log?level=<FATAL|ERROR|WARNING|WARN|INFO|DEBUG>
+ ```
 
 # Alarms
 
