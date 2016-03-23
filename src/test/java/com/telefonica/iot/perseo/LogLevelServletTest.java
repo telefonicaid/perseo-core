@@ -68,7 +68,7 @@ public class LogLevelServletTest {
         try {
             String[] levels = {"DEBUG", "INFO", "WARN", "WARNING", "ERROR", "FATAL"};
             for (String level : levels) {
-                String url = String.format("http://127.0.0.1:%d?level=%s", Help.PORT, level);
+                String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
                 Help.Res r = Help.sendPut(url, "");
                 assertEquals(200, r.code);
             }
