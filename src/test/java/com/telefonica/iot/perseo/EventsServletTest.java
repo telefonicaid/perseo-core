@@ -19,7 +19,6 @@
 
 package com.telefonica.iot.perseo;
 
-import com.telefonica.iot.perseo.EventsServlet;
 import com.telefonica.iot.perseo.test.Help;
 import org.eclipse.jetty.server.Server;
 import org.junit.After;
@@ -56,6 +55,7 @@ public class EventsServletTest {
 
     /**
      * Test of doPost method, of class EventsServlet.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoPost() throws Exception {

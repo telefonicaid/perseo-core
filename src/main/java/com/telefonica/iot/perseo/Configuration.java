@@ -35,7 +35,6 @@ public final class Configuration {
     private Configuration() {
         super();
     }
-    ;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 

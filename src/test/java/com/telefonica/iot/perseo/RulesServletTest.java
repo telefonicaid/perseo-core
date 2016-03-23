@@ -19,7 +19,6 @@
 
 package com.telefonica.iot.perseo;
 
-import com.telefonica.iot.perseo.RulesServlet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -156,6 +155,7 @@ public class RulesServletTest {
 
     /**
      * Test of doDelete method, of class RulesServlet.
+     * @throws java.lang.Exception
      */
     @Test
     public void testDoDelete() throws Exception {
