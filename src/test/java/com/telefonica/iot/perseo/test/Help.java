@@ -117,15 +117,18 @@ public class Help {
         } else {
             stream = con.getErrorStream();
         }
-        BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-        String inputLine;
-        StringBuilder response = new StringBuilder();
+        if (stream != null) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            return response.toString();
         }
-        in.close();
-        return response.toString();
+        return null;
     }
 
     public static Server getServer(Class klzz) {
