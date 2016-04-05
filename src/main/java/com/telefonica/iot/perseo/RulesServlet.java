@@ -46,6 +46,8 @@ public class RulesServlet extends HttpServlet {
     public void init() throws ServletException {
         MDC.put(Constants.CORRELATOR_ID, "n/a");
         MDC.put(Constants.TRANSACTION_ID, "n/a");
+        MDC.put(Constants.SERVICE_FIELD, "n/a");
+        MDC.put(Constants.SUBSERVICE_FIELD, "n/a");
         ServletContext sc = getServletContext();
         epService = Utils.initEPService(sc);
         logger.debug("init at rules servlet");
@@ -55,6 +57,8 @@ public class RulesServlet extends HttpServlet {
     public void destroy() {
         MDC.put(Constants.CORRELATOR_ID, "n/a");
         MDC.put(Constants.TRANSACTION_ID, "n/a");
+        MDC.put(Constants.SERVICE_FIELD, "n/a");
+        MDC.put(Constants.SUBSERVICE_FIELD, "n/a");
         Utils.destroyEPService(getServletContext());
         logger.debug("destroy at rules servlet");
     }

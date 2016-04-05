@@ -30,6 +30,9 @@ public final class Constants {
     public static final String CORRELATOR_HEADER = "unica-correlator";
     public static final String TRANSACTION_ID = "transactionId";
     public static final String CORRELATOR_ID = "correlatorId";
+    public static final String SERVICE_HEADER = "Fiware-Service";
+    public static final String SUBSERVICE_HEADER = "Fiware-Servicepath";
+    
     /*
         Name for event stream
     */
