@@ -1,2 +1,3 @@
 - Add: Change log level at runtime with PUT (#43)
+- Add: Add srv and subsrv in log traces (#44)
 
