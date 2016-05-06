@@ -30,7 +30,7 @@ fi
 FIWARE_VERSION=1.0
 FIWARE_RELEASE=1
 RPM_TOPDIR=$PWD
-CEP_USER=cep
+CEP_USER=tomcat
 
 rpmbuild -ba $RPM_TOPDIR/SPECS/cep-core.spec \
     --define "_topdir $RPM_TOPDIR" \
