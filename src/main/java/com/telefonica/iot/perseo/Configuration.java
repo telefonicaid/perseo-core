@@ -56,7 +56,7 @@ public final class Configuration {
      * @return true if success, false otherwise
      */
     public static synchronized boolean reload() {
-        LOGGER.info("Configuration reload");
+        LOGGER.info("Configuration is being reloaded");
         InputStream stream;
         try {
             stream = new FileInputStream(PATH);
