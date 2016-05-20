@@ -15,4 +15,4 @@ RUN yum update -y && yum install -y wget \
 
 EXPOSE 8080
 
-CMD service tomcat restart && tail -f /var/log/tomcat/catalina.out 
+CMD service tomcat start && tail -f /var/log/tomcat/catalina.out
