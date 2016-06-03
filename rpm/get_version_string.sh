@@ -104,5 +104,52 @@ get_rpm_version_string() {
     echo "${ver//[[:space:]-\/#]}" "${rel//[-]/.}"
 }
 
+<<<<<<< HEAD
+=======
+## DEPRECATED: use get_rpm_version_string instead
+get_pdi_version_string()
+{
+    get_rpm_version_string
+}
+
+is_pdi_compliant()
+{
+    case $(get_branch_type) in
+    "other")
+       # Maybe we are on detached mode but also are compliant
+       # See if there's a tag (annotated or not) describing a Kick Off
+        git describe --tags --match */KO >/dev/null 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo 1
+        else
+            echo 0
+        fi
+    ;;
+    "release")
+        ver=$(get_branch)
+        # remove the leading release/ if necessary
+        ver=${ver#release/*}
+        # see if there's a tag (annotated or not) describing its Kick Off
+        git describe --tags --match ${ver}/KO >/dev/null 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo 1
+        else
+            echo 0
+        fi
+    ;;
+    "develop")
+        # see if there's a tag (annotated or not) describing a Kick Off
+        git describe --tags --match */KO >/dev/null 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo 1
+        else
+            echo 0
+        fi
+    ;;
+    *)  echo 1 ;;
+   esac
+}
+
+>>>>>>> master
 #cd $1
 #get_version_string| cut -d "-" -f $2
