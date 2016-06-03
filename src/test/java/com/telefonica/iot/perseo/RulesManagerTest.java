@@ -19,9 +19,6 @@
 
 package com.telefonica.iot.perseo;
 
-import com.telefonica.iot.perseo.Result;
-import com.telefonica.iot.perseo.RulesManager;
-import com.telefonica.iot.perseo.Constants;
 import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;

@@ -21,7 +21,7 @@
 
 CEP_VERSION=$2
 if [ -z "$CEP_VERSION" ]; then
-  CEP_VERSION=0.3.0
+  CEP_VERSION=1.0.0
 fi
 CEP_RELEASE=$1
 if [ -z "$CEP_RELEASE" ]; then
@@ -30,7 +30,7 @@ fi
 FIWARE_VERSION=1.0
 FIWARE_RELEASE=1
 RPM_TOPDIR=$PWD
-CEP_USER=cep
+CEP_USER=tomcat
 
 rpmbuild -ba $RPM_TOPDIR/SPECS/cep-core.spec \
     --define "_topdir $RPM_TOPDIR" \

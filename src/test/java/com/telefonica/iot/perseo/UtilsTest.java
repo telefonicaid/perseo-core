@@ -19,8 +19,6 @@
 
 package com.telefonica.iot.perseo;
 
-import com.telefonica.iot.perseo.Utils;
-import com.telefonica.iot.perseo.Constants;
 import com.telefonica.iot.perseo.test.ServletContextMock;
 import com.telefonica.iot.perseo.test.EventBeanMock;
 import com.espertech.esper.client.ConfigurationOperations;

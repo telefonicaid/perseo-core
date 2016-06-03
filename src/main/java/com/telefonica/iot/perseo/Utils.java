@@ -166,6 +166,7 @@ public class Utils {
      *
      * @return if the request has been accompished
      */
+    
     public static boolean DoHTTPPost(String urlStr, String content) {
         try {
             URL url = new URL(urlStr);
@@ -173,6 +174,9 @@ public class Utils {
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, MDC.get(Constants.CORRELATOR_ID));
+            urlConn.setRequestProperty(Constants.SERVICE_HEADER, MDC.get(Constants.SERVICE_FIELD));
+            urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, MDC.get(Constants.SUBSERVICE_FIELD));
+            
             OutputStreamWriter printout = new OutputStreamWriter(urlConn.getOutputStream(), Charset.forName("UTF-8"));
             printout.write(content);
             printout.flush();
@@ -223,6 +227,18 @@ public class Utils {
         }
         MDC.put(Constants.TRANSACTION_ID, transId);
         MDC.put(Constants.CORRELATOR_ID, correlatorId);
+        String service = req.getHeader(Constants.SERVICE_HEADER);
+        if (service == null) {
+            service = "?";
+        }
+        MDC.put(Constants.SERVICE_FIELD, service);
+       
+        String subservice = req.getHeader(Constants.SUBSERVICE_HEADER);
+        if (subservice == null) {
+            subservice = "?";
+        }
+        MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+      
     }
 
     /**

@@ -346,3 +346,54 @@ Example: Incorrect JSON
 < Content-Length: 0
 
 ```
+
+### Log level
+Resource | HTTP | Description
+--- | --- | ---
+/perseo-core/admin/log?level={level} | PUT | Changes log level
+
+#### PUT
+
+##### DESCRIPTION
+Changes the log level at run time.
+
+Level can be `DEBUG`, `INFO`, `WARN`, `WARNING`, `ERROR`, `FATAL`. Any other value will return a 400 error
+
+
+##### URL STRUCTURE
+```
+http://[HOST]/perseo-core/admin/log?level={level}
+```
+
+##### RETURNS
+It returns a 200 response without body. In case of any error, it returns an 400 (Bad Request)
+
+Example:  Change level to INFO
+
+```
+curl -i localhost:8080/perseo-core/admin/log?level=INFO -X PUT
+```
+
+##### ERRORS
+If level is not a valid value, a 400 (Bad Request) error is returned with a description of the error in a `error` field inside a JSON.
+
+Example: Invalid log level
+```JSON
+{"errorMessage":"invalid log level"}
+```
+
+
+##### RAW TRACE
+```
+> PUT /perseo-core/admin/log?level=INFO HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Server: Apache-Coyote/1.1
+< Content-Length: 0
+< Date: Wed, 23 Mar 2016 06:57:32 GMT
+<
+
+```
