@@ -100,6 +100,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Fri Jun 03 2016 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.0.0
+- Add: Change log level at runtime with PUT (#43)
+- Add: Add srv and subsrv in log traces (#44)
+- Add: Use fiware-correlator for correlator (#45)
+
 * Wed Dec 09 2015 Fermin Galan <fermin.galanmarquez@telefonica.com> 0.3.0
 - Minor changes and fixes in RPM packaging
 
