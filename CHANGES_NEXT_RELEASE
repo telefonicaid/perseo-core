@@ -1,0 +1,1 @@
+- Fix: Dockerfile to build the right version corresponding to tag (#59)
