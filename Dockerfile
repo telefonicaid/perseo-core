@@ -3,7 +3,7 @@ FROM centos:6
 WORKDIR /opt
 
 ENV JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64
-ENV PERSEO_FE_URL=PERSEO_FE_ENDPOINT
+ENV PERSEO_FE_URL=perseo_fe_endpoint
 
 COPY . /opt/perseo-core
 WORKDIR /opt/perseo-core
