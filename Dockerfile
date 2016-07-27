@@ -27,4 +27,4 @@ RUN yum update -y && yum install -y wget \
 
 EXPOSE 8080
 
-ENTRYPOINT ["/opt/perseo-core/perseo_core-entrypoint.sh "]
+ENTRYPOINT ["/opt/perseo-core/perseo_core-entrypoint.sh"]
