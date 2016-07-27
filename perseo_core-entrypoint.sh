@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DERAULT_PERSEO_FE_URL=perseo_fe_endpoint
+DEFAULT_PERSEO_FE_URL=perseo_fe_endpoint
 
 PERSEO_FE_URL_ARG=${1}
 PERSEO_FE_URL_VALUE=${2}
