@@ -22,7 +22,7 @@ RUN yum update -y && yum install -y wget \
   && echo "# URL for invoking actions when a rule is fired" >>  /etc/perseo-core.properties \
   && echo "action.url = http://${PERSEO_FE_URL}/actions/do" >>  /etc/perseo-core.properties \
   && echo "" >>  /etc/perseo-core.properties \
-  && echo "# Time in milliseconds (long) to "expire" a "dangling" rule" >>  /etc/perseo-core.properties \
+  && echo "# Time in milliseconds (long) to \"expire\" a \"dangling\" rule" >>  /etc/perseo-core.properties \
   && echo "rule.max_age= 60000" >>  /etc/perseo-core.properties
 
 EXPOSE 8080
