@@ -27,4 +27,4 @@ RUN yum update -y && yum install -y wget \
 
 EXPOSE 8080
 
-CMD service tomcat start && tail -f /var/log/tomcat/catalina.out
+ENTRYPOINT ["/opt/perseo-core/perseo_core-entrypoint.sh "]
