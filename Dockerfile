@@ -16,7 +16,7 @@ RUN yum update -y && yum install -y wget \
   && mv target/perseo-core-*.war /usr/share/tomcat/webapps/perseo-core.war \
   && mkdir /var/log/perseo && chown tomcat:tomcat /var/log/perseo
   # Force Tomcat to use ipv4 and optimize
-  && echo "JAVA_OPTS=\"-Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=256m -XX:+UseConcMarkSweepGC -Djava.library.path=/usr/lib64:/usr/lib -Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true\"" >> /usr/share/tomcat/conf/tomcat.conf
+  && echo "JAVA_OPTS=\"-Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=256m -XX:+UseConcMarkSweepGC -Djava.library.path=/usr/lib64:/usr/lib -Djava.security.egd=file:/dev/./urandom\"" >> /usr/share/tomcat/conf/tomcat.conf
 
 EXPOSE 8080
 
