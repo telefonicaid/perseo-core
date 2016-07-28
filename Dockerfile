@@ -23,7 +23,9 @@ RUN yum update -y && yum install -y wget \
   && echo "action.url = http://${PERSEO_FE_URL}/actions/do" >>  /etc/perseo-core.properties \
   && echo "" >>  /etc/perseo-core.properties \
   && echo "# Time in milliseconds (long) to \"expire\" a \"dangling\" rule" >>  /etc/perseo-core.properties \
-  && echo "rule.max_age= 60000" >>  /etc/perseo-core.properties
+  && echo "rule.max_age= 60000" >>  /etc/perseo-core.properties \
+  # Optimize Tomcat
+  && echo "JAVA_OPTS=\"-Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=256m -XX:+UseConcMarkSweepGC -Djava.library.path=/usr/lib64:/usr/lib -Djava.security.egd=file:/dev/./urandom\"" >> /usr/share/tomcat/conf/tomcat.conf
 
 EXPOSE 8080
 
