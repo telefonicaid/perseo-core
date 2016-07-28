@@ -10,11 +10,11 @@ WORKDIR /opt/perseo-core
 
 RUN yum update -y && yum install -y wget \
   && wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm && yum localinstall -y --nogpgcheck epel-release-latest-6.noarch.rpm \
-  && yum install -y npm git unzip java-1.7.0-openjdk java-1.7.0-openjdk-devel tomcat \
+  && yum install -y npm git unzip java-1.7.0-openjdk java-1.7.0-openjdk-devel tomcat log4j \
   && wget -c http://ftp.cixug.es/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.zip && unzip -oq apache-maven-3.2.5-bin.zip \
   && cp -rf apache-maven-3.2.5 /opt/maven && ln -fs /opt/maven/bin/mvn /usr/bin/mvn \
   && mvn package -Dmaven.test.skip=true \
-  && mv target/perseo-core-*.war /usr/share/tomcat/webapps/perseo-core.war \
+  && mv /opt/perseo-core/target/perseo-core-*.war /usr/share/tomcat/webapps/perseo-core.war \
   && mkdir /var/log/perseo && chown tomcat:tomcat /var/log/perseo \
   && echo "# This file should be copied by deployment process" > /etc/perseo-core.properties \
   && echo "# into /etc/perseo-core.properties, with the appropiate permissions" >>  /etc/perseo-core.properties \
