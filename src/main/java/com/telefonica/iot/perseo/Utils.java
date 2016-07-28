@@ -153,7 +153,7 @@ public class Utils {
                 .put("name", st.getName())
                 .put("text", st.getText())
                 .put("state", st.getState())
-                .put("timeLastStateChange", st.getTimeLastStateChange());;
+                .put("timeLastStateChange", st.getTimeLastStateChange());
         return jo;
     }
 
@@ -176,6 +176,7 @@ public class Utils {
             urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, MDC.get(Constants.CORRELATOR_ID));
             urlConn.setRequestProperty(Constants.SERVICE_HEADER, MDC.get(Constants.SERVICE_FIELD));
             urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, MDC.get(Constants.SUBSERVICE_FIELD));
+            urlConn.setRequestProperty(Constants.REALIP_HEADER, MDC.get(Constants.REALIP_FIELD));
             
             OutputStreamWriter printout = new OutputStreamWriter(urlConn.getOutputStream(), Charset.forName("UTF-8"));
             printout.write(content);
@@ -238,6 +239,15 @@ public class Utils {
             subservice = "?";
         }
         MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+        
+        {
+            String realIP = req.getHeader(Constants.REALIP_HEADER);
+
+            if (realIP == null) {
+                realIP = req.getRemoteAddr();
+            }
+            MDC.put(Constants.REALIP_FIELD, realIP);
+        }
       
     }
 
