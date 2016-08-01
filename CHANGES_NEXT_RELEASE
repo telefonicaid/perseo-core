@@ -1,3 +1,4 @@
 - Fix: Dockerfile to build the right version corresponding to tag (#59)
 - Add: Add 'from' field in logs (#69)
+- Add: Add GET for log level (#68)
 
