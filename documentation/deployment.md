@@ -6,33 +6,44 @@ The only dependecy for perseo-core is the servlet engine container for its WAR f
 
 ### Installation using Docker
 
-#### Build the image
+#### Build the image (optional)
 
 You only need to do this once in your system:
 
 	docker build -t perseo .
 
-The parameter `-t perseo` gives the image a name. This name could be anything, or even include an organization like `-t org/fiware-perseo`. This name is later used to run the container based on the image.
+The parameter `-t perseo` gives the image a name. This name could be anything, or even include an organization like
+`-t org/fiware-perseo`. This name is later used to run the container based on the image.
 
 If you want to know more about images and the building process you can find it in [Docker's documentation](https://docs.docker.com/userguide/dockerimages/).
-    
+
 #### Run the container
 
-The following line will run the container exposing port `8080`, give it a name -in this case `perseo1`, link it to a mongodb docker, and present a bash prompt.
+The following line will run the container, using a manually built image (see above),
+exposing port `8080`, give it a name -in this case `perseo1`, and present a bash prompt:
 
-	  docker run -d --name perseo1 -p 8080:8080 perseo 
+		docker run -d --name perseo1 -p 8080:8080 perseo
 
 As a result of this command, there is a PERSEO listening on port 8080 on localhost. Try to see if it works now with
 
 	curl localhost:8080/perseo-core/version
 
+#### Run the container together with Perseo Front-End
+
+The following line will run the container, from Dockerhub, exposing port `8080`, give it a name -in this case `perseo_core` (hostname `perseocore`),
+and binding it to a [Perseo Front-End](https://github.com/telefonicaid/perseo-fe)
+instance (hostname `perseo-frontend`) listening on port 9090.
+
+		docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:develop -perseo_fe_url perseo-frontend:9090
+
 A few points to consider:
 
-* The name `perseo1` can be anything and doesn't have to be related to the name given to the docker image in the previous section.
-* `--link mongodb:mongodb` assumes there is a docker container running a MongoDB image in your system, whose name is `mongodb`. In case you need one type `docker run --name mongodb -d mongo:2.6`.
-* In `-p 8080:8080` the first value represents the port to listen in on localhost. If you wanted to run a second Perseo on your machine you should change this value to something else, for example `-p 9090:8080`.
-* Anything after the name of the container image (in this case `perseo`) is interpreted as a parameter for the Perseo CEP. 
- 
+* The name `perseo_core` can be anything and doesn't have to be related to the name given to the docker image built.
+* In `-p 8080:8080` the first value represents the port to listen in on localhost. If you wanted to run a second Perseo on your machine
+you should change this value to something else, for example `-p 8081:8080`.
+* Anything after the name of the container image (in this case `telefonicaiot/perseo-core:develop`) is interpreted as a parameter for the Perseo CEP. 
+* If you have previously built your own image you can run the same command as above but substituting `telefonicaiot/perseo-core:develop` by the
+name given at image build time (`-t` option)
 
 ### Installation from RPM
 
