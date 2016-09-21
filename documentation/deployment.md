@@ -27,6 +27,12 @@ exposing port `8080`, give it a name -in this case `perseo1`, and present a bash
 As a result of this command, there is a PERSEO listening on port 8080 on localhost. Try to see if it works now with
 
 	curl localhost:8080/perseo-core/version
+	
+To get access to the log file of Perseo Core you can run:
+
+```
+docker exec perseo1 tail -f /var/log/perseo/perseo-core.log
+```
 
 #### Run the container together with Perseo Front-End
 
