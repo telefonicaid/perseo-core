@@ -1,27 +1,28 @@
 /**
  * Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
- * 
-* This file is part of perseo-core project.
- * 
-* perseo-core is free software: you can redistribute it and/or modify it under
+ *
+ * This file is part of perseo-core project.
+ *
+ * perseo-core is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2 as published by the
  * Free Software Foundation.
- * 
-* perseo-core is distributed in the hope that it will be useful, but WITHOUT
+ *
+ * perseo-core is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
-* You should have received a copy of the GNU General Public License along with
+ *
+ * You should have received a copy of the GNU General Public License along with
  * perseo-core. If not, see http://www.gnu.org/licenses/.
- * 
-* For those usages not covered by the GNU General Public License please contact
+ *
+ * For those usages not covered by the GNU General Public License please contact
  * with iot_support at tid dot es
  */
 package com.telefonica.iot.perseo;
 
 import com.telefonica.iot.perseo.test.Help;
 import org.eclipse.jetty.server.Server;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -55,8 +56,7 @@ public class LogLevelServletTest {
     }
 
     /**
-     * Test of doPut method, of class LogLevelServlet.
-     * with valid levels
+     * Test of doPut method, of class LogLevelServlet. with valid levels
      *
      * @throws java.lang.Exception
      */
@@ -76,9 +76,9 @@ public class LogLevelServletTest {
             server.stop();
         }
     }
-     /**
-     * Test of doPut method, of class LogLevelServlet.
-     * with invalid levels
+
+    /**
+     * Test of doPut method, of class LogLevelServlet, with invalid levels
      *
      * @throws java.lang.Exception
      */
@@ -93,6 +93,31 @@ public class LogLevelServletTest {
                 String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
                 Help.Res r = Help.sendPut(url, "");
                 assertEquals(400, r.code);
+            }
+        } finally {
+            server.stop();
+        }
+    }
+
+    /**
+     * Test of doGet method, of class LogLevelServlet.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testDoGet() throws Exception {
+        Server server = Help.getServer(LogLevelServlet.class);
+        server.start();
+        try {
+            String[] levels = {"DEBUG", "INFO", "WARN", "WARNING", "ERROR", "FATAL"};
+            for (String level : levels) {
+                String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
+                Help.Res r = Help.sendPut(url, "");
+                assertEquals(200, r.code);
+                r = Help.doGet(String.format("http://127.0.0.1:%d/admin/log", Help.PORT));
+                assertEquals(200, r.code);
+                JSONObject jo = new JSONObject(r.text);
+                assertEquals(jo.optString("level"), "WARNING".equals(level)?"WARN":level);
             }
         } finally {
             server.stop();

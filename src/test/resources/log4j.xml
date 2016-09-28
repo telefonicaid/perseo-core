@@ -5,7 +5,7 @@
     <appender name="console" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSzzz} | lvl=%p | corr=%X{correlatorId} | trans=%X{transactionId} | srv=%X{service} | subsrv=%X{subservice} | op=%M | comp=perseo-core | msg=%m%n" />
+            <param name="ConversionPattern" value="time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSzzz} | lvl=%p | from=%X{from} | corr=%X{correlatorId} | trans=%X{transactionId} | srv=%X{service} | subsrv=%X{subservice} | op=%M | comp=perseo-core | msg=%m%n" />
         </layout>
     </appender>
     <root>

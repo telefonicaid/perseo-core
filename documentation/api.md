@@ -351,6 +351,7 @@ Example: Incorrect JSON
 Resource | HTTP | Description
 --- | --- | ---
 /perseo-core/admin/log?level={level} | PUT | Changes log level
+/perseo-core/admin/log | GET | Retrieve current log level
 
 #### PUT
 
@@ -396,4 +397,51 @@ Example: Invalid log level
 < Date: Wed, 23 Mar 2016 06:57:32 GMT
 <
 
+```
+
+#### GET
+
+##### DESCRIPTION
+Retrieves the current log level.
+
+Returns a JSON with a `level` field
+
+##### URL STRUCTURE
+```
+http://[HOST]/perseo-core/admin/log
+```
+
+##### RETURNS
+It returns a 200 response with a body. In case of any error, it returns an 400 (Bad Request)
+
+Example:  Get level
+
+```
+curl -i localhost:8080/perseo-core/admin/log
+```
+
+returns
+```
+{"level":"ERROR"}
+```
+
+##### ERRORS
+No errors are returned.
+
+
+##### RAW TRACE
+```
+> GET /perseo-core/admin/log HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Server: Apache-Coyote/1.1
+< Content-Type: application/json;charset=UTF-8
+< Content-Length: 17
+< Date: Mon, 01 Aug 2016 08:41:18 GMT
+< 
+
+{"level":"DEBUG"}
 ```
