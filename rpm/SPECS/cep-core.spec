@@ -100,6 +100,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Wed Sep 28 2016 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.1.0
+- Fix: Dockerfile to build the right version corresponding to tag (#59)
+- Add: Add 'from' field in logs (#69)
+- Add: Add GET for log level (#68)
+
 * Fri Jun 03 2016 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.0.0
 - Add: Change log level at runtime with PUT (#43)
 - Add: Add srv and subsrv in log traces (#44)
