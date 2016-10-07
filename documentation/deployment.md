@@ -40,15 +40,15 @@ The following line will run the container, from Dockerhub, exposing port `8080`,
 and binding it to a [Perseo Front-End](https://github.com/telefonicaid/perseo-fe)
 instance (hostname `perseo-frontend`) listening on port 9090.
 
-		docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:develop -perseo_fe_url perseo-frontend:9090
+		docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:master -perseo_fe_url perseo-frontend:9090
 
 A few points to consider:
 
 * The name `perseo_core` can be anything and doesn't have to be related to the name given to the docker image built.
 * In `-p 8080:8080` the first value represents the port to listen in on localhost. If you wanted to run a second Perseo on your machine
 you should change this value to something else, for example `-p 8081:8080`.
-* Anything after the name of the container image (in this case `telefonicaiot/perseo-core:develop`) is interpreted as a parameter for the Perseo CEP. 
-* If you have previously built your own image you can run the same command as above but substituting `telefonicaiot/perseo-core:develop` by the
+* Anything after the name of the container image (in this case `telefonicaiot/perseo-core:master`) is interpreted as a parameter for the Perseo CEP. 
+* If you have previously built your own image you can run the same command as above but substituting `telefonicaiot/perseo-core:master` by the
 name given at image build time (`-t` option)
 
 ### Installation from RPM
