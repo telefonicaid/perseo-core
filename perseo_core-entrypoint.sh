@@ -8,4 +8,6 @@ if [ "$PERSEO_FE_URL_ARG" == "-perseo_fe_url" ]; then
     sed -i 's/'$DEFAULT_PERSEO_FE_URL'/'$PERSEO_FE_URL_VALUE'/g' /etc/perseo-core.properties
 fi
 
-service tomcat start && tail -f /var/log/tomcat/catalina.out
+# We use tomcat from Apache, then will be started using catalina.sh, instead service tomcat
+exec ${CATALINA_HOME}/bin/catalina.sh run && tail -f /var/log/tomcat/catalina.out
+
