@@ -11,7 +11,7 @@ This is the code repository for the EPL-server, named perseo-core.
 	* [Deployment](documentation/deployment.md)
 	* [Configuration](documentation/config.md)
 	* [Administration](documentation/admin.md)
-* [API] (documentation/api.md)
+* [API](documentation/api.md)
 
 * [License](#licence)
 
