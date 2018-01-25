@@ -30,7 +30,7 @@ WORKDIR /opt/perseo-core
 RUN yum update -y && \
   yum install -y epel-release && yum update -y epel-release && \
   yum install -y java-${JAVA_VERSION}-openjdk-devel && \
-  export JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION} && \
+  export JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk && \
 
   echo "INFO: Download and install Maven..." && \
   curl --remote-name --location --insecure --silent --show-error http://ftp.cixug.es/apache/maven/maven-${MVN_VER%%.*}/${MVN_VER}/binaries/apache-maven-${MVN_VER}-bin.tar.gz && \
