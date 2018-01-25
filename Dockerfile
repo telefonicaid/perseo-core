@@ -19,8 +19,8 @@
 FROM centos:centos7.4.1708
 
 ENV MVN_VER "3.2.5"
-ENV JAVA_VERSION "1.8.0"
-ENV TOMCAT_VERSION "8.5.27"
+ENV JAVA_VERSION "1.7.0"
+ENV TOMCAT_VERSION "7.0.70"
 ENV CATALINA_HOME "/opt/tomcat"
 ENV PERSEO_FE_URL=perseo_fe_endpoint
 
@@ -57,12 +57,12 @@ RUN yum update -y && \
   echo "rule.max_age= 60000" >>  /etc/perseo-core.properties && \
   echo "INFO: Optimize Tomcat" && \
   echo "JAVA_OPTS=\"-Djava.awt.headless=true -Xmx512m -XX:MaxPermSize=256m -XX:+UseConcMarkSweepGC -Djava.library.path=/usr/lib64:/usr/lib -Djava.security.egd=file:/dev/./urandom\"" >> ${CATALINA_HOME}/conf/tomcat.conf && \
-  echo "INFO: Java runtime not needs JAVA_HOME... Unsetting..." && \
-  unset JAVA_HOME && \
 
   echo "INFO: Cleaning unused software..." && \
   mvn clean && rm -rf /opt/maven && rm -rf ~/.m2 && \
   yum erase -y java-${JAVA_VERSION}-openjdk-devel libss && \
+  echo "INFO: Java runtime not needs JAVA_HOME... Unsetting..." && \
+  unset JAVA_HOME && \
   # Clean yum data
   yum clean all && rm -rf /var/lib/yum/yumdb && rm -rf /var/lib/yum/history && \
   # Erase without dependencies of the document formatting system (man). This cannot be removed using yum 
