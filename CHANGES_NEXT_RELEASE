@@ -1,1 +1,2 @@
 - Upgrade Esper library from 4.7.0 to 5.5.0
+- Upgrade to CentOS 7, Java 1.8.0, Tomcat 8.5.27 and Maven 3.5.2 in Dockerfile
