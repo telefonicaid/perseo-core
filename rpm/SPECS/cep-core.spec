@@ -100,6 +100,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Fri Jun 15 2018 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.2.0
+- Upgrade Esper library from 4.7.0 to 6.1.0
+- Upgrade to CentOS 7, Java 1.8.0, Tomcat 8.5.27 and Maven 3.5.3 in Dockerfile
+
 * Wed Sep 28 2016 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.1.0
 - Fix: Dockerfile to build the right version corresponding to tag (#59)
 - Add: Add 'from' field in logs (#69)
