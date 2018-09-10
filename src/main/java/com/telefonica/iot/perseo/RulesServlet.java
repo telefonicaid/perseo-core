@@ -59,6 +59,8 @@ public class RulesServlet extends HttpServlet {
         MDC.put(Constants.TRANSACTION_ID, "n/a");
         MDC.put(Constants.SERVICE_FIELD, "n/a");
         MDC.put(Constants.SUBSERVICE_FIELD, "n/a");
+        // Clean timed rules
+        TimeRulesStore.getInstance().cleanAllRules();
         Utils.destroyEPService(getServletContext());
         logger.debug("destroy at rules servlet");
     }
@@ -100,13 +102,16 @@ public class RulesServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String body = Utils.getBodyAsString(request);
+
+        // Save temporary rules, not triggered by events external to the core
+        TimeRulesStore.getInstance().saveTimeRules(body);
+
         Result r = RulesManager.make(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
@@ -129,6 +134,10 @@ public class RulesServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String body = Utils.getBodyAsString(request);
+
+        // Save timed rules, which are not activated by events external to the core
+        TimeRulesStore.getInstance().saveTimeRules(body);
+
         Result r = RulesManager.updateAll(epService, body);
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
@@ -151,8 +160,15 @@ public class RulesServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         logger.info("delete rule " + request.getPathInfo());
+        //request.getPathInfo() returns null or the extra path information
+        //that follows the servlet path but precedes the query string and will
+        //start with a "/" character. So, we remove it with .substring(1)
         String ruleName = request.getPathInfo();
         Result r = RulesManager.delete(epService, ruleName.substring(1));
+
+        // Delete timed rule if necessary
+        TimeRulesStore.getInstance().removeTimeRule(ruleName.substring(1));
+
         response.setStatus(r.getStatusCode());
         out.println(r.getMessage());
         out.close();
