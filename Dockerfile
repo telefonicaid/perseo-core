@@ -1,5 +1,7 @@
 FROM tomcat:8
 
+ENV PERSEO_FE_URL=perseo_fe_endpoint
+
 # Install maven
 RUN apt-get update && \
     apt-get install -y maven openjdk-8-jdk
