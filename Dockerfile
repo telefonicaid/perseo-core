@@ -18,7 +18,7 @@
 
 FROM tomcat:8
 
-ENV PERSEO_FE_URL=perseo_fe_endpoint
+ENV PERSEO_FE_URL=http://perseo-fe:9090
 
 # Install maven
 RUN apt-get update && \
