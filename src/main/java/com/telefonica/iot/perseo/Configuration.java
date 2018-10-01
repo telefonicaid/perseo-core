@@ -65,8 +65,8 @@ public final class Configuration {
 
         LOGGER.info("Configuration is being reloaded");
         InputStream stream;
-        Long default_max_age;
-        String default_url;
+        String defaultMaxAge;
+        String defaultURL;
 
         // Check configuration file. If exist, set as default configuration for perseo-core
         try {
@@ -74,47 +74,32 @@ public final class Configuration {
             stream = new FileInputStream(PATH);
             PROPERTIES.load(stream);
             stream.close();
-            default_url = PROPERTIES.getProperty(ACTION_URL_PROP);
-            // Valid url check
-            if (!Utils.isValidURL(default_url)) {
-                LOGGER.error("Invalid configuration value in " + PATH + " file " + ACTION_URL_PROP + ": " + default_url);
-                return false;
-            }
-
-            // Valid Number Check
-            try {
-                default_max_age = Long.parseLong(PROPERTIES.getProperty(MAX_AGE_PROP));
-            } catch (NumberFormatException nfe) {
-                LOGGER.error("Invalid configuration value in " + PATH + " file " + MAX_AGE_PROP + ": " + nfe);
-                return false;
-            }
-
+            defaultURL = PROPERTIES.getProperty(ACTION_URL_PROP);
+            defaultMaxAge = PROPERTIES.getProperty(MAX_AGE_PROP);
         } catch (IOException e) {
-
             // No config file. Set basic default values
-            default_url = DEFAULT_PERSEO_FE_URL;
-            default_max_age = DEFAULT_MAX_AGE;
+            defaultURL = DEFAULT_PERSEO_FE_URL;
+            defaultMaxAge = String.valueOf(DEFAULT_MAX_AGE);
         }
 
         // Get Persep-fe url from env var if exist, else default
-        String perseo_fe_url = System.getenv(PERSEO_FE_URL_ENV);
-        perseo_fe_url = perseo_fe_url != null ? perseo_fe_url : default_url;
+        String perseoFeURLEnv = System.getenv(PERSEO_FE_URL_ENV);
+        perseoFeURLEnv = perseoFeURLEnv != null ? perseoFeURLEnv : defaultURL;
         // Validate URL
-        if (Utils.isValidURL(perseo_fe_url)) {
-            actionRule = perseo_fe_url + "/actions/do";
+        if (Utils.isValidURL(perseoFeURLEnv)) {
+            actionRule = perseoFeURLEnv + "/actions/do";
         } else {
-            LOGGER.error("Invalid configuration environment var value for " + PERSEO_FE_URL_ENV + ": " + perseo_fe_url);
+            LOGGER.error("Invalid value for " + PERSEO_FE_URL_ENV + ": " + perseoFeURLEnv);
             return false;
         }
-        LOGGER.debug("actionRule: " + actionRule);
 
         // Get MAX_AGE from env var if exist, else default
-        String max_age_string = System.getenv(PERSEO_MAX_AGE_ENV);
+        String maxAgeEnv = System.getenv(PERSEO_MAX_AGE_ENV);
         // Check maxAge numerical value
         try {
-            maxAge = max_age_string != null ? Long.parseLong(max_age_string) : default_max_age;
+            maxAge = maxAgeEnv != null ? Long.parseLong(maxAgeEnv) : Long.parseLong(defaultMaxAge);
         } catch (NumberFormatException nfe) {
-            LOGGER.error("Invalid configuration environment var value for " + PERSEO_MAX_AGE_ENV + ": " + nfe);
+            LOGGER.error("Invalid value for " + PERSEO_MAX_AGE_ENV + ": " + nfe);
             return false;
         }
 
