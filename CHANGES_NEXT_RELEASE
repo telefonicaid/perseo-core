@@ -1,0 +1,1 @@
+- Add: travis.yml file for Travis CI. All branches with Java 8,9,10,11.
