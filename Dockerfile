@@ -18,8 +18,6 @@
 
 FROM tomcat:8
 
-ENV PERSEO_FE_URL=perseo_fe_endpoint
-
 # Install maven
 RUN apt-get update && \
     apt-get install -y maven openjdk-8-jdk
@@ -29,6 +27,7 @@ WORKDIR /code
 # Prepare by downloading dependencies
 ADD pom.xml /code/pom.xml
 ADD src /code/src
+ADD perseo_core-entrypoint.sh /code/src/
 
 RUN mvn dependency:resolve && \
     mvn verify && \
@@ -37,3 +36,5 @@ RUN mvn dependency:resolve && \
     cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war
 
 EXPOSE 8080
+
+ENTRYPOINT ["/code/src/perseo_core-entrypoint.sh"]
