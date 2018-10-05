@@ -67,6 +67,7 @@ public final class Configuration {
         InputStream stream;
         String defaultMaxAge;
         String defaultURL;
+        String actionPath = "/actions/do";
 
         // Check configuration file. If exist, set as default configuration for perseo-core
         try {
@@ -87,7 +88,8 @@ public final class Configuration {
         perseoFeURLEnv = perseoFeURLEnv != null ? perseoFeURLEnv : defaultURL;
         // Validate URL
         if (Utils.isValidURL(perseoFeURLEnv)) {
-            actionRule = perseoFeURLEnv + "/actions/do";
+            // Add actions/do path if perseoFeURLEnv not contains it yet
+            actionRule = perseoFeURLEnv.contains(actionPath) ? perseoFeURLEnv : perseoFeURLEnv + actionPath;
         } else {
             LOGGER.error("Invalid value for " + PERSEO_FE_URL_ENV + ": " + perseoFeURLEnv);
             return false;
