@@ -9,5 +9,8 @@ then
     export PERSEO_FE_URL="$PERSEO_FE_URL_VALUE"
 fi
 
+touch /var/log/perseo/perseo-core.log
+
+
 # We use tomcat from Apache, then will be started using catalina.sh, instead service tomcat
-exec ${CATALINA_HOME}/bin/catalina.sh run && tail -f /var/log/tomcat/catalina.out
+exec ${CATALINA_HOME}/bin/catalina.sh run && tail -f /var/log/perseo/perseo-core.log
