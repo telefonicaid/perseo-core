@@ -94,6 +94,7 @@ public final class Configuration {
             LOGGER.error("Invalid value for " + PERSEO_FE_URL_ENV + ": " + perseoFeURLEnv);
             return false;
         }
+        LOGGER.info("actionRule configuration is: " + actionRule);
 
         // Get MAX_AGE from env var if exist, else default
         String maxAgeEnv = System.getenv(PERSEO_MAX_AGE_ENV);
@@ -104,6 +105,7 @@ public final class Configuration {
             LOGGER.error("Invalid value for " + PERSEO_MAX_AGE_ENV + ": " + nfe);
             return false;
         }
+        LOGGER.info("maxAge configuration is: " + maxAge);
 
         return true;
     }
