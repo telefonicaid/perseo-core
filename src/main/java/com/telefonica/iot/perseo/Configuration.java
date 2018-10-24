@@ -83,8 +83,12 @@ public final class Configuration {
             defaultMaxAge = String.valueOf(DEFAULT_MAX_AGE);
         }
 
-        // Get Persep-fe url from env var if exist, else default
+        // Add 'http://' if necessary (backward compatibility with existing deployments)
         String perseoFeURLEnv = System.getenv(PERSEO_FE_URL_ENV);
+        if (perseoFeURLEnv != null && !perseoFeURLEnv.toLowerCase().matches("^(http|https)://.*$")) {
+            perseoFeURLEnv =  "http://" + perseoFeURLEnv;
+        }
+        // Get Persep-fe url from env var if exist, else default
         perseoFeURLEnv = perseoFeURLEnv != null ? perseoFeURLEnv : defaultURL;
         // Validate URL
         if (Utils.isValidURL(perseoFeURLEnv)) {

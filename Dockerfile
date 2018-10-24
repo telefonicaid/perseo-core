@@ -33,7 +33,13 @@ RUN mvn dependency:resolve && \
     mvn verify && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
-    cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war
+    cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war && \
+    mvn clean && \
+    apt-get clean && \
+    apt-get remove -y maven && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /code/src
 
 EXPOSE 8080
 
