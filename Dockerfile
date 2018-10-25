@@ -26,7 +26,7 @@ WORKDIR /code
 
 # Prepare by downloading dependencies
 ADD pom.xml /code/pom.xml
-ADD src /code/src
+ADD src /code
 ADD perseo_core-entrypoint.sh /code/src/
 
 RUN mvn dependency:resolve && \
@@ -43,4 +43,4 @@ RUN mvn dependency:resolve && \
 
 EXPOSE 8080
 
-ENTRYPOINT ["/code/src/perseo_core-entrypoint.sh"]
+ENTRYPOINT ["/code/perseo_core-entrypoint.sh"]
