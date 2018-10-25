@@ -26,8 +26,8 @@ WORKDIR /code
 
 # Prepare by downloading dependencies
 ADD pom.xml /code/pom.xml
-ADD src /code
-ADD perseo_core-entrypoint.sh /code/src/
+ADD src /code/src
+ADD perseo_core-entrypoint.sh /code
 
 RUN mvn dependency:resolve && \
     mvn verify && \
