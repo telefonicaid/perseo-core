@@ -19,8 +19,6 @@
 FROM tomcat:8
 
 # Install maven
-RUN apt-get update && \
-    apt-get install -y maven openjdk-8-jdk
 
 WORKDIR /code
 
@@ -29,12 +27,15 @@ ADD pom.xml /code/pom.xml
 ADD src /code/src
 ADD perseo_core-entrypoint.sh /code
 
-RUN mvn dependency:resolve && \
+RUN apt-get update && \
+    apt-get install -y maven openjdk-8-jdk && \
+    mvn dependency:resolve && \
     mvn verify && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mvn clean && \
+    apt-get remove -y openjdk-8-jdk && \
     apt-get clean && \
     apt-get remove -y maven && \
     apt-get -y autoremove && \
