@@ -273,4 +273,20 @@ public class Utils {
         }
         return sb.toString();
     }
+
+    /**
+     * Validate an URL
+     *
+     * @param url The url to validate
+     * @return True if the url is valid false if is not
+     *
+     */
+    public static Boolean isValidURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
+    }
 }

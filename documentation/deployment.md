@@ -101,7 +101,7 @@ service tomcat start
 Deployment requires a Tomcat 7 with Java 7. The basic steps for deploying it would be
 
 * Put the war into the webapps directory of the Tomcat server
-* Copy the configuration file (in src/main/resources/perseo-core.properties) to /etc. Update the values in the configuration file
+* Use [environment variables](config.md#configure-perseo-core-with-environment-vars) or copy the [configuration file](config.md#configure-perseo-core-with-configuration-file) (in src/main/resources/perseo-core.properties) to /etc and update the values in the configuration file.
 
 * Verify that the directory for logs exists and has the proper permissions. The log is generated in the /var/log/perseo/perseo.log
 
