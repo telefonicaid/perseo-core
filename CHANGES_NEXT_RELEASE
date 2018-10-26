@@ -1,3 +1,5 @@
+- Add: environment variable based configuration (PERSEO_FE_URL and MAX_AGE)
+- Fix: print perseo-core app logs instead of catalina in docker.
 - Add: travis.yml file for Travis CI. All branches with Java 8,9,10,11.
 - Upgrade org.slf4j (api & log4j) from 1.6.1 to 1.7.25
 - Upgrade junit from 4.10 to 4.12

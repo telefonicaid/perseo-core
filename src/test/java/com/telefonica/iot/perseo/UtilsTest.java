@@ -198,4 +198,13 @@ public class UtilsTest {
 
     }
 
+    /**
+     * Test of isValidURL method, of class Utils.
+     */
+    @Test
+    public void testURLValidator() {
+
+        assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
+        assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
+    }
 }
