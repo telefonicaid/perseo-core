@@ -64,7 +64,6 @@ public class Utils {
         EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
             epService = EPServiceProviderManager.getDefaultProvider();
-            // TODO iotEvent improvements
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
@@ -291,12 +290,28 @@ public class Utils {
         }
         MDC.put(Constants.SERVICE_FIELD, service);
 
-        String subservice =  (String) rule.get("subservice");
+        String subservice = (String) rule.get("subservice");
         if (subservice == null) {
             subservice = "?";
         }
         MDC.put(Constants.SUBSERVICE_FIELD, subservice);
 
         MDC.put(Constants.REALIP_FIELD, "Perseo-core-timer-rule");
+    }
+
+    /**
+     * Validate an URL
+     *
+     * @param url The url to validate
+     * @return True if the url is valid false if is not
+     *
+     */
+    public static Boolean isValidURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 }

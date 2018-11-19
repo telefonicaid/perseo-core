@@ -19,6 +19,7 @@
 
 package com.telefonica.iot.perseo;
 
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +39,18 @@ public final class Configuration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
+    private static final String DEFAULT_PERSEO_FE_URL = "http://127.0.0.1:9090";
+    private static final long DEFAULT_MAX_AGE = 60000;
+    private static final String PERSEO_FE_URL_ENV = "PERSEO_FE_URL";
+    private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
+
+    private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/etc/perseo-core.properties";
     private static final String ACTION_URL_PROP = "action.url";
     private static final String MAX_AGE_PROP = "rule.max_age";
-    private static final long DEFAULT_MAX_AGE_PROP = 30000;
-    private static final Properties PROPERTIES = new Properties();
+
     private static String actionRule;
-    private static long maxAge = DEFAULT_MAX_AGE_PROP;
+    private static long maxAge;
 
     static {
         LOGGER.debug("Configuration init: " + reload());
@@ -56,24 +62,55 @@ public final class Configuration {
      * @return true if success, false otherwise
      */
     public static synchronized boolean reload() {
+
         LOGGER.info("Configuration is being reloaded");
         InputStream stream;
+        String defaultMaxAge;
+        String defaultURL;
+        String actionPath = "/actions/do";
+
+        // Check configuration file. If exist, set as default configuration for perseo-core
         try {
+            PROPERTIES.clear();
             stream = new FileInputStream(PATH);
             PROPERTIES.load(stream);
             stream.close();
-            actionRule = PROPERTIES.getProperty(ACTION_URL_PROP);
-            //Check maxAge numerical value
-            try {
-                maxAge = Long.parseLong(PROPERTIES.getProperty(MAX_AGE_PROP));
-            } catch (NumberFormatException nfe) {
-                LOGGER.error("Invalid configuration value for " + MAX_AGE_PROP + ": " + nfe);
-                return false;
-            }
+            defaultURL = PROPERTIES.getProperty(ACTION_URL_PROP);
+            defaultMaxAge = PROPERTIES.getProperty(MAX_AGE_PROP);
         } catch (IOException e) {
-            LOGGER.error("reload: " + e.getMessage());
+            // No config file. Set basic default values
+            defaultURL = DEFAULT_PERSEO_FE_URL;
+            defaultMaxAge = String.valueOf(DEFAULT_MAX_AGE);
+        }
+
+        // Add 'http://' if necessary (backward compatibility with existing deployments)
+        String perseoFeURLEnv = System.getenv(PERSEO_FE_URL_ENV);
+        if (perseoFeURLEnv != null && !perseoFeURLEnv.toLowerCase().matches("^(http|https)://.*$")) {
+            perseoFeURLEnv =  "http://" + perseoFeURLEnv;
+        }
+        // Get Persep-fe url from env var if exist, else default
+        perseoFeURLEnv = perseoFeURLEnv != null ? perseoFeURLEnv : defaultURL;
+        // Validate URL
+        if (Utils.isValidURL(perseoFeURLEnv)) {
+            // Add actions/do path if perseoFeURLEnv not contains it yet
+            actionRule = perseoFeURLEnv.contains(actionPath) ? perseoFeURLEnv : perseoFeURLEnv + actionPath;
+        } else {
+            LOGGER.error("Invalid value for " + PERSEO_FE_URL_ENV + ": " + perseoFeURLEnv);
             return false;
         }
+        LOGGER.info("actionRule configuration is: " + actionRule);
+
+        // Get MAX_AGE from env var if exist, else default
+        String maxAgeEnv = System.getenv(PERSEO_MAX_AGE_ENV);
+        // Check maxAge numerical value
+        try {
+            maxAge = maxAgeEnv != null ? Long.parseLong(maxAgeEnv) : Long.parseLong(defaultMaxAge);
+        } catch (NumberFormatException nfe) {
+            LOGGER.error("Invalid value for " + PERSEO_MAX_AGE_ENV + ": " + nfe);
+            return false;
+        }
+        LOGGER.info("maxAge configuration is: " + maxAge);
+
         return true;
     }
 
