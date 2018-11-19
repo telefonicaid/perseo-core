@@ -15,6 +15,8 @@
 *
 * For those usages not covered by the GNU General Public License please contact with
 * iot_support at tid dot es
+*
+* Modified by: Carlos Blanco - Future Internet Consulting and Development Solutions (FICODES)
 */
 
 package com.telefonica.iot.perseo;
