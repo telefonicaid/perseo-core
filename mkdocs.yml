@@ -1,0 +1,21 @@
+site_name: Perseo Core
+site_url: https://fiware-perseo-core.readthedocs.org
+repo_url: https://github.com/telefonicaid/perseo-dore.git
+site_description: Perseo Core (EPL server)
+docs_dir: documentation
+site_dir: html
+markdown_extensions: [toc,fenced_code]
+use_directory_urls: false
+theme: readthedocs
+extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://www.fiware.org/style/fiware_readthedocs_processing.css"]
+
+pages:
+  - 'Home': 'index.md' 
+  - 'Architecture': 'architecture.md'
+  - 'Installation & Administration Manual':
+    - 'Admin': 'admin.md'
+    - 'Deployment': 'deployment.md'
+    - 'Configuration': 'config.md'
+    - 'Logs': 'logs.md'
+  - 'User Guide':
+      - 'Introduction': 'api.md'
