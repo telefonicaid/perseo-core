@@ -166,6 +166,12 @@ public class RulesServlet extends HttpServlet {
         //that follows the servlet path but precedes the query string and will
         //start with a "/" character. So, we remove it with .substring(1)
         String ruleName = request.getPathInfo();
+        if (ruleName == null) {
+            response.setStatus(400);
+            out.println("Deleting a rule require valid ruleName parameter");
+            out.close();
+            return;
+        }
         Result r = RulesManager.delete(epService, ruleName.substring(1));
 
         // Delete timed rule if necessary
