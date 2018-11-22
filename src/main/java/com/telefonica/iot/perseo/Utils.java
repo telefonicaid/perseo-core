@@ -15,6 +15,8 @@
 *
 * For those usages not covered by the GNU General Public License please contact with
 * iot_support at tid dot es
+*
+* Modified by: Carlos Blanco - Future Internet Consulting and Development Solutions (FICODES)
 */
 package com.telefonica.iot.perseo;
 
@@ -218,7 +220,6 @@ public class Utils {
      * Capture correlator and generate
      *
      * @param req HttpServletRequest incomming request
-     *
      */
     public static void putCorrelatorAndTrans(HttpServletRequest req) {
         String correlatorId = req.getHeader(Constants.CORRELATOR_HEADER);
@@ -248,7 +249,6 @@ public class Utils {
             }
             MDC.put(Constants.REALIP_FIELD, realIP);
         }
-      
     }
 
     /**
@@ -272,6 +272,32 @@ public class Utils {
             read = br.readLine();
         }
         return sb.toString();
+    }
+
+    /**
+     * It implements a method that, following the same mechanism as putCorrelatorAndTrans, uses org.slf4j.MDC
+     * to store the necessary headers, which will be necessary for the request in pursuit of activation of
+     * an action. The same thread will use the MDC to extract this data.
+     * @param rule JSON with the rule information
+     */
+    public static void setTimerRuleHeaders(JSONObject rule) {
+
+        String id = UUID.randomUUID().toString();
+        MDC.put(Constants.TRANSACTION_ID, id);
+        MDC.put(Constants.CORRELATOR_ID, id);
+        String service = (String) rule.get("service");
+        if (service == null) {
+            service = "?";
+        }
+        MDC.put(Constants.SERVICE_FIELD, service);
+
+        String subservice = (String) rule.get("subservice");
+        if (subservice == null) {
+            subservice = "?";
+        }
+        MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+
+        MDC.put(Constants.REALIP_FIELD, "Perseo-core-timer-rule");
     }
 
     /**

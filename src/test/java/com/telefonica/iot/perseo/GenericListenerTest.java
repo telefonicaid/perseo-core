@@ -15,6 +15,8 @@
 *
 * For those usages not covered by the GNU General Public License please contact with
 * iot_support at tid dot es
+*
+* Modified by: Carlos Blanco - Future Internet Consulting and Development Solutions (FICODES)
 */
 
 package com.telefonica.iot.perseo;
@@ -22,11 +24,14 @@ package com.telefonica.iot.perseo;
 import com.espertech.esper.client.EventBean;
 import com.telefonica.iot.perseo.test.EventBeanMock;
 import java.util.HashMap;
+
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 /**
  *
@@ -69,6 +74,36 @@ public class GenericListenerTest {
         EventBean event = new EventBeanMock(m);
         newEvents = new EventBean[]{event};
         instance.update(newEvents, oldEvents);
+    }
+
+    /**
+     * Test update method with timed rule.
+     */
+    @Test
+    public void testUpdateTimerRule() {
+        System.out.println("update with timed rule");
+        // Add RuleTest in TimeRulesStore Singleton
+        TimeRulesStore tRInfoInstance = TimeRulesStore.getInstance();
+        tRInfoInstance.cleanAllRules();
+        JSONObject body = new JSONObject();
+        String ruleName = "testrule@test/timerscope";
+        String ruleText = "select \"testrule\" as ruleName, *, current_timestamp() as currentTS " +
+                "from pattern [every timer:interval(30 sec)]";
+        body.put("name", ruleName);
+        body.put("text", ruleText);
+        tRInfoInstance.saveTimeRules(body.toString());
+
+        // call update with a testrule
+        EventBean[] oldEvents = new EventBean[0];
+        GenericListener instance = new GenericListener();
+        HashMap<String, Object> m = new HashMap();
+        m.put("one", "1");
+        m.put("two", 2);
+        m.put("ruleName", "testrule");
+        EventBean event = new EventBeanMock(m);
+        EventBean[] newEvents = new EventBean[]{event};
+        instance.update(newEvents, oldEvents);
+        tRInfoInstance.cleanAllRules();
     }
 
 }

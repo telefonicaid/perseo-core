@@ -15,6 +15,8 @@
 *
 * For those usages not covered by the GNU General Public License please contact with
 * iot_support at tid dot es
+*
+* Modified by: Carlos Blanco - Future Internet Consulting and Development Solutions (FICODES)
 */
 
 package com.telefonica.iot.perseo;
@@ -25,6 +27,9 @@ import com.espertech.esper.client.UpdateListener;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -37,19 +42,38 @@ public class GenericListener implements UpdateListener {
      /**
      * Implements method to execute an action whe a rule is fired . It makes an
      * HTTP POST to the configured URL sending the JSON representation of the
-     * Events fired by the rule
+     * Events fired by the rule. If the activated rule is a timed rule, this
+     * method set the correct headers for the request.
      * @param newEvents new events entering the window
      * @param oldEvents old events leaving the window
      */
     @Override
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         try {
+            HashMap<String, JSONObject> rules = TimeRulesStore.getInstance().getAllRulesInfo();
             for (EventBean event : newEvents) {
-                LOGGER.info("rule fired: " + event);
+
                 JSONObject jo = Utils.Event2JSONObject(event);
+                Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
+
+                // Get Rule Information from TimeRulesStore
+                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo((String) eventMap.get("ruleName"));
+
+                // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
+                if (rule != null) {
+
+                    // Is a timed Rule. Set special headers using rule saved information
+                    Utils.setTimerRuleHeaders(rule);
+                    LOGGER.info("Firing temporal rule: " + event);
+
+                } else {
+
+                    LOGGER.info("Firing Rule: " + event);
+                }
+
                 LOGGER.debug("result errors: " + jo.optJSONObject("errors"));
                 LOGGER.debug("result json: " + jo);
-                
+
                 boolean ok = Utils.DoHTTPPost(Configuration.getActionURL(), jo.toString());
                 if (!ok) {
                     LOGGER.error("action post failed");
