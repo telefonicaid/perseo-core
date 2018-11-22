@@ -220,7 +220,6 @@ public class Utils {
      * Capture correlator and generate
      *
      * @param req HttpServletRequest incomming request
-     *
      */
     public static void putCorrelatorAndTrans(HttpServletRequest req) {
         String correlatorId = req.getHeader(Constants.CORRELATOR_HEADER);

@@ -107,12 +107,12 @@ public final class TimeRulesStore {
      */
     private boolean isTimeRule(String ruleText) {
         // Detect timed rules, searching "timer:XX" patterns or Match_Recognize interval patterns
-        // http://esper.espertech.com/release-6.0.1/esper-reference/html/match-recognize.html#match-recognize-interval
-        // http://esper.espertech.com/release-6.0.1/esper-reference/html/event_patterns.html#pattern-timer-interval
-        // http://esper.espertech.com/release-6.0.1/esper-reference/html/event_patterns.html#pattern-timer-at
-        // http://esper.espertech.com/release-6.0.1/esper-reference/html/event_patterns.html#pattern-timer-schedule
-        return ruleText.toLowerCase().contains(" timer:") ||
-                (ruleText.toLowerCase().contains(" match_recognize") && ruleText.toLowerCase().contains("interval"));
+        // http://esper.espertech.com/release-6.1.0/esper-reference/html/match-recognize.html#match-recognize-interval
+        // http://esper.espertech.com/release-6.1.0/esper-reference/html/event_patterns.html#pattern-timer-interval
+        // http://esper.espertech.com/release-6.1.0/esper-reference/html/event_patterns.html#pattern-timer-at
+        // http://esper.espertech.com/release-6.1.0/esper-reference/html/event_patterns.html#pattern-timer-schedule
+        return ruleText.toLowerCase().contains("timer:") ||
+                (ruleText.toLowerCase().contains("match_recognize") && ruleText.toLowerCase().contains("interval"));
     }
 
     /**
