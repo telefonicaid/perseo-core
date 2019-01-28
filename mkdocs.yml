@@ -1,6 +1,6 @@
 site_name: Perseo Core
 site_url: https://fiware-perseo-core.readthedocs.org
-repo_url: https://github.com/telefonicaid/perseo-dore.git
+repo_url: https://github.com/telefonicaid/perseo-core.git
 site_description: Perseo Core (EPL server)
 docs_dir: documentation
 site_dir: html
