@@ -20,6 +20,9 @@ This is the code repository for the EPL-server, named perseo-core.
 
 * [License](#licence)
 
+| :dart: [Roadmap](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/roadmap.md) |
+|---|
+
 ## License
 
 Perseo Core is licensed under General Public License (GPL) version 2.
