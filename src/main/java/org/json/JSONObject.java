@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
@@ -107,10 +109,22 @@ public class JSONObject {
          *
          * @return NULL.
          */
-        @Override
+    /*   @Override
         protected final Object clone() {
             return this;
         }
+        Corrección SonarQube. squid:S2975
+        */
+        @Override
+          protected final Object clone() {
+            try {
+                Null clone = (Null) super.clone();
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(JSONObject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return this;
+        }
+      
 
         /**
          * A Null object is equal to the null value and to itself.
