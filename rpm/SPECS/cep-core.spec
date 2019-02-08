@@ -100,6 +100,26 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Fri Feb 08 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.3.0
+- Add: support for esper 6.1.0 timed rules("timer:XX" patterns and Match Recognize interval patterns) (#91)
+- Add: environment variable based configuration (PERSEO_FE_URL and MAX_AGE)
+- Add: travis.yml file for Travis CI. All branches with Java 8, 9, 10 and 11
+- Fix: print perseo-core app logs instead of catalina in docker
+- Upgrade org.slf4j (api & log4j) from 1.6.1 to 1.7.25
+- Upgrade junit from 4.10 to 4.12
+- Upgrade jetty-servlet from 9.2.0.M1 to 9.4.12.v20180830
+- Upgrade javaee-web-api from 6.0 to 8.0
+- Upgrade commons-logging from 1.1.3 to 1.2
+- Upgrade maven-compiler-plugin from 2.3.2 to 3.8.0
+- Upgrade maven-compiler source and target from 1.6 to 1.8
+- Upgrade maven-war-plugin from 2.1.1 to 3.2.2
+- Upgrade maven-dependency-plugin from 2.1 to 3.1.1
+- Upgrade maven-site-plugin from 3.3 to 3.7.1
+- Upgrade cobertura-maven-plugin from 2.6 to 2.7
+- Upgrade maven-surefire-report-plugin from 2.16 to 2.22.0
+- Upgrade maven-checkstyle-plugin from 2.12 to 3.0.0
+- Upgrade maven-javadoc-plugin from 2.9 to 3.0.1
+
 * Fri Jun 15 2018 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.2.0
 - Upgrade Esper library from 4.7.0 to 6.1.0
 - Upgrade to CentOS 7, Java 1.8.0, Tomcat 8.5.27 and Maven 3.5.3 in Dockerfile
