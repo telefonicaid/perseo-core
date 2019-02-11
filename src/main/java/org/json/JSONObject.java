@@ -101,7 +101,7 @@ public class JSONObject {
      * whilst Java's null is equivalent to the value that JavaScript calls
      * undefined.
      */
-    private static final class Null {
+    private static final class Null{
 
         /**
          * There is only intended to be a single instance of the NULL object,
@@ -115,17 +115,14 @@ public class JSONObject {
         }
         Corrección SonarQube. squid:S2975
         */
-        @Override
-          protected final Object clone() {
-            try {
-                Null clone = (Null) super.clone();
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(JSONObject.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return this;
-        }
-      
 
+   
+
+        Null() {
+        }
+           
+        
+    
         /**
          * A Null object is equal to the null value and to itself.
          *
