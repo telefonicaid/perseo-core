@@ -95,11 +95,11 @@ public class UtilsTest {
         ServletContextMock sc = new ServletContextMock();
         //Empty sc
         Utils.destroyEPService(sc);
-        assertEquals(sc.map.size(), 0);
+        assertEquals(sc.getMap().size(), 0);
         //With a epservice
         Utils.initEPService(sc);
         Utils.destroyEPService(sc);
-        assertEquals(sc.map.size(), 0);
+        assertEquals(sc.getMap().size(), 0);
     }
 
     /**

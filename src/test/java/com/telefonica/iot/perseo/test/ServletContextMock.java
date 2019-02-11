@@ -46,6 +46,16 @@ public class ServletContextMock implements ServletContext {
 
     private Map map = new HashMap();
 
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    
+    
     @Override
     public String getContextPath() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
