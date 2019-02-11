@@ -34,15 +34,15 @@ ADD perseo_core-entrypoint.sh /code
 # Ref: https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class
 #      https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=911925
 
-#RUN apt-get update && \
-#    apt-get install -y maven openjdk-8-jdk && \
+RUN apt-get update && \
+    apt-get install -y maven openjdk-8-jdk && \
 
-RUN echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20180805/ stretch main' > /etc/apt/sources.list && \
-    echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/20180805/ stretch/updates main' >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get remove -y openjdk-8-jre openjdk-8-jre-headless && \
-    apt-get install -y maven openjdk-8-jdk openjdk-8-jre openjdk-8-jre-headless && \
-    mvn dependency:resolve && \
+#RUN echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20180805/ stretch main' > /etc/apt/sources.list && \
+#    echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/20180805/ stretch/updates main' >> /etc/apt/sources.list && \
+#    apt-get update && \
+#    apt-get remove -y openjdk-8-jre openjdk-8-jre-headless && \
+#    apt-get install -y maven openjdk-8-jdk openjdk-8-jre openjdk-8-jre-headless && \
+RUN mvn dependency:resolve && \
     mvn verify && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
