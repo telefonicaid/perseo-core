@@ -44,7 +44,7 @@ import javax.servlet.descriptor.JspConfigDescriptor;
  */
 public class ServletContextMock implements ServletContext {
 
-    public Map map = new HashMap();
+    private Map map = new HashMap();
 
     @Override
     public String getContextPath() {

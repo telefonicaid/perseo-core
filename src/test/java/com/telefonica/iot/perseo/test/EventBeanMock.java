@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public class EventBeanMock implements EventBean {
 
-    public Map<String,String> properties;
+    private Map<String,String> properties;
 
     public EventBeanMock(Map props) {
         this.properties = props;

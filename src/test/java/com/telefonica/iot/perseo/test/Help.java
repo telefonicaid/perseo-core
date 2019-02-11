@@ -61,8 +61,8 @@ public class Help {
 
     public static class Res {
 
-        public int code;
-        public String text;
+        private int code;
+        private String text;
 
         private Res(int responseCode, String text) {
             this.code = responseCode;
