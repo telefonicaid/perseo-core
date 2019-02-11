@@ -42,7 +42,7 @@ RUN apt-get update && \
 #    apt-get update && \
 #    apt-get remove -y openjdk-8-jre openjdk-8-jre-headless && \
 #    apt-get install -y maven openjdk-8-jdk openjdk-8-jre openjdk-8-jre-headless && \
-RUN mvn dependency:resolve && \
+    mvn dependency:resolve && \
     mvn verify && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
