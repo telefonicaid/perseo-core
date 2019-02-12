@@ -42,9 +42,9 @@ RUN apt-get update && \
 #    apt-get update && \
 #    apt-get remove -y openjdk-8-jre openjdk-8-jre-headless && \
 #    apt-get install -y maven openjdk-8-jdk openjdk-8-jre openjdk-8-jre-headless && \
-    mvn dependency:resolve && \
-    mvn verify && \
-    mvn package && \
+    mvn dependency:resolve -DskipTests && \
+    mvn verify -DskipTests && \
+    mvn package -DskipTests && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mvn clean && \
