@@ -65,9 +65,9 @@ public class EventsServletTest {
         try {
             String url = String.format("http://127.0.0.1:%d", Help.PORT);
             Help.Res r = Help.sendPost(url, Help.ExampleNotices[0]);
-            assertEquals(200, r.code);
+            assertEquals(200, r.getCode());
             r = Help.sendPost(url, "<<this is invalid JSON>>");
-            assertEquals(400, r.code);
+            assertEquals(400, r.getCode());
         } finally {
             server.stop();
         }

@@ -68,10 +68,10 @@ public class RulesServletTest {
         try {
             String url = String.format("http://127.0.0.1:%d/nothing", Help.PORT);
             Help.Res r = Help.doGet(url);
-            assertEquals(404, r.code);
+            assertEquals(404, r.getCode());
             url = String.format("http://127.0.0.1:%d/", Help.PORT);
             r = Help.doGet(url);
-            assertEquals(200, r.code);
+            assertEquals(200, r.getCode());
         } finally {
             server.stop();
         }
@@ -92,14 +92,14 @@ public class RulesServletTest {
             jr.put("name", "test doPost rule");
             jr.put("text", Help.ExampleRules[0]);
             Help.Res r = Help.sendPost(url, jr.toString(2));
-            assertEquals(200, r.code);
+            assertEquals(200,r.getCode());
             jr.remove("name");
             r = Help.sendPost(url, jr.toString(2));
-            assertEquals(400, r.code);
+            assertEquals(400, r.getCode());
             jr.put("name", "test doPost rule");
             jr.put("text", "<<this is invalid EPL>>");
             r = Help.sendPost(url, jr.toString(2));
-            assertEquals(400, r.code);
+            assertEquals(400, r.getCode());
         } finally {
             server.stop();
         }
@@ -125,7 +125,7 @@ public class RulesServletTest {
             jr.put("name", "test doPost rule 2");
             jr.put("text", Help.ExampleRules[1]);
             Help.Res r = Help.sendPut(url, ja.toString(2));
-            assertEquals(200, r.code);
+            assertEquals(200, r.getCode());
         } finally {
             server.stop();
         }
@@ -147,7 +147,7 @@ public class RulesServletTest {
             String longSet = Help.longRuleSet();
             System.out.println("doPutLongSet set size=" + longSet.length());
             Help.Res r = Help.sendPut(url, longSet);
-            assertEquals(200, r.code);
+            assertEquals(200, r.getCode());
         } finally {
             server.stop();
         }
@@ -165,7 +165,7 @@ public class RulesServletTest {
         try {
             String url = String.format("http://127.0.0.1:%d/nothing", Help.PORT);
             Help.Res r = Help.doDelete(url);
-            assertEquals(200, r.code);
+            assertEquals(200, r.getCode());
         } finally {
             server.stop();
         }

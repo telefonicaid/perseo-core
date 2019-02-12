@@ -61,14 +61,34 @@ public class Help {
 
     public static class Res {
 
-        public int code;
-        public String text;
+        private int code;
+        private String text;
 
         private Res(int responseCode, String text) {
             this.code = responseCode;
             this.text = text;
         }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+        
+        
     }
+    
+    
 
     public static Res doGet(String url) throws Exception {
         return doMethod(url, "GET");

@@ -77,7 +77,7 @@ public class Kim {
      * The number of bytes in the kim. The number of bytes can be as much as
      * three times the number of characters.
      */
-    public int length = 0;
+    private int length = 0;
 
     /**
      * The memoization of toString().
