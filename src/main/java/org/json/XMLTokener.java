@@ -202,6 +202,8 @@ public class XMLTokener extends JSONTokener {
                 case '\'':
                     back();
                     return Boolean.TRUE;
+                default:
+                    throw this.syntaxError("Illegal escape.");
                 }
             }
         }
@@ -286,6 +288,8 @@ public class XMLTokener extends JSONTokener {
                 case '"':
                 case '\'':
                     throw syntaxError("Bad character in a name");
+                default:
+                    throw this.syntaxError("Illegal escape.");
                 }
             }
         }
