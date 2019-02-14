@@ -366,7 +366,7 @@ public class JSONTokener {
                 this.back();
                 return new JSONArray(this);
             default:
-                throw this.syntaxError("Illegal escape.");
+                //Added default clause
         }
 
         /*
