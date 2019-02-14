@@ -24,7 +24,9 @@ package com.telefonica.iot.perseo;
  * @author brox
  */
 public final class Constants {
-    private Constants() { };
+    private Constants() {
+        super();
+    };
     public static final String SERVICE_FIELD = "service";
     public static final String SUBSERVICE_FIELD = "subservice";
     public static final String CORRELATOR_HEADER = "fiware-correlator";
