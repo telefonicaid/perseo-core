@@ -60,7 +60,9 @@ echo "[INFO] Configuring application"
 
     echo "[INFO] Creating log directory"
     mkdir -p %{_perseoCepCore_log_dir}
-    chown -R %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}
+    touch %{_perseoCepCore_log_dir}/perseo-core.log
+    [[ $(getent passwd cep) ]] && chown -f cep.cep %{_perseoCepCore_log_dir} || chown -f %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}
+    chown -f %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}/perseo-core.log*
     chown -R %{_project_user}:%{_project_user} _install_dir
     chmod g+s %{_perseoCepCore_log_dir}
     setfacl -d -m g::rwx %{_perseoCepCore_log_dir}
