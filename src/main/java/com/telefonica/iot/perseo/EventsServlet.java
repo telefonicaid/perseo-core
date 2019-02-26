@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.MDC;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.owasp.encoder.Encode;
 
 /**
  *
@@ -91,7 +92,7 @@ public class EventsServlet extends HttpServlet {
         } catch (JSONException je) {
             logger.error("error: " + je);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            out.printf("{\"error\":\"%s\"}\n", je.getMessage());
+            out.printf("{\"error\":\"%s\"}\n", Encode.forHtmlContent(je.getMessage()));
 
         } finally {
             out.close();
