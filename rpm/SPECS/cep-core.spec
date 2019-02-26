@@ -58,13 +58,15 @@ cp -R %{_topdir}/SOURCES/etc %{buildroot}
 
 echo "[INFO] Configuring application"
 
-    echo "[INFO] Creating log directory"
-    mkdir -p %{_perseoCepCore_log_dir}
-    chown -R %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}
-    chown -R %{_project_user}:%{_project_user} _install_dir
-    chmod g+s %{_perseoCepCore_log_dir}
-    setfacl -d -m g::rwx %{_perseoCepCore_log_dir}
-    setfacl -d -m o::rx %{_perseoCepCore_log_dir}
+echo "[INFO] Creating log directory"
+mkdir -p %{_perseoCepCore_log_dir}
+touch %{_perseoCepCore_log_dir}/perseo-core.log
+[[ $(getent passwd cep) ]] && chown -f cep.cep %{_perseoCepCore_log_dir} || chown -f %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}
+chown -f %{_project_user}:%{_project_user} %{_perseoCepCore_log_dir}/perseo-core.log*
+chown -R %{_project_user}:%{_project_user} _install_dir
+chmod g+s %{_perseoCepCore_log_dir}
+setfacl -d -m g::rwx %{_perseoCepCore_log_dir}
+setfacl -d -m o::rx %{_perseoCepCore_log_dir}
 
 echo "Done"
 
@@ -77,11 +79,11 @@ if [ $1 == 0 ]; then
 
   echo "[INFO] Removing application log files"
   # Log
-  [ -d %{_perseoCepCore_log_dir} ] && rm -rfv %{_perseoCepCore_log_dir}
+  [ -d %{_perseoCepCore_log_dir} ] && rm -rf %{_perseoCepCore_log_dir}
 
   echo "[INFO] Removing application files"
   # Installed files
-  rm -rfv %{_install_dir}/perseo-core*
+  rm -rf %{_install_dir}/perseo-core*
 
 fi
 
