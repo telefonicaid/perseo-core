@@ -8,9 +8,11 @@ if [ "$PERSEO_FE_URL_ARG" == "-perseo_fe_url" ] && [ -z "$PERSEO_FE_URL" ]
 then
     export PERSEO_FE_URL="$PERSEO_FE_URL_VALUE"
 fi
-
+mkdir -p /var/log/perseo
 touch /var/log/perseo/perseo-core.log
 
+tail -f /var/log/perseo/perseo-core.log &
 
 # We use tomcat from Apache, then will be started using catalina.sh, instead service tomcat
-exec ${CATALINA_HOME}/bin/catalina.sh run && tail -f /var/log/perseo/perseo-core.log
+
+exec ${CATALINA_HOME}/bin/catalina.sh run
