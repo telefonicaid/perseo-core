@@ -36,7 +36,7 @@ import java.util.List;
 public final class TimeRulesStore {
 
     private static TimeRulesStore INSTANCE;
-    private static final Logger logger = LoggerFactory.getLogger(EventsServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventsServlet.class);
     private HashMap<String, JSONObject> rulesInfo = new HashMap<String, JSONObject>();
 
     private TimeRulesStore() {
@@ -57,7 +57,7 @@ public final class TimeRulesStore {
      * @param body POST or PUT body with rules data
      */
     public void saveTimeRules(String body) {
-
+        LOGGER.debug("Saving timerules from body: " + body);
         if (body.equals("")) {
             return;
         } else {
@@ -81,9 +81,10 @@ public final class TimeRulesStore {
                     ruleText = (String) jo.getJSONObject(i).get("text");
                 } catch (JSONException e) {
                     // Invalid Rule
+                    LOGGER.error("invalid rule " + i + " by: " + e.getMessage());
                     continue;
                 }
-
+                LOGGER.debug("Checking rule " + i + ": " + strName);
                 // Only "Timed Rules"
                 if (!strName.startsWith("ctxt$") && isTimeRule(ruleText)) {
 
@@ -94,6 +95,7 @@ public final class TimeRulesStore {
                     context.remove(0);
                     jo.getJSONObject(i).put("subservice", "/" + String.join("/", context));
                     rulesInfo.put(ruleName.get(0), jo.getJSONObject(i));
+                    LOGGER.info("Time rule " + i + " " + ruleName + " added");
                 }
             }
         }
@@ -144,6 +146,7 @@ public final class TimeRulesStore {
      * @param ruleName The rule name. Can include optionally '@context...' in the name
      */
     public void removeTimeRule(String ruleName) {
+        LOGGER.info("Removing timerule: " + ruleName);
         if (ruleName != null) {
             rulesInfo.remove(ruleName.split("@")[0]);
         }
