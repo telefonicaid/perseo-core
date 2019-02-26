@@ -81,7 +81,7 @@ public final class TimeRulesStore {
                     ruleText = (String) jo.getJSONObject(i).get("text");
                 } catch (JSONException e) {
                     // Invalid Rule
-                    LOGGER.error("invalid rule " + i " by: " + e.getMessage());
+                    LOGGER.error("invalid rule " + i + " by: " + e.getMessage());
                     continue;
                 }
                 LOGGER.debug("Checking rule " + i + ": " + strName);
