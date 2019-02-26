@@ -79,11 +79,11 @@ if [ $1 == 0 ]; then
 
   echo "[INFO] Removing application log files"
   # Log
-  [ -d %{_perseoCepCore_log_dir} ] && rm -rfv %{_perseoCepCore_log_dir}
+  [ -d %{_perseoCepCore_log_dir} ] && rm -rf %{_perseoCepCore_log_dir}
 
   echo "[INFO] Removing application files"
   # Installed files
-  rm -rfv %{_install_dir}/perseo-core*
+  rm -rf %{_install_dir}/perseo-core*
 
 fi
 
