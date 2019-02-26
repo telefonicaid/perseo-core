@@ -8,6 +8,7 @@ if [ "$PERSEO_FE_URL_ARG" == "-perseo_fe_url" ] && [ -z "$PERSEO_FE_URL" ]
 then
     export PERSEO_FE_URL="$PERSEO_FE_URL_VALUE"
 fi
+
 mkdir -p /var/log/perseo
 touch /var/log/perseo/perseo-core.log
 
