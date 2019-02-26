@@ -1,6 +1,9 @@
 
 ## Configuration
-You can use environment vars for configuration or a configuration file. If the two methods are used, the environment variables will have priority over the values ​​of the configuration file.
+You can use environment vars for configuration or a configuration file (/etc/perseo-core.properties). If the two methods are used, the environment variables will have priority over the values of the configuration file.
+
+Moreover in case of use docker container then entrypoint is also have in account. In this case the environment variables will have priority over the values docker entrypoint, and docker entrypoint will have priority over the values of of the configuration file.
+
 
 
 ### Configure Perseo-core with environment vars
