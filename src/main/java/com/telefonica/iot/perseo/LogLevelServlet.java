@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.owasp.encoder.Encode;
 
 
 /**
@@ -99,7 +100,7 @@ public class LogLevelServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getOutputStream().print("{\"level\":\""+ currentLevel +"\"}");
+            response.getOutputStream().print("{\"level\":\""+ Encode.forHtmlContent(currentLevel) +"\"}");
         }
     }
     /**
