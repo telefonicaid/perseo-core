@@ -57,4 +57,6 @@ RUN echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/2
 
 EXPOSE 8080
 
+HEALTHCHECK CMD curl --fail http://localhost:8080/perseo-core/version || exit 1
+
 ENTRYPOINT ["/code/perseo_core-entrypoint.sh"]
