@@ -42,7 +42,7 @@ import org.json.JSONObject;
 public class EventsServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(EventsServlet.class);
-    EPServiceProvider epService;
+    private static EPServiceProvider epService;
 
     @Override
     public void init() {
@@ -76,25 +76,27 @@ public class EventsServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         logger.debug("events doPost");
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            StringBuilder sb = new StringBuilder();
+        response.setContentType("application/json;charset=UTF-8");        
+        try {        	
             String eventText = Utils.getBodyAsString(request);
-            logger.info("incoming event:" + eventText);
+            logger.info(String.format("incoming event: %s", eventText));
             org.json.JSONObject jo = new JSONObject(eventText);
-            logger.debug("event as JSONObject: " + jo);
+            logger.debug(String.format("event as JSONObject: %s", jo));
             Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
-            logger.debug("event as map: " + eventMap);
+            logger.debug(String.format("event as map: %s" , eventMap));
             epService.getEPRuntime().sendEvent(eventMap, Constants.IOT_EVENT);
-            logger.debug("event was sent: " + eventMap);
-        } catch (JSONException je) {
-            logger.error("error: " + je);
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            out.printf("{\"error\":\"%s\"}\n", je.getMessage());
+            logger.debug(String.format("event was sent: %s", eventMap));
+        } catch (Exception je) {
+        	try {
+        		PrintWriter out = response.getWriter();
+        		logger.error(String.format("error: %s" ,je));
+        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        		out.printf("{\"error\":\"%s\"}%n", je.getMessage());
+        		out.close();
+        	}catch(IOException exception) {
+        		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        	}           
 
-        } finally {
-            out.close();
         }
     }
 
