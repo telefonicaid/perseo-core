@@ -24,7 +24,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.MalformedParametersException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -39,26 +42,34 @@ public class Help {
 
     public static final int PORT = 8129;
 
-    public static final String[] ExampleRules = new String[]{
-        "select id, price? as Price from iotEvent.win:length(100) group by id",
-        "@Audit select *,\"blood_1_action\" as iotcepaction,"
-        + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
-        + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
-        + " and type=\"BloodMeter\")]"};
-    public static final String[] ExampleNotices = new String[]{
-        "{\n"
-        + "\"BloodPressure\": 2,\n"
-        + "\"id\":\"guay!\",\n"
-        + "\"otro\":\"mas\",\n"
-        + "\"numero\":4,\n"
-        + "\"sub\": {\n"
-        + "	\"subnumero\":18,\n"
-        + "	\"subcadena\":\"SUB2\",\n"
-        + "	\"subflotante\": 12.3,\n"
-        + "	\"sub2\": { \"valor\": 3}\n"
-        + "	}\n"
-        + "}"};
-
+  
+    public static String[] ExampleRules() {
+    	return new String[]{
+    			 "select id, price? as Price from iotEvent.win:length(100) group by id",
+    	            "@Audit select *,\"blood_1_action\" as iotcepaction,"
+    	            + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
+    	            + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
+    	            + " and type=\"BloodMeter\")]"};
+    	
+    }
+    public static String[] ExampleNotices() {
+    	return new String[]{
+                "{\n"
+                        + "\"BloodPressure\": 2,\n"
+                        + "\"id\":\"guay!\",\n"
+                        + "\"otro\":\"mas\",\n"
+                        + "\"numero\":4,\n"
+                        + "\"sub\": {\n"
+                        + "	\"subnumero\":18,\n"
+                        + "	\"subcadena\":\"SUB2\",\n"
+                        + "	\"subflotante\": 12.3,\n"
+                        + "	\"sub2\": { \"valor\": 3}\n"
+                        + "	}\n"
+                        + "}"};
+    	
+    }
+           
+       
     public static class Res {
 
         private int code;
@@ -90,15 +101,15 @@ public class Help {
     
     
 
-    public static Res doGet(String url) throws Exception {
+    public static Res doGet(String url) throws MalformedURLException, IOException, ProtocolException{
         return doMethod(url, "GET");
     }
 
-    public static Res doDelete(String url) throws Exception {
+    public static Res doDelete(String url) throws MalformedURLException, IOException, ProtocolException {
         return doMethod(url, "DELETE");
     }
 
-    public static Res doMethod(String url, String method) throws Exception {
+    public static Res doMethod(String url, String method) throws MalformedURLException, IOException, ProtocolException {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod(method);
@@ -107,15 +118,15 @@ public class Help {
         return new Res(responseCode, body);
     }
 
-    public static Res sendPost(String url, String body) throws Exception {
+    public static Res sendPost(String url, String body) throws MalformedURLException, IOException, ProtocolException {
         return sendMethod(url, body, "POST");
     }
 
-    public static Res sendPut(String url, String body) throws Exception {
+    public static Res sendPut(String url, String body) throws MalformedURLException, IOException, ProtocolException {
         return sendMethod(url, body, "PUT");
     }
 
-    public static Res sendMethod(String url, String body, String method) throws Exception {
+    public static Res sendMethod(String url, String body, String method) throws MalformedURLException, IOException, ProtocolException {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod(method);
@@ -170,10 +181,10 @@ public class Help {
         JSONObject rule = new JSONObject();
         for (int i = 0; i < ruleNumber; i++) {
             rule.put("name", "manyrules_a_" + i);
-            rule.put("text", ExampleRules[0]);
+            rule.put("text", ExampleRules()[0]);
             ja.put(rule);
             rule.put("name", "manyrules_b_" + i);
-            rule.put("text", ExampleRules[1]);
+            rule.put("text", ExampleRules()[1]);
             ja.put(rule);
         }
         return ja.toString();
