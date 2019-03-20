@@ -87,12 +87,10 @@ public class EventsServlet extends HttpServlet {
             epService.getEPRuntime().sendEvent(eventMap, Constants.IOT_EVENT);
             logger.debug(String.format("event was sent: %s", eventMap));
         } catch (Exception je) {
-        	try {
-        		PrintWriter out = response.getWriter();
+        	try {        		
         		logger.error(String.format("error: %s" ,je));
         		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        		out.printf("{\"error\":\"%s\"}%n", je.getMessage());
-        		out.close();
+        		response.getOutputStream().print(String.format("{\"error\":\"%s\"}%n", je.getMessage()));        		
         	}catch(IOException exception) {
         		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         	}           
