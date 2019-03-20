@@ -108,7 +108,7 @@ public class LogLevelServlet extends HttpServlet {
 	            response.setCharacterEncoding("UTF-8");
 	            response.setContentType("application/json");
 	            response.setStatus(HttpServletResponse.SC_OK);
-	            response.getOutputStream().print("{\"level\":\""+ currentLevel +"\"}");
+	            response.getOutputStream().print(String.format("{\"level\":\"%s\"}",Encode.forHtmlContent(currentLevel)));
         	}catch(IOException e) {
 	         	logger.error("IOException in log level");
 	         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

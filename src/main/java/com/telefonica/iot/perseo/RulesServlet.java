@@ -97,7 +97,6 @@ public class RulesServlet extends HttpServlet {
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-               
 
     }
 
@@ -114,6 +113,7 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+
         try {
 			
 			String body = Utils.getBodyAsString(request);
@@ -128,6 +128,7 @@ public class RulesServlet extends HttpServlet {
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+
     }
 
     /**
@@ -158,6 +159,7 @@ public class RulesServlet extends HttpServlet {
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
         }
+
 
     }
 

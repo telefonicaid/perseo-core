@@ -86,6 +86,7 @@ public class EventsServlet extends HttpServlet {
             Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
             logger.debug(String.format("event as map: %s" , eventMap));
             epService.getEPRuntime().sendEvent(eventMap, Constants.IOT_EVENT);
+
             logger.debug(String.format("event was sent: %s", eventMap));
         } catch (Exception je) {
         	try {        		
