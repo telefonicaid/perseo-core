@@ -187,31 +187,31 @@ public class Utils {
 
             int code = urlConn.getResponseCode();
             String message = urlConn.getResponseMessage();
-            logger.debug("action http response " + code + " " + message);
+            logger.debug(String.format("action http response %s %s",code,message));
             if (code / 100 == 2) {
                 InputStream input = urlConn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 for (String line; (line = reader.readLine()) != null;) {
-                    logger.info("action response body: " + line);
+                    logger.info(String.format("action response body: %s", line));
                 }
                 input.close();
                 return true;
 
             } else {
-                logger.error("action response is not OK: " + code + " " + message);
+                logger.error(String.format("action response is not OK: %s %s",code,message));
                 InputStream error = urlConn.getErrorStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(error));
                 for (String line; (line = reader.readLine()) != null;) {
-                    logger.error("action error response body: " + line);
+                    logger.error(String.format("action error response body: %s", line));
                 }
                 error.close();
                 return false;
             }
         } catch (MalformedURLException me) {
-            logger.error("exception MalformedURLException: " + me);
+            logger.error(String.format("exception MalformedURLException: %s",me));
             return false;
         } catch (IOException ioe) {
-            logger.error("exception IOException: " + ioe);
+            logger.error(String.format("exception IOException: %s",ioe));
             return false;
         }
     }
@@ -260,7 +260,7 @@ public class Utils {
      *
      */
     public static String getBodyAsString(HttpServletRequest request) throws IOException {
-        logger.debug("request.getCharacterEncoding() " + request.getCharacterEncoding());
+        logger.debug(String.format("request.getCharacterEncoding() %s", request.getCharacterEncoding()));
         if (request.getCharacterEncoding() == null) {
             request.setCharacterEncoding("UTF-8");
         }
