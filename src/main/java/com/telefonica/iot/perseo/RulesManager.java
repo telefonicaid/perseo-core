@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RulesManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(RulesServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(RulesManager.class);
 
     /**
      * Get a rule by name
@@ -54,7 +54,7 @@ public class RulesManager {
     public static synchronized Result get(EPServiceProvider epService, String ruleName) {
         try {
             
-            logger.debug("rule asked for: " + ruleName);
+            logger.debug(String.format("rule asked for: %s", ruleName));
             ruleName = ruleName == null ? "" : ruleName;
             EPAdministrator epa = epService.getEPAdministrator();
 
@@ -62,7 +62,7 @@ public class RulesManager {
                 EPStatement st = epa.getStatement(ruleName);
                 if (st == null) {
                     return new Result(HttpServletResponse.SC_NOT_FOUND,
-                            String.format("{\"error\":\"%s not found\"}\n",
+                            String.format("{\"error\":\"%s not found\"}%n",
                                     ruleName));
                 } else {
                     return new Result(HttpServletResponse.SC_OK,
@@ -72,7 +72,7 @@ public class RulesManager {
                 String[] sttmntNames = epa.getStatementNames();
                 JSONArray ja = new JSONArray();
                 for (String name : sttmntNames) {
-                    logger.debug("getting rule " + name);
+                    logger.debug(String.format("getting rule %s", name));
                     EPStatement st = epa.getStatement(name);
                     ja.put(Utils.Statement2JSONObject(st));
                 }
@@ -80,9 +80,9 @@ public class RulesManager {
             }
 
         } catch (EPException epe) {
-            logger.error("getting statement" + epe);
+            logger.error(String.format("getting statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(epe.getMessage())));
         }
     }
@@ -99,12 +99,12 @@ public class RulesManager {
     public static synchronized Result make(EPServiceProvider epService, String text) {
         try {
 
-            logger.debug("rule text: " + text);
+            logger.debug(String.format("rule text: %s", text));
             org.json.JSONObject jo = new JSONObject(text);
 
-            logger.debug("rule as JSONObject: " + jo);
+            logger.debug(String.format("rule as JSONObject: %s", jo));
             String name = jo.optString("name", "");
-            logger.info("post rule: " + name);
+            logger.info(String.format("post rule: %s",name));
             if ("".equals(name.trim())) {
                 return new Result(HttpServletResponse.SC_BAD_REQUEST,
                         "{\"error\":\"missing name\"}");
@@ -114,44 +114,44 @@ public class RulesManager {
                 return new Result(HttpServletResponse.SC_BAD_REQUEST,
                         "{\"error\":\"missing text\"}");
             }
-            logger.debug("statement name: " + name);
-            logger.debug("statement text: " + newEpl);
+            logger.debug(String.format("statement name: %s",name));
+            logger.debug(String.format("statement text: %s",newEpl));
 
             EPStatement statement;
             EPStatement prevStmnt = epService.getEPAdministrator().getStatement(name);
             if (prevStmnt == null) {
-                logger.debug("found new statement: " + name);
+                logger.debug(String.format("found new statement: %s",name));
 
                 statement = epService.getEPAdministrator().createEPL(newEpl, name);
-                logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
+                logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                 statement.addListener(new GenericListener());
             } else {
                 String oldEpl = prevStmnt.getText();
-                logger.debug("old epl: " + oldEpl);
+                logger.debug(String.format("old epl: %s", oldEpl));
                 if (!newEpl.equals(oldEpl)) {
-                    logger.debug("found changed statement: " + name);
+                    logger.debug(String.format("found changed statement: %s",name));
                     prevStmnt.destroy();
-                    logger.debug("deleted statement: " + name);
+                    logger.debug(String.format("deleted statement: %s",name));
                     statement = epService.getEPAdministrator().createEPL(newEpl, name);
-                    logger.debug("re-created statement: " + name);
-                    logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
+                    logger.debug(String.format("re-created statement: %s", name));
+                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                     statement.addListener(new GenericListener());
                 } else {
-                    logger.debug("found repeated statement: " + name);
+                    logger.debug(String.format("found repeated statement: %s", name));
                     statement = prevStmnt;
                 }
             }
             return new Result(HttpServletResponse.SC_OK,
                     Utils.Statement2JSONObject(statement).toString());
         } catch (EPException epe) {
-            logger.error("creating statement " + epe);
+            logger.error(String.format("creating statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(epe.getMessage())));
         } catch (JSONException je) {
-            logger.error("creating statement " + je);
+            logger.error(String.format("creating statement %s",je));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(je.getMessage())));
         }
     }
@@ -170,10 +170,10 @@ public class RulesManager {
     public static synchronized Result updateAll(EPServiceProvider epService, String text) {
         try {
             long maxAge = Configuration.getMaxAge();
-            logger.debug("rule block text: " + text);
+            logger.debug(String.format("rule block text: %s",text));
             org.json.JSONArray ja = new JSONArray(text);
-            logger.debug("rules as JSONArray: " + ja);
-            logger.info("put rules+contexts: " + ja.length());
+            logger.debug(String.format("rules as JSONArray: %s", ja));
+            logger.info(String.format("put rules+contexts: %s", ja.length()));
             Map<String, String> newOnes = new LinkedHashMap<String, String>();
             Set<String> oldOnesNames = new HashSet<String>();
 
@@ -198,23 +198,23 @@ public class RulesManager {
             for (String n : newOnes.keySet()) {
                 String newEpl = newOnes.get(n);
                 if (!oldOnesNames.contains(n)) {
-                    logger.debug("found new statement: " + n);
+                    logger.debug(String.format("found new statement: %s", n));
                     EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
-                    logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
+                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                     statement.addListener(new GenericListener());
                 } else {
                     EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
                     String oldEPL = prevStmnt.getText();
                     if (!oldEPL.equals(newOnes.get(n))) {
-                        logger.debug("found changed statement: " + n);
+                        logger.debug(String.format("found changed statement: %s", n));
                         prevStmnt.destroy();
-                        logger.debug("deleted statement: " + n);
+                        logger.debug(String.format("deleted statement: %s", n));
                         EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
-                        logger.debug("re-created statement: " + n);
-                        logger.debug("statement json: " + Utils.Statement2JSONObject(statement));
+                        logger.debug(String.format("re-created statement: %s" ,n));
+                        logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                         statement.addListener(new GenericListener());
                     } else {
-                        logger.debug("identical statement: " + n);
+                        logger.debug(String.format("identical statement: %s", n));
                     }
                     oldOnesNames.remove(n);
                 }
@@ -222,23 +222,23 @@ public class RulesManager {
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
                 EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
-                logger.debug("unexpected statement: " + o);
+                logger.debug(String.format("unexpected statement: %s" ,o));
                 if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
-                    logger.debug("unexpected statement, too old: " + o);
+                    logger.debug(String.format("unexpected statement, too old: %s", o));
                     prevStmnt.destroy();
-                    logger.debug("deleted garbage statement: " + o);
+                    logger.debug(String.format("deleted garbage statement: %s", o));
                 }
             }
             return new Result(HttpServletResponse.SC_OK, "{}");
         } catch (EPException epe) {
-            logger.error("creating statement " +  epe);
+            logger.error(String.format("creating statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(epe.getMessage())));
         } catch (JSONException je) {
-            logger.error("creating statement " + je);
+            logger.error(String.format("creating statement %s", je));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(je.getMessage())));
         }
     }
@@ -256,19 +256,19 @@ public class RulesManager {
         try {
 
             ruleName = ruleName == null ? "" : ruleName;
-            logger.debug("delete rule: " + ruleName);
+            logger.debug(String.format("delete rule: %s" ,ruleName));
             EPAdministrator epa = epService.getEPAdministrator();
 
             if (ruleName.length() != 0) {
                 EPStatement st = epa.getStatement(ruleName);
                 //Allow to delete inexistent rule
                 if (st != null) {
-                    logger.debug("deleted statement: " + ruleName);
+                    logger.debug(String.format("deleted statement: %s", ruleName));
                     st.destroy();
                     return new Result(HttpServletResponse.SC_OK,
                             Utils.Statement2JSONObject(st).toString());
                 } else {
-                    logger.debug("asked for deleting inexistent statement: " + ruleName);
+                    logger.debug(String.format("asked for deleting inexistent statement: %s",ruleName));
                     return new Result(HttpServletResponse.SC_OK, "{}");
                 }
 
@@ -277,9 +277,9 @@ public class RulesManager {
             }
 
         } catch (EPException epe) {
-            logger.error("deleting statement " + epe);
+            logger.error(String.format("deleting statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}\n",
+                    String.format("{\"error\":%s}%n",
                             JSONObject.valueToString(epe.getMessage())));
         }
     }
