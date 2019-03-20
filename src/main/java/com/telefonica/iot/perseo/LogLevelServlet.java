@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.owasp.encoder.Encode;
 
 
 /**
@@ -113,6 +114,7 @@ public class LogLevelServlet extends HttpServlet {
 	         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	         	return;
             }
+
         }
     }
     /**

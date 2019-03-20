@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.MDC;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +82,6 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        
         try {        
             logger.info(String.format("get rule %s", request.getPathInfo()));
             String ruleName = request.getPathInfo();
@@ -91,12 +91,13 @@ public class RulesServlet extends HttpServlet {
             ruleName = ruleName == null ? "/" : ruleName;
             Result r = RulesManager.get(epService, ruleName.substring(1));
             response.setStatus(r.getStatusCode());
-            response.getOutputStream().print(r.getMessage());
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));
            
         }catch(Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+               
 
     }
 
@@ -122,12 +123,11 @@ public class RulesServlet extends HttpServlet {
 			
 			Result r = RulesManager.make(epService, body);
 			response.setStatus(r.getStatusCode());
-			response.getOutputStream().print(r.getMessage());			
+			response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));			
         }catch(Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-       
     }
 
     /**
@@ -144,7 +144,6 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        
         try {
         	
             String body = Utils.getBodyAsString(request);
@@ -154,11 +153,12 @@ public class RulesServlet extends HttpServlet {
 
             Result r = RulesManager.updateAll(epService, body);
             response.setStatus(r.getStatusCode());
-            response.getOutputStream().print(r.getMessage());           
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));           
         }catch(Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
         }
+
     }
 
     /**
@@ -200,6 +200,7 @@ public class RulesServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         	   
         }
+
     }
 
     /**
