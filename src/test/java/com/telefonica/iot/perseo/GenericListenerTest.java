@@ -31,6 +31,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -38,7 +40,7 @@ import org.junit.Test;
  * @author brox
  */
 public class GenericListenerTest {
-
+	private static final Logger logger = LoggerFactory.getLogger(GenericListenerTest.class);
     public GenericListenerTest() {
     }
 
@@ -63,7 +65,7 @@ public class GenericListenerTest {
      */
     @Test
     public void testUpdate() {
-        System.out.println("update");
+    	logger.info("update");
         EventBean[] newEvents = new EventBean[0];
         EventBean[] oldEvents = new EventBean[0];
         GenericListener instance = new GenericListener();
@@ -81,7 +83,7 @@ public class GenericListenerTest {
      */
     @Test
     public void testUpdateTimerRule() {
-        System.out.println("update with timed rule");
+    	logger.info("update with timed rule");
         // Add RuleTest in TimeRulesStore Singleton
         TimeRulesStore tRInfoInstance = TimeRulesStore.getInstance();
         tRInfoInstance.cleanAllRules();
