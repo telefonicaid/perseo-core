@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class RulesServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(RulesServlet.class);
-    EPServiceProvider epService;
+    private static EPServiceProvider epService;
 
     @Override
     public void init() throws ServletException {
@@ -82,17 +82,21 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        logger.info("get rule " + request.getPathInfo());
-        String ruleName = request.getPathInfo();
-        //request.getPathInfo() returns null or the extra path information
-        //that follows the servlet path but precedes the query string and will
-        //start with a "/" character. So, we remove it with .substring(1)
-        ruleName = ruleName == null ? "/" : ruleName;
-        Result r = RulesManager.get(epService, ruleName.substring(1));
-        response.setStatus(r.getStatusCode());
-        out.println(Encode.forHtmlContent(r.getMessage()));
-        out.close();
+        try {        
+            logger.info(String.format("get rule %s", request.getPathInfo()));
+            String ruleName = request.getPathInfo();
+            //request.getPathInfo() returns null or the extra path information
+            //that follows the servlet path but precedes the query string and will
+            //start with a "/" character. So, we remove it with .substring(1)
+            ruleName = ruleName == null ? "/" : ruleName;
+            Result r = RulesManager.get(epService, ruleName.substring(1));
+            response.setStatus(r.getStatusCode());
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));
+           
+        }catch(Exception je) {        				
+			logger.error(String.format("error: %s" ,je));
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
 
     }
 
@@ -109,16 +113,22 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String body = Utils.getBodyAsString(request);
 
-        // Save temporary rules, not triggered by events external to the core
-        TimeRulesStore.getInstance().saveTimeRules(body);
+        try {
+			
+			String body = Utils.getBodyAsString(request);
+			
+			// Save temporary rules, not triggered by events external to the core
+			TimeRulesStore.getInstance().saveTimeRules(body);
+			
+			Result r = RulesManager.make(epService, body);
+			response.setStatus(r.getStatusCode());
+			response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));			
+        }catch(Exception je) {        				
+			logger.error(String.format("error: %s" ,je));
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
 
-        Result r = RulesManager.make(epService, body);
-        response.setStatus(r.getStatusCode());
-        out.println(Encode.forHtmlContent(r.getMessage()));
-        out.close();
     }
 
     /**
@@ -135,16 +145,22 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String body = Utils.getBodyAsString(request);
+        try {
+        	
+            String body = Utils.getBodyAsString(request);
 
-        // Save timed rules, which are not activated by events external to the core
-        TimeRulesStore.getInstance().saveTimeRules(body);
+            // Save timed rules, which are not activated by events external to the core
+            TimeRulesStore.getInstance().saveTimeRules(body);
 
-        Result r = RulesManager.updateAll(epService, body);
-        response.setStatus(r.getStatusCode());
-        out.println(Encode.forHtmlContent(r.getMessage()));
-        out.close();
+            Result r = RulesManager.updateAll(epService, body);
+            response.setStatus(r.getStatusCode());
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));           
+        }catch(Exception je) {        				
+			logger.error(String.format("error: %s" ,je));
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
+        }
+
+
     }
 
     /**
@@ -161,26 +177,32 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        logger.info("delete rule " + request.getPathInfo());
-        //request.getPathInfo() returns null or the extra path information
-        //that follows the servlet path but precedes the query string and will
-        //start with a "/" character. So, we remove it with .substring(1)
-        String ruleName = request.getPathInfo();
-        if (ruleName == null) {
-            response.setStatus(400);
-            out.println("Deleting a rule require valid ruleName parameter");
-            out.close();
-            return;
+        
+        try {
+        	
+            logger.info(String.format("delete rule %s", request.getPathInfo()));
+            //request.getPathInfo() returns null or the extra path information
+            //that follows the servlet path but precedes the query string and will
+            //start with a "/" character. So, we remove it with .substring(1)
+            String ruleName = request.getPathInfo();
+            if (ruleName == null) {
+                response.setStatus(400);
+                response.getOutputStream().print("Deleting a rule require valid ruleName parameter");              
+                return;
+            }
+            Result r = RulesManager.delete(epService, ruleName.substring(1));
+
+            // Delete timed rule if necessary
+            TimeRulesStore.getInstance().removeTimeRule(ruleName.substring(1));
+
+            response.setStatus(r.getStatusCode());
+            response.getOutputStream().print(r.getMessage());           
+        }catch(Exception je) {        				
+			logger.error(String.format("error: %s" ,je));
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        	   
         }
-        Result r = RulesManager.delete(epService, ruleName.substring(1));
 
-        // Delete timed rule if necessary
-        TimeRulesStore.getInstance().removeTimeRule(ruleName.substring(1));
-
-        response.setStatus(r.getStatusCode());
-        out.println(Encode.forHtmlContent(r.getMessage()));
-        out.close();
     }
 
     /**

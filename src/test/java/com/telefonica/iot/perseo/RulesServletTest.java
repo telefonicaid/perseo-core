@@ -24,6 +24,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
 
 import org.eclipse.jetty.server.Server;
@@ -36,7 +39,7 @@ import org.json.JSONObject;
  * @author brox
  */
 public class RulesServletTest {
-
+	private static final Logger logger = LoggerFactory.getLogger(RulesServletTest.class);
     public RulesServletTest() {
     }
 
@@ -62,7 +65,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoGet() throws Exception {
-        System.out.println("doGet");
+    	logger.info("doGet");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -83,14 +86,14 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPost() throws Exception {
-        System.out.println("doPost");
+    	logger.info("doPost");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
             String url = String.format("http://127.0.0.1:%d", Help.PORT);
             JSONObject jr = new JSONObject();
             jr.put("name", "test doPost rule");
-            jr.put("text", Help.ExampleRules[0]);
+            jr.put("text", Help.ExampleRules()[0]);
             Help.Res r = Help.sendPost(url, jr.toString(2));
             assertEquals(200,r.getCode());
             jr.remove("name");
@@ -111,7 +114,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPut() throws Exception {
-        System.out.println("doPut");
+    	logger.info("doPut");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -119,11 +122,11 @@ public class RulesServletTest {
             JSONArray ja = new JSONArray();
             JSONObject jr = new JSONObject();
             jr.put("name", "test doPost rule 1");
-            jr.put("text", Help.ExampleRules[0]);
+            jr.put("text", Help.ExampleRules()[0]);
             ja.put(jr);
             jr = new JSONObject();
             jr.put("name", "test doPost rule 2");
-            jr.put("text", Help.ExampleRules[1]);
+            jr.put("text", Help.ExampleRules()[1]);
             Help.Res r = Help.sendPut(url, ja.toString(2));
             assertEquals(200, r.getCode());
         } finally {
@@ -139,13 +142,13 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPutLongSet() throws Exception {
-        System.out.println("doPutLongSet");
+    	logger.info("doPutLongSet");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
             String url = String.format("http://127.0.0.1:%d", Help.PORT);
             String longSet = Help.longRuleSet();
-            System.out.println("doPutLongSet set size=" + longSet.length());
+            logger.info(String.format("doPutLongSet set size=%s", longSet.length()));
             Help.Res r = Help.sendPut(url, longSet);
             assertEquals(200, r.getCode());
         } finally {
@@ -159,7 +162,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoDelete() throws Exception {
-        System.out.println("doDelete");
+    	logger.info("doDelete");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {

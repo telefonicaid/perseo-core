@@ -135,6 +135,16 @@ public class JSONObject {
         public boolean equals(Object object) {
             return object == null || object == this;
         }
+        
+        /**
+         * A Null object in Java always has hashCode 0.
+         *
+         * @return 0.
+         */
+        @Override
+        public int hashCode() {
+            return 0;
+        }
 
         /**
          * Get the "null" string value.
@@ -1330,7 +1340,7 @@ public class JSONObject {
                 }
             }
             return true;
-        } catch (Throwable exception) {
+        } catch (JSONException exception) {
             return false;
         }
     }
@@ -1450,7 +1460,7 @@ public class JSONObject {
         try {
             return this.toString(0);
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 
@@ -1500,7 +1510,7 @@ public class JSONObject {
      *             If the value is or contains an invalid number.
      */
     public static String valueToString(Object value) throws JSONException {
-        if (value == null || value.equals(null)) {
+        if (value == null) {
             return "null";
         }
         if (value instanceof JSONString) {
@@ -1599,7 +1609,7 @@ public class JSONObject {
 
     static final Writer writeValue(Writer writer, Object value,
             int indentFactor, int indent) throws JSONException, IOException {
-        if (value == null || value.equals(null)) {
+        if (value == null) {
             writer.write("null");
         } else if (value instanceof JSONObject) {
             ((JSONObject) value).write(writer, indentFactor, indent);

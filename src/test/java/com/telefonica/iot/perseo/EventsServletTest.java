@@ -26,6 +26,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
 
 /**
@@ -33,7 +36,7 @@ import static org.junit.Assert.*;
  * @author brox
  */
 public class EventsServletTest {
-
+	private static final Logger logger = LoggerFactory.getLogger(EventsServletTest.class);
     public EventsServletTest() {
     }
 
@@ -59,12 +62,12 @@ public class EventsServletTest {
      */
     @Test
     public void testDoPost() throws Exception {
-        System.out.println("doPost");
+    	logger.info("doPost");
         Server server = Help.getServer(EventsServlet.class);
         server.start();
         try {
             String url = String.format("http://127.0.0.1:%d", Help.PORT);
-            Help.Res r = Help.sendPost(url, Help.ExampleNotices[0]);
+            Help.Res r = Help.sendPost(url, Help.ExampleNotices()[0]);
             assertEquals(200, r.getCode());
             r = Help.sendPost(url, "<<this is invalid JSON>>");
             assertEquals(400, r.getCode());
