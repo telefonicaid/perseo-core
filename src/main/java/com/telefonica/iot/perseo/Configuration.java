@@ -55,7 +55,7 @@ public final class Configuration {
     private static long maxAge;
 
     static {
-        LOGGER.debug("Configuration init: " + reload());
+        LOGGER.debug(String.format("Configuration init: %s",reload()));
     }
 
     /**
@@ -97,10 +97,10 @@ public final class Configuration {
             // Add actions/do path if perseoFeURLEnv not contains it yet
             actionRule = perseoFeURLEnv.contains(actionPath) ? perseoFeURLEnv : perseoFeURLEnv + actionPath;
         } else {
-            LOGGER.error("Invalid value for " + PERSEO_FE_URL_ENV + ": " + perseoFeURLEnv);
+            LOGGER.error(String.format("Invalid value for %s: %s",PERSEO_FE_URL_ENV, perseoFeURLEnv));
             return false;
         }
-        LOGGER.info("actionRule configuration is: " + actionRule);
+        LOGGER.info(String.format("actionRule configuration is: %s",actionRule));
 
         // Get MAX_AGE from env var if exist, else default
         String maxAgeEnv = System.getenv(PERSEO_MAX_AGE_ENV);
@@ -108,10 +108,10 @@ public final class Configuration {
         try {
             maxAge = maxAgeEnv != null ? Long.parseLong(maxAgeEnv) : Long.parseLong(defaultMaxAge);
         } catch (NumberFormatException nfe) {
-            LOGGER.error("Invalid value for " + PERSEO_MAX_AGE_ENV + ": " + nfe);
+            LOGGER.error(String.format("Invalid value for %s: %s",PERSEO_MAX_AGE_ENV,nfe));
             return false;
         }
-        LOGGER.info("maxAge configuration is: " + maxAge);
+        LOGGER.info(String.format("maxAge configuration is: %s",maxAge));
 
         return true;
     }

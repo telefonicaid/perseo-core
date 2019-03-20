@@ -159,7 +159,8 @@ public class Kim {
 // to UTF-32 conversion, and then the UTF-32 to Kim conversion.
 
         if (stringLength > 0) {
-            for (int i = 0; i < stringLength; i += 1) {
+        	int i = 0; 
+            while (i < stringLength) {
                 int c = string.charAt(i);
                 if (c <= 0x7F) {
                     this.length += 1;
@@ -175,6 +176,7 @@ public class Kim {
                     }
                     this.length += 3;
                 }
+                i += 1;
             }
 
 // Second pass: Allocate a byte array and fill that array with the conversion
@@ -184,8 +186,9 @@ public class Kim {
             int at = 0;
             int b;
             int sum = 1;
-            for (int i = 0; i < stringLength; i += 1) {
-                int character = string.charAt(i);
+            int x = 0;
+            while (x < stringLength) {
+                int character = string.charAt(x);
                 if (character <= 0x7F) {
                     bytes[at] = (byte) character;
                     sum += character;
@@ -204,7 +207,7 @@ public class Kim {
                     at += 1;
                 } else {
                     if (character >= 0xD800 && character <= 0xDBFF) {
-                        i += 1;
+                        x += 1;
                         character = (((character & 0x3FF) << 10) | (string
                                 .charAt(i) & 0x3FF)) + 65536;
                     }
@@ -224,6 +227,7 @@ public class Kim {
                     this.hashcode += sum;
                     at += 1;
                 }
+                x += 1;
             }
             this.hashcode += sum << 16;
         }
@@ -351,21 +355,21 @@ public class Kim {
     public String toString() throws JSONException {
         if (this.string == null) {
             int c;
-            int length = 0;
+            int charLength = 0;
             char chars[] = new char[this.length];
             for (int at = 0; at < this.length; at += characterSize(c)) {
                 c = this.characterAt(at);
                 if (c < 0x10000) {
-                    chars[length] = (char) c;
-                    length += 1;
+                    chars[charLength] = (char) c;
+                    charLength += 1;
                 } else {
-                    chars[length] = (char) (0xD800 | ((c - 0x10000) >>> 10));
-                    length += 1;
-                    chars[length] = (char) (0xDC00 | (c & 0x03FF));
-                    length += 1;
+                    chars[charLength] = (char) (0xD800 | ((c - 0x10000) >>> 10));
+                    charLength += 1;
+                    chars[charLength] = (char) (0xDC00 | (c & 0x03FF));
+                    charLength += 1;
                 }
             }
-            this.string = new String(chars, 0, length);
+            this.string = new String(chars, 0, charLength);
         }
         return this.string;
     }
