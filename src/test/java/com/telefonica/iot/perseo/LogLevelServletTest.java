@@ -29,13 +29,16 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author brox
  */
 public class LogLevelServletTest {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogLevelServletTest.class);
     public LogLevelServletTest() {
     }
 
@@ -62,7 +65,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutOK() throws Exception {
-        System.out.println("doPut log level valid");
+    	logger.info("doPut log level valid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {
@@ -84,7 +87,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutBad() throws Exception {
-        System.out.println("doPut log level invalid");
+    	logger.info("doPut log level invalid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {
