@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.MDC;
+import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +91,7 @@ public class RulesServlet extends HttpServlet {
         ruleName = ruleName == null ? "/" : ruleName;
         Result r = RulesManager.get(epService, ruleName.substring(1));
         response.setStatus(r.getStatusCode());
-        out.println(r.getMessage());
+        out.println(Encode.forHtmlContent(r.getMessage()));
         out.close();
 
     }
@@ -116,7 +117,7 @@ public class RulesServlet extends HttpServlet {
 
         Result r = RulesManager.make(epService, body);
         response.setStatus(r.getStatusCode());
-        out.println(r.getMessage());
+        out.println(Encode.forHtmlContent(r.getMessage()));
         out.close();
     }
 
@@ -142,7 +143,7 @@ public class RulesServlet extends HttpServlet {
 
         Result r = RulesManager.updateAll(epService, body);
         response.setStatus(r.getStatusCode());
-        out.println(r.getMessage());
+        out.println(Encode.forHtmlContent(r.getMessage()));
         out.close();
     }
 
@@ -178,7 +179,7 @@ public class RulesServlet extends HttpServlet {
         TimeRulesStore.getInstance().removeTimeRule(ruleName.substring(1));
 
         response.setStatus(r.getStatusCode());
-        out.println(r.getMessage());
+        out.println(Encode.forHtmlContent(r.getMessage()));
         out.close();
     }
 

@@ -365,6 +365,8 @@ public class JSONTokener {
             case '[':
                 this.back();
                 return new JSONArray(this);
+            default:
+                //Added default clause
         }
 
         /*
