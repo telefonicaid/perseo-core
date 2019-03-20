@@ -31,6 +31,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
 
 /**
@@ -40,7 +43,7 @@ import static org.junit.Assert.*;
 public class RulesManagerTest {
 
     EPServiceProvider epService;
-
+    private static final Logger logger = LoggerFactory.getLogger(RulesManagerTest.class);
     public RulesManagerTest() {
         epService = EPServiceProviderManager.getDefaultProvider();
 
@@ -76,9 +79,9 @@ public class RulesManagerTest {
      */
     @Test
     public void testGet() {
-        System.out.println("get");
+    	logger.info("get");
         String ruleName = "ccc";
-        String epl = Help.ExampleRules[0];
+        String epl = Help.ExampleRules()[0];
         EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
         Result result = RulesManager.get(epService, ruleName);
         assertEquals(200, result.getStatusCode());
@@ -93,9 +96,9 @@ public class RulesManagerTest {
      */
     @Test
     public void testMake() {
-        System.out.println("make");
+    	logger.info("make");
         String ruleName = "ccc";
-        String epl = Help.ExampleRules[0];
+        String epl = Help.ExampleRules()[0];
         String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
 
         Result result = RulesManager.make(epService, text);
@@ -110,9 +113,9 @@ public class RulesManagerTest {
      */
     @Test
     public void testUpdateAll() {
-        System.out.println("updateAll");
+    	logger.info("updateAll");
         String ruleName = "ccc";
-        String epl = Help.ExampleRules[0];
+        String epl = Help.ExampleRules()[0];
         String text = String.format("[{\"name\":\"%s\",\"text\":\"%s\"}]", ruleName, epl);
 
         Result result = RulesManager.updateAll(epService, text);
@@ -130,9 +133,9 @@ public class RulesManagerTest {
      */
     @Test
     public void testDelete() {
-        System.out.println("delete");
+    	logger.info("delete");
         String ruleName = "ccc";
-        String epl = Help.ExampleRules[0];
+        String epl = Help.ExampleRules()[0];
         EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
         assertNotNull(st);
         Result result = RulesManager.delete(epService, ruleName);
