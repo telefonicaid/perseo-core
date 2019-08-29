@@ -16,6 +16,10 @@
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
 
+# By the time being (19/09/2019) we need to add dist: trusty to make oraclejdk builds to work
+# ref: https://travis-ci.community/t/install-of-oracle-jdk-8-failing/3038/8
+dist: trusty
+
 language: java
 
 jdk:
