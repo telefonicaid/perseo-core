@@ -27,21 +27,8 @@ ADD pom.xml /code/pom.xml
 ADD src /code/src
 ADD perseo_core-entrypoint.sh /code
 
-# FIXME: due to a bug in openjdk-8-jdk Debian package we use snapshot.debian.org to install a previous version
-# (in particular version 8u171-b11-1 instead of buggy 8u181-b13-2). Once the bug get solved in Debian, restore
-# the previous statements (currently commented and replacing all just bofere 'mvn depenency:resolve && \' line)
-#
-# Ref: https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class
-#      https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=911925
-
-#RUN apt-get update && \
-#    apt-get install -y maven openjdk-8-jdk && \
-
-RUN echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/20180805/ stretch main' > /etc/apt/sources.list && \
-    echo 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/20180805/ stretch/updates main' >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get remove -y openjdk-8-jre openjdk-8-jre-headless && \
-    apt-get install -y maven openjdk-8-jdk openjdk-8-jre openjdk-8-jre-headless && \
+RUN apt-get update && \
+    apt-get install -y maven openjdk-8-jdk && \
     mvn dependency:resolve && \
     mvn verify && \
     mvn package && \
