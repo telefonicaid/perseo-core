@@ -1,1 +1,3 @@
+Upgrade Esper library from 6.1.0 to 7.1.0
+Fix use openjdk8 oficial instead unofficial openjdk after bug in official openjdk-8-jdk was fixed
 Fix perseo-core log in docker container (#110)
