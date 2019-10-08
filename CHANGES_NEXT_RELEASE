@@ -1,1 +1,2 @@
+Fix use openjdk8 oficial instead unofficial openjdk after bug in official openjdk-8-jdk was fixed
 Fix perseo-core log in docker container (#110)
