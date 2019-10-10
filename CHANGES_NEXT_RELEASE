@@ -1,4 +1,4 @@
-Add library to retrieve sunset and sunrise (#130)
+Add library (lib-sunrise-sunset 1.1.1) to retrieve sunset and sunrise (#130)
 Upgrade Esper library from 6.1.0 to 7.1.0
 Fix use openjdk8 oficial instead unofficial openjdk after bug in official openjdk-8-jdk was fixed
 Fix perseo-core log in docker container (#110)
