@@ -73,6 +73,10 @@ public class Utils {
             def.put(Constants.SERVICE_FIELD, String.class);
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
+
+            // Add SunriseSunset library
+            cfg.addImport("ca.rmen.sunrisesunset.*");
+
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
         }
         return epService;
