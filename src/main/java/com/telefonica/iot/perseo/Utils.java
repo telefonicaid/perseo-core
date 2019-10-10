@@ -76,7 +76,7 @@ public class Utils {
 
             // Add SunriseSunset library
             cfg.addImport("ca.rmen.sunrisesunset.*");
-
+            cfg.addPlugInSingleRowFunction("getSunriseSunset", "ca.rmen.sunrisesunset.SunriseSunset", "getSunriseSunset");
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
         }
         return epService;
