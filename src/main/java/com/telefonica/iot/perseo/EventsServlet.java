@@ -18,7 +18,7 @@
 */
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.runtime.client.EPServiceProvider;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;

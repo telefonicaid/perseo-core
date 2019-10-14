@@ -19,10 +19,10 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.ConfigurationOperations;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.runtime.client.ConfigurationOperations;
+import com.espertech.esper.runtime.client.EPServiceProvider;
+import com.espertech.esper.runtime.client.EPServiceProviderManager;
+import com.espertech.esper.runtime.client.EPStatement;
 import com.telefonica.iot.perseo.test.Help;
 import java.util.HashMap;
 import java.util.Map;

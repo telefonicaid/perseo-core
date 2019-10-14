@@ -19,14 +19,14 @@
 
 package com.telefonica.iot.perseo.test;
 
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.EventPropertyDescriptor;
-import com.espertech.esper.client.EventPropertyGetter;
-import com.espertech.esper.client.EventPropertyGetterIndexed;
-import com.espertech.esper.client.EventPropertyGetterMapped;
-import com.espertech.esper.client.EventType;
-import com.espertech.esper.client.FragmentEventType;
-import com.espertech.esper.client.PropertyAccessException;
+import com.espertech.esper.runtime.client.EventBean;
+import com.espertech.esper.runtime.client.EventPropertyDescriptor;
+import com.espertech.esper.runtime.client.EventPropertyGetter;
+import com.espertech.esper.runtime.client.EventPropertyGetterIndexed;
+import com.espertech.esper.runtime.client.EventPropertyGetterMapped;
+import com.espertech.esper.runtime.client.EventType;
+import com.espertech.esper.runtime.client.FragmentEventType;
+import com.espertech.esper.runtime.client.PropertyAccessException;
 import java.util.Iterator;
 import java.util.Map;
 
