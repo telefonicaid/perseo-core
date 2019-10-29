@@ -102,6 +102,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Tue Oct 29 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.4.0
+- Add library (lib-sunrise-sunset 1.1.1) to retrieve sunset and sunrise (#130)
+- Fix use openjdk8 oficial instead unofficial openjdk after bug in official openjdk-8-jdk was fixed
+- Fix perseo-core log in docker container (#110)
+- Upgrade Esper library from 6.1.0 to 7.1.0
+
 * Fri Feb 08 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.3.0
 - Add: support for esper 6.1.0 timed rules("timer:XX" patterns and Match Recognize interval patterns) (#91)
 - Add: environment variable based configuration (PERSEO_FE_URL and MAX_AGE)
