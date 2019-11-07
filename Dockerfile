@@ -33,7 +33,7 @@ RUN apt-get update && \
     mvn verify && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
-    cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war && \
+    cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mvn clean && \
     apt-get remove -y openjdk-8-jdk && \
     apt-get clean && \

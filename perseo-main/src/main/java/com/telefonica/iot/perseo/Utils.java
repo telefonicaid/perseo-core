@@ -47,6 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.telefonica.iot.perseo.utils.DateTimeUtils;
+
 /**
  *
  * @author brox
@@ -77,11 +79,21 @@ public class Utils {
 
             // Add SunriseSunset library
             cfg.addImport("ca.rmen.sunrisesunset.*");
+
+            // Add SunriseSunset library
+            cfg.addImport("com.telefonica.iot.perseo.utils.*");
+
             // Add Single row function for getSunriseSunset
             try {
                 cfg.addPlugInSingleRowFunction("getSunriseSunset",
                                                "ca.rmen.sunrisesunset.SunriseSunset",
                                                "getSunriseSunset");
+
+                cfg.addPlugInSingleRowFunction("getSunriseSunset",
+                        "com.telefonica.iot.perseo.utils",
+                        "getSunriseSunset");
+
+
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }

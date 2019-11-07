@@ -68,12 +68,4 @@ public class DateTimeUtils {
     }
 
 
-    public static Calendar convertToUTC(String date, String format) {
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd z");
-
-
-
-    }
-
 }
