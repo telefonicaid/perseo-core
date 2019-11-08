@@ -5,6 +5,10 @@ import org.apache.log4j.pattern.DatePatternConverter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import java.util.Calendar;
@@ -67,5 +71,11 @@ public class DateTimeUtils {
         return sunriseSunset[1].getTimeInMillis();
     }
 
+    public static String timeToUTC(String localTime) {
+        String dateFormatISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        LocalDateTime localDateTime = LocalDateTime.parse(localTime, DateTimeFormatter.ofPattern(dateFormatISO));
+        ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneOffset.UTC);
+        return zonedDateTimeUTC.toOffsetDateTime().toString();
+    }
 
 }
