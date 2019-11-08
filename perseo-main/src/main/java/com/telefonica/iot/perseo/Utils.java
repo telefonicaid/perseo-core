@@ -78,20 +78,29 @@ public class Utils {
             cfg.addEventType(Constants.IOT_EVENT, def);
 
             // Add SunriseSunset library
-            cfg.addImport("ca.rmen.sunrisesunset.*");
+            //cfg.addImport("ca.rmen.sunrisesunset.*");
 
             // Add SunriseSunset library
             cfg.addImport("com.telefonica.iot.perseo.utils.*");
 
             // Add Single row function for getSunriseSunset
             try {
-                cfg.addPlugInSingleRowFunction("getSunriseSunset",
-                                               "ca.rmen.sunrisesunset.SunriseSunset",
-                                               "getSunriseSunset");
+                //cfg.addPlugInSingleRowFunction("getSunriseSunset",
+                //                               "ca.rmen.sunrisesunset.SunriseSunset",
+                //                               "getSunriseSunset");
 
-                cfg.addPlugInSingleRowFunction("getSunriseSunset",
-                        "com.telefonica.iot.perseo.utils",
-                        "getSunriseSunset");
+                cfg.addPlugInSingleRowFunction("getNextSunise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunise");
+                cfg.addPlugInSingleRowFunction("getNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunset");
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunise");
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunset");
 
 
             } catch (ConfigurationException e) {
