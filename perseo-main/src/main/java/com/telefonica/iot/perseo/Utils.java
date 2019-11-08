@@ -77,17 +77,11 @@ public class Utils {
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
 
-            // Add SunriseSunset library
-            //cfg.addImport("ca.rmen.sunrisesunset.*");
-
-            // Add SunriseSunset library
+            // Add perseo-utils library
             cfg.addImport("com.telefonica.iot.perseo.utils.*");
 
-            // Add Single row function for getSunriseSunset
+            // Add Single row function for perseo-utils functions
             try {
-                //cfg.addPlugInSingleRowFunction("getSunriseSunset",
-                //                               "ca.rmen.sunrisesunset.SunriseSunset",
-                //                               "getSunriseSunset");
 
                 cfg.addPlugInSingleRowFunction("getNextSunise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
