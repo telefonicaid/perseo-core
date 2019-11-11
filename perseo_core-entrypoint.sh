@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 # Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
 #
 # This file is part of perseo-core
@@ -15,8 +15,6 @@
 #
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
-
-#!/bin/bash
 
 DEFAULT_PERSEO_FE_URL=perseo_fe_endpoint
 
