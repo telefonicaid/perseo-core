@@ -21,6 +21,7 @@ package com.telefonica.iot.perseo.utils;
 
 import ca.rmen.sunrisesunset.SunriseSunset;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -117,10 +118,9 @@ public class DateTimeUtils {
      * @return date on UTC format
      */
 
-    public static Calendar dateToUTC(Calendar day) {
-        String dateFormatISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-        LocalDateTime localDateTime = LocalDateTime.parse(day.toString(), DateTimeFormatter.ofPattern(dateFormatISO));
-        ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneOffset.UTC);
+    public static Calendar dateToUTC(String day) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(day);
+        ZonedDateTime zonedDateTimeUTC = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
         return (Calendar) GregorianCalendar.from(zonedDateTimeUTC);
     }
 
@@ -135,9 +135,11 @@ public class DateTimeUtils {
      */
 
     public static String timeToUTC(String time, String timeZone) {
-        Calendar day = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-        day.set(Calendar.HOUR, Integer.parseInt(time));
-        return String.valueOf(dateToUTC(day).get(Calendar.HOUR));
+        String isoDate = "2019-11-20T" + time + ":43:01";
+        LocalDateTime isoDateLDT = LocalDateTime.parse(isoDate);
+        ZonedDateTime isoDateZLDT = isoDateLDT.atZone(ZoneId.of(timeZone));
+        Calendar dayTimeZoned = dateToUTC(String.valueOf(isoDateZLDT));
+        return String.valueOf(dayTimeZoned.get(Calendar.HOUR));
     }
 
 }
