@@ -20,81 +20,124 @@
 package com.telefonica.iot.perseo.utils;
 
 import ca.rmen.sunrisesunset.SunriseSunset;
-import org.apache.log4j.pattern.DatePatternConverter;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
+/**
+ * The type Date time utils.
+ */
 public class DateTimeUtils {
 
-    public static Calendar getNextSunise(Calendar day, double latitude, double longitude) {
 
+    /**
+     * Gets next sunrise.
+     * Uses car.men.sunrisesunset library
+     * It calculates next sunrise considering provided date and time
+     * If date and time provided is older than sunrise it adds +1 day to date and calculates again
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the next sunrise
+     */
+    public static Calendar getNextSunrise(Calendar day, double latitude, double longitude) {
         Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
-
         Calendar day2 = (Calendar) day.clone();
-
-        if (sunriseSunset[0].get(Calendar.HOUR_OF_DAY) < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+        if (sunriseSunset[0].get(Calendar.HOUR_OF_DAY) < day.get(Calendar.HOUR_OF_DAY)) {
             day2.add(Calendar.DATE, 1);
             sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
         }
-
         return sunriseSunset[0];
     }
 
+    /**
+     * Gets next sunset.
+     * Uses car.men.sunrisesunset library
+     * It calculates next sunset considering provided date and time
+     * If date and time provided is older than sunset it adds +1 day to date and calculates again
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the next sunset
+     */
     public static Calendar getNextSunset(Calendar day, double latitude, double longitude) {
-
         Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
-
         Calendar day2 = (Calendar) day.clone();
-
-        if (sunriseSunset[1].get(Calendar.HOUR_OF_DAY) < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+        if (sunriseSunset[1].get(Calendar.HOUR_OF_DAY) < day.get(Calendar.HOUR_OF_DAY)) {
             day2.add(Calendar.DATE, 1);
             sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
         }
-
         return sunriseSunset[1];
     }
 
-    public static long getMilisToNextSunise(Calendar day, double latitude, double longitude) {
-
-        Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
-
-        Calendar day2 = (Calendar) day.clone();
-
-        if (sunriseSunset[0].get(Calendar.HOUR_OF_DAY) < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            day2.add(Calendar.DATE, 1);
-            sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
-        }
-
-        return sunriseSunset[0].getTimeInMillis();
+    /**
+     * Gets milis to next sunrise.
+     * It calculates next sunrise considering provided date and time
+     * If date and time provided is older than sunrise it adds +1 day to date and calculates again
+     * Finally, tunrns result into miliseconds
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the milis to next sunrise
+     */
+    public static long getMilisToNextSunrise(Calendar day, double latitude, double longitude) {
+        Calendar sunriseSunset = getNextSunrise(day, latitude, longitude);
+        return sunriseSunset.getTimeInMillis();
     }
 
+    /**
+     * Gets milis to next sunset.
+     * It calculates next sunset considering provided date and time
+     * If date and time provided is older than sunset it adds +1 day to date and calculates again
+     * Finally, tunrns result into miliseconds
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the milis to next sunset
+     */
     public static long getMilisToNextSunset(Calendar day, double latitude, double longitude) {
-
-        Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
-
-        Calendar day2 = (Calendar) day.clone();
-
-        if (sunriseSunset[1].get(Calendar.HOUR_OF_DAY) < Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            day2.add(Calendar.DATE, 1);
-            sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
-        }
-
-        return sunriseSunset[1].getTimeInMillis();
+        Calendar sunriseSunset = getNextSunset(day, latitude, longitude);
+        return sunriseSunset.getTimeInMillis();
     }
 
-    public static String timeToUTC(String localTime) {
+    /**
+     * Date to utc.
+     * Converts provided calendar into UTC format
+     * ISO yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     *
+     * @param day the local time on ISO format
+     * @return date on UTC format
+     */
+
+    public static Calendar dateToUTC(Calendar day) {
         String dateFormatISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-        LocalDateTime localDateTime = LocalDateTime.parse(localTime, DateTimeFormatter.ofPattern(dateFormatISO));
+        LocalDateTime localDateTime = LocalDateTime.parse(day.toString(), DateTimeFormatter.ofPattern(dateFormatISO));
         ZonedDateTime zonedDateTimeUTC = localDateTime.atZone(ZoneOffset.UTC);
-        return zonedDateTimeUTC.toOffsetDateTime().toString();
+        return (Calendar) GregorianCalendar.from(zonedDateTimeUTC);
+    }
+
+    /**
+     * Time to utc.
+     * Converts provided time into UTC format
+     * Time Format HH
+     *
+     * @param time the time to convert
+     * @param timeZone the time zone of time to convert
+     * @return hours on UTC format
+     */
+
+    public static String timeToUTC(String time, String timeZone) {
+        Calendar day = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        day.set(Calendar.HOUR, Integer.parseInt(time));
+        return String.valueOf(dateToUTC(day).get(Calendar.HOUR));
     }
 
 }
