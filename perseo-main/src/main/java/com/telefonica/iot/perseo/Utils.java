@@ -83,19 +83,24 @@ public class Utils {
             // Add Single row function for perseo-utils functions
             try {
 
-                cfg.addPlugInSingleRowFunction("getNextSunise",
+                cfg.addPlugInSingleRowFunction("getNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getNextSunise");
                 cfg.addPlugInSingleRowFunction("getNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getNextSunset");
-                cfg.addPlugInSingleRowFunction("getMilisToNextSunise",
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getMilisToNextSunise");
                 cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getMilisToNextSunset");
-
+                cfg.addPlugInSingleRowFunction("dateToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "dateToUTC");
+                cfg.addPlugInSingleRowFunction("timeToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "timeToUTC");
 
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
