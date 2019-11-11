@@ -47,6 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.telefonica.iot.perseo.utils.DateTimeUtils;
+
 /**
  *
  * @author brox
@@ -75,13 +77,31 @@ public class Utils {
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
 
-            // Add SunriseSunset library
-            cfg.addImport("ca.rmen.sunrisesunset.*");
-            // Add Single row function for getSunriseSunset
+            // Add perseo-utils library
+            cfg.addImport("com.telefonica.iot.perseo.utils.*");
+
+            // Add Single row function for perseo-utils functions
             try {
-                cfg.addPlugInSingleRowFunction("getSunriseSunset",
-                                               "ca.rmen.sunrisesunset.SunriseSunset",
-                                               "getSunriseSunset");
+
+                cfg.addPlugInSingleRowFunction("getNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunise");
+                cfg.addPlugInSingleRowFunction("getNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunset");
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunise");
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunset");
+                cfg.addPlugInSingleRowFunction("dateToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "dateToUTC");
+                cfg.addPlugInSingleRowFunction("timeToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "timeToUTC");
+
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }
