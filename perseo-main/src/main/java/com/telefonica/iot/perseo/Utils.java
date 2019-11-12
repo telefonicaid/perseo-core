@@ -85,13 +85,13 @@ public class Utils {
 
                 cfg.addPlugInSingleRowFunction("getNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getNextSunise");
+                        "getNextSunrise");
                 cfg.addPlugInSingleRowFunction("getNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getNextSunset");
                 cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getMilisToNextSunise");
+                        "getMilisToNextSunrise");
                 cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getMilisToNextSunset");
