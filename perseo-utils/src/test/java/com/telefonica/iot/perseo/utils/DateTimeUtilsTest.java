@@ -57,25 +57,27 @@ public class DateTimeUtilsTest extends TestCase {
     /**
      * Test get milis to next sunrise
      * Calculates milliseconds to next sunrise considering current date
-     * Is successful if the resoult is less than 24 hrs
+     * Is successful if the resoult is less than 24 hrs (86400000 milliseconds)
      */
     public void testGetMilisToNextSunrise() {
         System.out.println("getMilisToNextSunrise");
+        long dayToMilis = 86400000;
         Calendar calendar = Calendar.getInstance();
         long nextSunrise = DateTimeUtils.getMilisToNextSunrise(calendar, 40.4131699, -3.6830699);
-        assertTrue(nextSunrise < 86400000);
+        assertTrue(nextSunrise < dayToMilis);
     }
 
     /**
      * Test get milis to next sunset.
      * Calculates milliseconds to next sunset considering current date
-     * Is successful if the resoult is less than 24 hrs
+     * Is successful if the resoult is less than 24 hrs (86400000 milliseconds)
      */
     public void testGetMilisToNextSunset() {
         System.out.println("getMilisToNextSunset");
+        long dayToMilis = 86400000;
         Calendar calendar = Calendar.getInstance();
         long nextSunset = DateTimeUtils.getMilisToNextSunset(calendar, 40.4131699, -3.6830699);
-        assertTrue(nextSunset < 86400000);
+        assertTrue(nextSunset < dayToMilis);
     }
 
     /**
