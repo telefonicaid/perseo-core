@@ -49,7 +49,7 @@ public class DateTimeUtils {
     public static Calendar getNextSunrise(Calendar day, double latitude, double longitude) {
         Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
         Calendar day2 = (Calendar) day.clone();
-        if (sunriseSunset[0].get(Calendar.HOUR_OF_DAY) < day.get(Calendar.HOUR_OF_DAY)) {
+        if (sunriseSunset[0].compareTo(day) < 0) {
             day2.add(Calendar.DATE, 1);
             sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
         }
@@ -70,7 +70,7 @@ public class DateTimeUtils {
     public static Calendar getNextSunset(Calendar day, double latitude, double longitude) {
         Calendar[] sunriseSunset = SunriseSunset.getSunriseSunset(day, latitude, longitude);
         Calendar day2 = (Calendar) day.clone();
-        if (sunriseSunset[1].get(Calendar.HOUR_OF_DAY) < day.get(Calendar.HOUR_OF_DAY)) {
+        if (sunriseSunset[1].compareTo(day) < 0) {
             day2.add(Calendar.DATE, 1);
             sunriseSunset = SunriseSunset.getSunriseSunset(day2, latitude, longitude);
         }
