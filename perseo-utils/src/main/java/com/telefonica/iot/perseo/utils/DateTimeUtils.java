@@ -89,8 +89,8 @@ public class DateTimeUtils {
      * @return the milis to next sunrise
      */
     public static long getMilisToNextSunrise(Calendar day, double latitude, double longitude) {
-        Calendar sunriseSunset = getNextSunrise(day, latitude, longitude);
-        return sunriseSunset.getTimeInMillis();
+        Calendar sunriseSunrise = getNextSunrise(day, latitude, longitude);
+        return (sunriseSunrise.getTimeInMillis() - day.getTimeInMillis());
     }
 
     /**
@@ -106,7 +106,7 @@ public class DateTimeUtils {
      */
     public static long getMilisToNextSunset(Calendar day, double latitude, double longitude) {
         Calendar sunriseSunset = getNextSunset(day, latitude, longitude);
-        return sunriseSunset.getTimeInMillis();
+        return (sunriseSunset.getTimeInMillis() - day.getTimeInMillis());
     }
 
     /**
