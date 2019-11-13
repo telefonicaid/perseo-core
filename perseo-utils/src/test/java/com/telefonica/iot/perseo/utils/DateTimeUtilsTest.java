@@ -30,6 +30,12 @@ import java.util.Date;
  */
 public class DateTimeUtilsTest extends TestCase {
 
+    public final double LATITUDE = 40.4131699;
+
+    public final double LONGITUDE = -3.6830699;
+
+    public final long DAYTOMILIS = 86400000;
+
     /**
      * Test get next sunrise.
      * Calculates next sunrise and compares it to current date.
@@ -38,7 +44,7 @@ public class DateTimeUtilsTest extends TestCase {
     public void testGetNextSunrise() {
         System.out.println("getNextSunrise");
         Calendar calendar = Calendar.getInstance();
-        Calendar nextSunrise = DateTimeUtils.getNextSunrise(calendar, 40.4131699, -3.6830699);
+        Calendar nextSunrise = DateTimeUtils.getNextSunrise(calendar, LATITUDE, LONGITUDE);
         assertTrue(calendar.compareTo(nextSunrise) < 0);
     }
 
@@ -50,7 +56,7 @@ public class DateTimeUtilsTest extends TestCase {
     public void testGetNextSunset() {
         System.out.println("getNextSunset");
         Calendar calendar = Calendar.getInstance();
-        Calendar nextSunset = DateTimeUtils.getNextSunset(calendar, 40.4131699, -3.6830699);
+        Calendar nextSunset = DateTimeUtils.getNextSunset(calendar, LATITUDE, LONGITUDE);
         assertTrue(calendar.compareTo(nextSunset) < 0);
     }
 
@@ -61,10 +67,9 @@ public class DateTimeUtilsTest extends TestCase {
      */
     public void testGetMilisToNextSunrise() {
         System.out.println("getMilisToNextSunrise");
-        long dayToMilis = 86400000;
         Calendar calendar = Calendar.getInstance();
-        long nextSunrise = DateTimeUtils.getMilisToNextSunrise(calendar, 40.4131699, -3.6830699);
-        assertTrue(nextSunrise < dayToMilis);
+        long nextSunrise = DateTimeUtils.getMilisToNextSunrise(calendar, LATITUDE, LONGITUDE);
+        assertTrue(nextSunrise < DAYTOMILIS);
     }
 
     /**
@@ -74,10 +79,9 @@ public class DateTimeUtilsTest extends TestCase {
      */
     public void testGetMilisToNextSunset() {
         System.out.println("getMilisToNextSunset");
-        long dayToMilis = 86400000;
         Calendar calendar = Calendar.getInstance();
-        long nextSunset = DateTimeUtils.getMilisToNextSunset(calendar, 40.4131699, -3.6830699);
-        assertTrue(nextSunset < dayToMilis);
+        long nextSunset = DateTimeUtils.getMilisToNextSunset(calendar, LATITUDE, LONGITUDE);
+        assertTrue(nextSunset < DAYTOMILIS);
     }
 
     /**
