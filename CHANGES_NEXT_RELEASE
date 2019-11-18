@@ -3,3 +3,4 @@ Perseo-core used as parent module.
 Refactorized perseo-core into perseo-main.
 Removed SunriseSunset library from perseo-main. Now is attached to perseo-utils.
 Add perseo-utils library import into Esper.
+Disable cache from imported functions used as EPL.

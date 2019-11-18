@@ -20,12 +20,8 @@
 */
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.ConfigurationOperations;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.ConfigurationException;
+import com.espertech.esper.client.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,22 +81,22 @@ public class Utils {
 
                 cfg.addPlugInSingleRowFunction("getNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getNextSunrise");
+                        "getNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
                 cfg.addPlugInSingleRowFunction("getNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getNextSunset");
+                        "getNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
                 cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getMilisToNextSunrise");
+                        "getMilisToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
                 cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getMilisToNextSunset");
+                        "getMilisToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
                 cfg.addPlugInSingleRowFunction("dateToUTC",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "dateToUTC");
+                        "dateToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
                 cfg.addPlugInSingleRowFunction("timeToUTC",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "timeToUTC");
+                        "timeToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
 
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
