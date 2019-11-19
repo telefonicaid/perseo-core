@@ -134,12 +134,15 @@ public class DateTimeUtils {
      * @return hours on UTC format
      */
 
-    public static String timeToUTC(String time, String timeZone) {
-        String isoDate = "2019-11-20T" + time + ":43:01";
-        LocalDateTime isoDateLDT = LocalDateTime.parse(isoDate);
-        ZonedDateTime isoDateZLDT = isoDateLDT.atZone(ZoneId.of(timeZone));
+    public static int timeToUTC(int time, String timeZone) {
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDateTime.now().getYear(),
+                LocalDateTime.now().getMonth(),
+                LocalDateTime.now().getDayOfMonth()+1,
+                time,
+                LocalDateTime.now().getMinute());
+        ZonedDateTime isoDateZLDT = localDateTime.atZone(ZoneId.of(timeZone));
         Calendar dayTimeZoned = dateToUTC(String.valueOf(isoDateZLDT));
-        return String.valueOf(dayTimeZoned.get(Calendar.HOUR));
+        return dayTimeZoned.get(Calendar.HOUR);
     }
 
 }
