@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import com.espertech.esper.client.Configuration;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -62,9 +63,11 @@ public class Utils {
      * @return the initialized EPServiceProvider
      */
     public static synchronized EPServiceProvider initEPService(ServletContext sc) {
+        Configuration configuration = new Configuration();
+        configuration.getEngineDefaults().getExpression().setUdfCache(false);
         EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
-            epService = EPServiceProviderManager.getDefaultProvider();
+            epService = EPServiceProviderManager.getDefaultProvider(configuration);
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
