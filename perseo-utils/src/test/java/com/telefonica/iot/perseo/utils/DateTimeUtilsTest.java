@@ -103,9 +103,9 @@ public class DateTimeUtilsTest extends TestCase {
      */
     public void testTimeToUTC() {
         System.out.println("timeToUTC");
-        String hour = "10";
+        int hour = 10;
         String timeZone = "CET";
-        String hourUTC = DateTimeUtils.timeToUTC(hour, timeZone);
-        assertTrue(Integer.parseInt(hourUTC) == 9);
+        int hourUTC = DateTimeUtils.timeToUTC(hour, timeZone);
+        assertTrue(hourUTC == 9);
     }
 }
