@@ -4,7 +4,7 @@
 
     <groupId>com.telefonica.iot</groupId>
     <artifactId>perseo-core</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.4.0</version>
     <packaging>war</packaging>
 
     <name>perseo-core</name>
@@ -25,6 +25,13 @@
         <sonar.language>java</sonar.language>
         <sonar.dynamic>reuseReports</sonar.dynamic>
     </properties>
+
+    <repositories>
+      <repository>
+        <id>caarmen-repo</id>
+        <url>https://dl.bintray.com/caarmen/maven/</url>
+      </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -60,7 +67,7 @@
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper</artifactId>
-            <version>6.1.0</version>
+            <version>7.1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -68,10 +75,11 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-		    <groupId>org.owasp.encoder</groupId>
-		    <artifactId>encoder</artifactId>
-		    <version>1.2.2</version>
-		</dependency>
+          <groupId>ca.rmen</groupId>
+          <artifactId>lib-sunrise-sunset</artifactId>
+          <version>1.1.1</version>
+          <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
