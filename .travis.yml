@@ -31,7 +31,6 @@ jdk:
 branches:
   only:
     - fiqare-perseo-core-improvements
-
 install:
   - mvn test -B
 
