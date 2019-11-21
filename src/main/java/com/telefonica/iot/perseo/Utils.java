@@ -25,6 +25,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
+import com.espertech.esper.client.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +74,17 @@ public class Utils {
             def.put(Constants.SERVICE_FIELD, String.class);
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
+
+            // Add SunriseSunset library
+            cfg.addImport("ca.rmen.sunrisesunset.*");
+            // Add Single row function for getSunriseSunset
+            try {
+                cfg.addPlugInSingleRowFunction("getSunriseSunset",
+                                               "ca.rmen.sunrisesunset.SunriseSunset",
+                                               "getSunriseSunset");
+            } catch (ConfigurationException e) {
+                logger.error(e.getMessage());
+            }
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
         }
         return epService;
