@@ -36,6 +36,8 @@ public class DateTimeUtilsTest extends TestCase {
 
     public final long DAYTOMILIS = 86400000;
 
+    public final long SECONDTOMILIS = 1000;
+
     /**
      * Test get next sunrise.
      * Calculates next sunrise and compares it to current date.
@@ -82,6 +84,30 @@ public class DateTimeUtilsTest extends TestCase {
         Calendar calendar = Calendar.getInstance();
         long nextSunset = DateTimeUtils.getMilisToNextSunset(calendar, LATITUDE, LONGITUDE);
         assertTrue(nextSunset < DAYTOMILIS);
+    }
+
+    /**
+     * Test get milis to next sunrise
+     * Calculates milliseconds to next sunrise considering current date
+     * Is successful if the resoult is less than 24 hrs (86400000 milliseconds)
+     */
+    public void testGetSecondsToNextSunrise() {
+        System.out.println("getSecondsToNextSunrise");
+        Calendar calendar = Calendar.getInstance();
+        long nextSunrise = DateTimeUtils.getSecondsToNextSunrise(calendar, LATITUDE, LONGITUDE);
+        assertTrue(nextSunrise < (DAYTOMILIS + SECONDTOMILIS));
+    }
+
+    /**
+     * Test get milis to next sunset.
+     * Calculates milliseconds to next sunset considering current date
+     * Is successful if the resoult is less than 24 hrs (86400000 milliseconds)
+     */
+    public void testGetSecondsToNextSunset() {
+        System.out.println("getSecondsToNextSunset");
+        Calendar calendar = Calendar.getInstance();
+        long nextSunset = DateTimeUtils.getSecondsToNextSunset(calendar, LATITUDE, LONGITUDE);
+        assertTrue(nextSunset < (DAYTOMILIS + SECONDTOMILIS));
     }
 
     /**

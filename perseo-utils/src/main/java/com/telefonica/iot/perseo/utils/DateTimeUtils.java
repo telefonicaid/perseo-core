@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The type Date time utils.
@@ -91,6 +92,44 @@ public class DateTimeUtils {
     public static long getMilisToNextSunrise(Calendar day, double latitude, double longitude) {
         Calendar sunriseSunrise = getNextSunrise(day, latitude, longitude);
         return (sunriseSunrise.getTimeInMillis() - day.getTimeInMillis());
+    }
+
+    /**
+     * Gets seconds to next sunset.
+     * It calculates next sunset considering provided date and time
+     * If date and time provided is older than sunset it adds +1 day to date and calculates again
+     * Finally, tunrns result into seconds
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the seconds to next sunset
+     */
+    public static long getSecondsToNextSunset(Calendar day, double latitude, double longitude) {
+        long sunriseSunset = getMilisToNextSunset(day, latitude, longitude);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(sunriseSunset);
+        if ((seconds*1000) < sunriseSunset)
+            seconds += 1;
+        return seconds;
+    }
+
+    /**
+     * Gets seconds to next sunrise.
+     * It calculates next sunrise considering provided date and time
+     * If date and time provided is older than sunrise it adds +1 day to date and calculates again
+     * Finally, tunrns result into seconds
+     *
+     * @param day       the day Calendar object on ISO format
+     * @param latitude  the latitude
+     * @param longitude the longitude
+     * @return the seconds to next sunrise
+     */
+    public static long getSecondsToNextSunrise(Calendar day, double latitude, double longitude) {
+        long sunriseSunset = getMilisToNextSunrise(day, latitude, longitude);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(sunriseSunset);
+        if ((seconds*1000) < sunriseSunset)
+            seconds += 1;
+        return seconds;
     }
 
     /**
