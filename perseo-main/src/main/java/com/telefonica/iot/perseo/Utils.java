@@ -100,7 +100,12 @@ public class Utils {
                 cfg.addPlugInSingleRowFunction("timeToUTC",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "timeToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-
+                cfg.addPlugInSingleRowFunction("getSecondsToNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getSecondsToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getSecondsToNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getSecondsToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }
