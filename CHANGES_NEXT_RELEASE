@@ -2,6 +2,6 @@ Project detached into maven modules.
 Perseo-core used as parent module.
 Refactorized perseo-core into perseo-main.
 Removed SunriseSunset library from perseo-main. Now is attached to perseo-utils.
-Add perseo-utils library import into Esper.
+Add perseo-utils library (date time utility functions) into Esper. 
 Disable cache from imported functions used as EPL.
 Disable cache on EPServiceProvider setup.
