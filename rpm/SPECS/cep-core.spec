@@ -102,7 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-main.war
 
 %changelog
-* Mon Dec 19 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.5.0
+* Mon Dec 16 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.5.0
 - Project detached into maven modules (Perseo-core used as parent module)
 - Add: perseo-utils library (date time utility functions) into Esper
 - Fix: refactorized perseo-core into perseo-main
