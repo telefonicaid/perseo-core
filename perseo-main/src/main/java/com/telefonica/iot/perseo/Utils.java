@@ -20,12 +20,8 @@
 */
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.ConfigurationOperations;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.ConfigurationException;
+import com.espertech.esper.client.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,11 +37,14 @@ import java.util.Map;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import com.espertech.esper.client.Configuration;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import com.telefonica.iot.perseo.utils.DateTimeUtils;
 
 /**
  *
@@ -64,9 +63,11 @@ public class Utils {
      * @return the initialized EPServiceProvider
      */
     public static synchronized EPServiceProvider initEPService(ServletContext sc) {
+        Configuration configuration = new Configuration();
+        configuration.getEngineDefaults().getExpression().setUdfCache(false);
         EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
-            epService = EPServiceProviderManager.getDefaultProvider();
+            epService = EPServiceProviderManager.getDefaultProvider(configuration);
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
@@ -75,13 +76,36 @@ public class Utils {
             ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             cfg.addEventType(Constants.IOT_EVENT, def);
 
-            // Add SunriseSunset library
-            cfg.addImport("ca.rmen.sunrisesunset.*");
-            // Add Single row function for getSunriseSunset
+            // Add perseo-utils library
+            cfg.addImport("com.telefonica.iot.perseo.utils.*");
+
+            // Add Single row function for perseo-utils functions
             try {
-                cfg.addPlugInSingleRowFunction("getSunriseSunset",
-                                               "ca.rmen.sunrisesunset.SunriseSunset",
-                                               "getSunriseSunset");
+
+                cfg.addPlugInSingleRowFunction("getNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getMilisToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("dateToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "dateToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("timeToUTC",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "timeToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getSecondsToNextSunset",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getSecondsToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfg.addPlugInSingleRowFunction("getSecondsToNextSunrise",
+                        "com.telefonica.iot.perseo.utils.DateTimeUtils",
+                        "getSecondsToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }

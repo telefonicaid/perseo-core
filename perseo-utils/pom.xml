@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+
+     Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
+
+     This file is part of perseo-core
+
+     perseo-core is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+     General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+     option) any later version.
+     perseo-core is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+     for more details.
+
+     You should have received a copy of the GNU Affero General Public License along with perseo-core. If not, see
+     http://www.gnu.org/licenses/.
+
+     For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
+
+     -->
+    <parent>
+        <artifactId>perseo-core</artifactId>
+        <groupId>com.telefonica.iot</groupId>
+        <version>1.5.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>perseo-utils</artifactId>
+
+    <repositories>
+        <repository>
+            <id>caarmen-repo</id>
+            <url>https://dl.bintray.com/caarmen/maven/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>ca.rmen</groupId>
+            <artifactId>lib-sunrise-sunset</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>
