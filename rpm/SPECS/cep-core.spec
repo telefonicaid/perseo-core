@@ -102,6 +102,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-main.war
 
 %changelog
+* Mon Dec 16 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.5.0
+- Project detached into maven modules (Perseo-core used as parent module)
+- Add: perseo-utils library (date time utility functions) into Esper
+- Fix: refactorized perseo-core into perseo-main
+- Fix: Removed SunriseSunset library from perseo-main. Now is attached to perseo-utils
+- Fix: Disable cache from imported functions used as EPL
+- Fix: Disable cache on EPServiceProvider setup
+
 * Tue Oct 29 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.4.0
 - Add library (lib-sunrise-sunset 1.1.1) to retrieve sunset and sunrise (#130)
 - Fix use openjdk8 oficial instead unofficial openjdk after bug in official openjdk-8-jdk was fixed
