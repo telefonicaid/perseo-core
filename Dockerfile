@@ -24,16 +24,16 @@ WORKDIR /code
 
 # Prepare by downloading dependencies
 ADD pom.xml /code/pom.xml
-ADD src /code/src
+ADD perseo-main /code/perseo-main/
+ADD perseo-utils /code/perseo-utils/
 ADD perseo_core-entrypoint.sh /code
 
 RUN apt-get update && \
     apt-get install -y maven openjdk-8-jdk && \
-    mvn dependency:resolve && \
-    mvn verify && \
+    mvn install && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
-    cp target/perseo-core-*.war /usr/local/tomcat/webapps/perseo-core.war && \
+    cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mvn clean && \
     apt-get remove -y openjdk-8-jdk && \
     apt-get clean && \
