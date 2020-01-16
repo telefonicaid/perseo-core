@@ -67,7 +67,7 @@ public class LogLevelServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-        	String levelName = request.getParameter("level");
+            String levelName = request.getParameter("level");
             logger.info(String.format("changing log level to %s",levelName));
             Level level = levels.get(levelName);
             if (level == null) {
@@ -82,7 +82,7 @@ public class LogLevelServlet extends HttpServlet {
                 LogManager.getRootLogger().setLevel(level);
             }
             response.setStatus(HttpServletResponse.SC_OK);      
-        }catch(IOException e) {
+        } catch (IOException e) {
         	logger.error("IOException in log level");
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         	return;
@@ -109,10 +109,10 @@ public class LogLevelServlet extends HttpServlet {
 	            response.setContentType("application/json");
 	            response.setStatus(HttpServletResponse.SC_OK);
 	            response.getOutputStream().print(String.format("{\"level\":\"%s\"}",Encode.forHtmlContent(currentLevel)));
-        	}catch(IOException e) {
-	         	logger.error("IOException in log level");
-	         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	         	return;
+            } catch (IOException e) {
+                logger.error("IOException in log level");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
             }
 
         }

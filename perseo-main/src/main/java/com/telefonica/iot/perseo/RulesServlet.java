@@ -91,11 +91,10 @@ public class RulesServlet extends HttpServlet {
             ruleName = ruleName == null ? "/" : ruleName;
             Result r = RulesManager.get(epService, ruleName.substring(1));
             response.setStatus(r.getStatusCode());
-            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));
-           
-        }catch(Exception je) {        				
-			logger.error(String.format("error: %s" ,je));
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage())); 
+        } catch (Exception je) {        				
+            logger.error(String.format("error: %s" ,je));
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
     }
@@ -115,18 +114,17 @@ public class RulesServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         try {
-			
 			String body = Utils.getBodyAsString(request);
-			
-			// Save temporary rules, not triggered by events external to the core
-			TimeRulesStore.getInstance().saveTimeRules(body);
-			
-			Result r = RulesManager.make(epService, body);
-			response.setStatus(r.getStatusCode());
-			response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));			
-        }catch(Exception je) {        				
-			logger.error(String.format("error: %s" ,je));
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+            // Save temporary rules, not triggered by events external to the core
+            TimeRulesStore.getInstance().saveTimeRules(body);
+
+            Result r = RulesManager.make(epService, body);
+            response.setStatus(r.getStatusCode());
+            response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));			
+        } catch (Exception je) {        				
+            logger.error(String.format("error: %s" ,je));
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
     }
@@ -155,7 +153,7 @@ public class RulesServlet extends HttpServlet {
             Result r = RulesManager.updateAll(epService, body);
             response.setStatus(r.getStatusCode());
             response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));           
-        }catch(Exception je) {        				
+        } catch (Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
         }
@@ -197,7 +195,7 @@ public class RulesServlet extends HttpServlet {
 
             response.setStatus(r.getStatusCode());
             response.getOutputStream().print(r.getMessage());           
-        }catch(Exception je) {        				
+        } catch (Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         	   
