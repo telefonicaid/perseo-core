@@ -96,8 +96,6 @@ public class EventsServlet extends HttpServlet {
             } catch (IOException exception) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }           
-
-
         }
     }
 

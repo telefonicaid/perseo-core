@@ -65,7 +65,7 @@ public class GenericListenerTest {
      */
     @Test
     public void testUpdate() {
-    	logger.info("update");
+        logger.info("update");
         EventBean[] newEvents = new EventBean[0];
         EventBean[] oldEvents = new EventBean[0];
         GenericListener instance = new GenericListener();
@@ -83,7 +83,7 @@ public class GenericListenerTest {
      */
     @Test
     public void testUpdateTimerRule() {
-    	logger.info("update with timed rule");
+        logger.info("update with timed rule");
         // Add RuleTest in TimeRulesStore Singleton
         TimeRulesStore tRInfoInstance = TimeRulesStore.getInstance();
         tRInfoInstance.cleanAllRules();

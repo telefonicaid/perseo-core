@@ -65,7 +65,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoGet() throws Exception {
-    	logger.info("doGet");
+        logger.info("doGet");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -86,7 +86,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPost() throws Exception {
-    	logger.info("doPost");
+        logger.info("doPost");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -114,7 +114,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPut() throws Exception {
-    	logger.info("doPut");
+        logger.info("doPut");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -142,7 +142,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoPutLongSet() throws Exception {
-    	logger.info("doPutLongSet");
+        logger.info("doPutLongSet");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {
@@ -162,7 +162,7 @@ public class RulesServletTest {
      */
     @Test
     public void testDoDelete() throws Exception {
-    	logger.info("doDelete");
+        logger.info("doDelete");
         Server server = Help.getServer(RulesServlet.class);
         server.start();
         try {

@@ -65,7 +65,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutOK() throws Exception {
-    	logger.info("doPut log level valid");
+        logger.info("doPut log level valid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {
@@ -87,7 +87,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutBad() throws Exception {
-    	logger.info("doPut log level invalid");
+        logger.info("doPut log level invalid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {

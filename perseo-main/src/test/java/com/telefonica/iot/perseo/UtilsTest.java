@@ -78,7 +78,7 @@ public class UtilsTest {
      */
     @Test
     public void testInitEPService() {
-    	logger.info("initEPService");
+        logger.info("initEPService");
         ServletContext sc = new ServletContextMock();
         EPServiceProvider result = Utils.initEPService(sc);
         assertEquals(sc.getAttribute("epService"), result);
@@ -93,7 +93,7 @@ public class UtilsTest {
      */
     @Test
     public void testDestroyEPService() {
-    	logger.info("destroyEPService");
+        logger.info("destroyEPService");
         ServletContextMock sc = new ServletContextMock();
         //Empty sc
         Utils.destroyEPService(sc);
@@ -109,7 +109,7 @@ public class UtilsTest {
      */
     @Test
     public void testJSONObject2Map() {
-    	logger.info("JSONObject2Map");
+        logger.info("JSONObject2Map");
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
@@ -123,7 +123,7 @@ public class UtilsTest {
      */
     @Test
     public void testEvent2JSONObject() {
-    	logger.info("Event2JSONObject");
+        logger.info("Event2JSONObject");
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
@@ -163,7 +163,7 @@ public class UtilsTest {
      */
     @Test
     public void testDoHTTPPost() {
-    	logger.info("DoHTTPPost");
+        logger.info("DoHTTPPost");
         InetSocketAddress address = new InetSocketAddress(Help.PORT);
         HttpServer httpServer = null;
         try {
@@ -190,7 +190,7 @@ public class UtilsTest {
             assertEquals(false, result);
 
         } catch (IOException ex) {
-        	logger.error(ex.toString());
+            logger.error(ex.toString());
             fail(ex.toString());
         } finally {
             if (httpServer != null) {

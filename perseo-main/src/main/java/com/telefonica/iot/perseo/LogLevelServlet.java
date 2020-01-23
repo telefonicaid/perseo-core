@@ -103,12 +103,12 @@ public class LogLevelServlet extends HttpServlet {
             throws ServletException, IOException {
         logger.debug("getting log level");
         synchronized (mutex) {
-        	 try {
-	            String currentLevel = LogManager.getRootLogger().getLevel().toString();
-	            response.setCharacterEncoding("UTF-8");
-	            response.setContentType("application/json");
-	            response.setStatus(HttpServletResponse.SC_OK);
-	            response.getOutputStream().print(String.format("{\"level\":\"%s\"}",Encode.forHtmlContent(currentLevel)));
+             try {
+                String currentLevel = LogManager.getRootLogger().getLevel().toString();
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getOutputStream().print(String.format("{\"level\":\"%s\"}",Encode.forHtmlContent(currentLevel)));
             } catch (IOException e) {
                 logger.error("IOException in log level");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

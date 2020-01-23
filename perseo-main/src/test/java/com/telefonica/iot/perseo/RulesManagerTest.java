@@ -79,7 +79,7 @@ public class RulesManagerTest {
      */
     @Test
     public void testGet() {
-    	logger.info("get");
+        logger.info("get");
         String ruleName = "ccc";
         String epl = Help.ExampleRules()[0];
         EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
@@ -96,7 +96,7 @@ public class RulesManagerTest {
      */
     @Test
     public void testMake() {
-    	logger.info("make");
+        logger.info("make");
         String ruleName = "ccc";
         String epl = Help.ExampleRules()[0];
         String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
@@ -113,7 +113,7 @@ public class RulesManagerTest {
      */
     @Test
     public void testUpdateAll() {
-    	logger.info("updateAll");
+        logger.info("updateAll");
         String ruleName = "ccc";
         String epl = Help.ExampleRules()[0];
         String text = String.format("[{\"name\":\"%s\",\"text\":\"%s\"}]", ruleName, epl);
@@ -133,7 +133,7 @@ public class RulesManagerTest {
      */
     @Test
     public void testDelete() {
-    	logger.info("delete");
+        logger.info("delete");
         String ruleName = "ccc";
         String epl = Help.ExampleRules()[0];
         EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);

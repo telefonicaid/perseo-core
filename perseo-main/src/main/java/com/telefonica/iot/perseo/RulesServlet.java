@@ -114,7 +114,7 @@ public class RulesServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         try {
-			String body = Utils.getBodyAsString(request);
+            String body = Utils.getBodyAsString(request);
 
             // Save temporary rules, not triggered by events external to the core
             TimeRulesStore.getInstance().saveTimeRules(body);
@@ -143,8 +143,7 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        try {
-        	
+        try {    	
             String body = Utils.getBodyAsString(request);
 
             // Save timed rules, which are not activated by events external to the core
@@ -154,11 +153,9 @@ public class RulesServlet extends HttpServlet {
             response.setStatus(r.getStatusCode());
             response.getOutputStream().print(Encode.forHtmlContent(r.getMessage()));           
         } catch (Exception je) {        				
-			logger.error(String.format("error: %s" ,je));
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
+            logger.error(String.format("error: %s" ,je));
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);        	   
         }
-
-
     }
 
     /**
@@ -175,9 +172,7 @@ public class RulesServlet extends HttpServlet {
         Utils.putCorrelatorAndTrans(request);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        
-        try {
-        	
+        try {	
             logger.info(String.format("delete rule %s", request.getPathInfo()));
             //request.getPathInfo() returns null or the extra path information
             //that follows the servlet path but precedes the query string and will
@@ -198,7 +193,6 @@ public class RulesServlet extends HttpServlet {
         } catch (Exception je) {        				
 			logger.error(String.format("error: %s" ,je));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        	   
         }
 
     }

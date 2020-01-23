@@ -62,7 +62,7 @@ public class EventsServletTest {
      */
     @Test
     public void testDoPost() throws Exception {
-    	logger.info("doPost");
+        logger.info("doPost");
         Server server = Help.getServer(EventsServlet.class);
         server.start();
         try {
