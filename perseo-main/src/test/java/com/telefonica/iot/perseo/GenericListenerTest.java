@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author brox
  */
 public class GenericListenerTest {
-	private static final Logger logger = LoggerFactory.getLogger(GenericListenerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericListenerTest.class);
     public GenericListenerTest() {
     }
 

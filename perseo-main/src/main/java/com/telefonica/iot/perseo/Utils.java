@@ -81,7 +81,6 @@ public class Utils {
 
             // Add Single row function for perseo-utils functions
             try {
-
                 cfg.addPlugInSingleRowFunction("getNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
                         "getNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);

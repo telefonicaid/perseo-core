@@ -39,7 +39,7 @@ import org.json.JSONObject;
  * @author brox
  */
 public class RulesServletTest {
-	private static final Logger logger = LoggerFactory.getLogger(RulesServletTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RulesServletTest.class);
     public RulesServletTest() {
     }
 
@@ -95,7 +95,7 @@ public class RulesServletTest {
             jr.put("name", "test doPost rule");
             jr.put("text", Help.ExampleRules()[0]);
             Help.Res r = Help.sendPost(url, jr.toString(2));
-            assertEquals(200,r.getCode());
+            assertEquals(200, r.getCode());
             jr.remove("name");
             r = Help.sendPost(url, jr.toString(2));
             assertEquals(400, r.getCode());

@@ -19,11 +19,11 @@ Being this rule working
 @Audit
 select *,"blood_1_action" as iotcepaction,
     ev.BloodPressure? as Pression,
-	ev.id? as Meter
+    ev.id? as Meter
 from pattern [
     every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5
-	and type="BloodMeter")
-	]
+    and type="BloodMeter")
+    ]
 ```
 and sending an event
 ```JSON

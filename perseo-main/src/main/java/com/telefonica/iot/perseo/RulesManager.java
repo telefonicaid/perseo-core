@@ -52,8 +52,7 @@ public class RulesManager {
      * @return Result object with a code and a JSON response
      */
     public static synchronized Result get(EPServiceProvider epService, String ruleName) {
-        try {
-            
+        try {  
             logger.debug(String.format("rule asked for: %s", ruleName));
             ruleName = ruleName == null ? "" : ruleName;
             EPAdministrator epa = epService.getEPAdministrator();
@@ -98,7 +97,6 @@ public class RulesManager {
      */
     public static synchronized Result make(EPServiceProvider epService, String text) {
         try {
-
             logger.debug(String.format("rule text: %s", text));
             org.json.JSONObject jo = new JSONObject(text);
 
@@ -254,7 +252,6 @@ public class RulesManager {
      */
     public static synchronized Result delete(EPServiceProvider epService, String ruleName) {
         try {
-
             ruleName = ruleName == null ? "" : ruleName;
             logger.debug(String.format("delete rule: %s" ,ruleName));
             EPAdministrator epa = epService.getEPAdministrator();

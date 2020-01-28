@@ -83,11 +83,11 @@ public class LogLevelServlet extends HttpServlet {
             }
             response.setStatus(HttpServletResponse.SC_OK);      
         } catch (IOException e) {
-        	logger.error("IOException in log level");
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        	return;
+            logger.error("IOException in log level");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
-    	
+        
     }
 
     /**

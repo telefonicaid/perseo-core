@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 public class TimeRulesStoreTest {
 
     private TimeRulesStore instance = TimeRulesStore.getInstance();
-    private static final Logger LOGGER = LoggerFactory.getLogger(TimeRulesStoreTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimeRulesStoreTest.class);
     
     public TimeRulesStoreTest() {
     }
@@ -133,7 +133,6 @@ public class TimeRulesStoreTest {
         body2.put("text", ruleText2);
         instance.saveTimeRules(body2.toString());
 
-
         HashMap<String, JSONObject> result1 = instance.getAllRulesInfo();
         assertEquals(2, result1.size());
 
@@ -177,5 +176,3 @@ public class TimeRulesStoreTest {
         assertEquals(0, result.size());
     }
 }
-
-

@@ -53,7 +53,7 @@ import static org.junit.Assert.*;
  * @author brox
  */
 public class UtilsTest {
-	private static final Logger logger = LoggerFactory.getLogger(UtilsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UtilsTest.class);
     public UtilsTest() {
     }
 
@@ -85,7 +85,6 @@ public class UtilsTest {
         //Do not create a new one if it already exists
         EPServiceProvider result2 = Utils.initEPService(sc);
         assertEquals(result, result2);
-
     }
 
     /**
@@ -197,7 +196,6 @@ public class UtilsTest {
                 httpServer.stop(0);
             }
         }
-
     }
 
     /**
@@ -205,7 +203,6 @@ public class UtilsTest {
      */
     @Test
     public void testURLValidator() {
-
         assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
         assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
     }

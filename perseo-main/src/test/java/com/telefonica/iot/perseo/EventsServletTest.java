@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * @author brox
  */
 public class EventsServletTest {
-	private static final Logger logger = LoggerFactory.getLogger(EventsServletTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventsServletTest.class);
     public EventsServletTest() {
     }
 

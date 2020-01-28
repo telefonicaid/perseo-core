@@ -54,7 +54,6 @@ public class RulesManagerTest {
         def.put(Constants.SERVICE_FIELD, String.class);
         ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
         cfg.addEventType("iotEvent", def);
-
     }
 
     @BeforeClass
@@ -125,7 +124,6 @@ public class RulesManagerTest {
         EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
         assertEquals(epl, st.getText());
         assertEquals(ruleName, st.getName());
-
     }
 
     /**
@@ -143,5 +141,4 @@ public class RulesManagerTest {
         EPStatement st2 = epService.getEPAdministrator().getStatement(ruleName);
         assertEquals(null, st2);
     }
-
 }

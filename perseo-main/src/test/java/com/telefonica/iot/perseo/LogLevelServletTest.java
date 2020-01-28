@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
  * @author brox
  */
 public class LogLevelServletTest {
-	
-	private static final Logger logger = LoggerFactory.getLogger(LogLevelServletTest.class);
+    
+    private static final Logger logger = LoggerFactory.getLogger(LogLevelServletTest.class);
     public LogLevelServletTest() {
     }
 

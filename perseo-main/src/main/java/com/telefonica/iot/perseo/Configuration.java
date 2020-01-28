@@ -47,7 +47,7 @@ public final class Configuration {
     private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
 
     private static final Properties PROPERTIES = new Properties();
-    private static final String PATH = ResourceBundle.getBundle("perseo-core").getString("properties.path");
+    private static final String PATH = "/etc/perseo-core.properties";
     private static final String ACTION_URL_PROP = "action.url";
     private static final String MAX_AGE_PROP = "rule.max_age";
 
@@ -69,7 +69,7 @@ public final class Configuration {
         InputStream stream;
         String defaultMaxAge;
         String defaultURL;
-        String actionPath = ResourceBundle.getBundle("perseo-core").getString("action.path");
+        String actionPath = "/actions/do";
 
         // Check configuration file. If exist, set as default configuration for perseo-core
         try {

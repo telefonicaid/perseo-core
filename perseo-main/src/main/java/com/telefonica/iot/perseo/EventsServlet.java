@@ -78,7 +78,7 @@ public class EventsServlet extends HttpServlet {
         logger.debug("events doPost");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");        
-        try {        	
+        try {
             String eventText = Utils.getBodyAsString(request);
             logger.info(String.format("incoming event: %s", eventText));
             org.json.JSONObject jo = new JSONObject(eventText);
@@ -89,10 +89,10 @@ public class EventsServlet extends HttpServlet {
 
             logger.debug(String.format("event was sent: %s", eventMap));
         } catch (Exception je) {
-        	try {        		
+            try {
                 logger.error(String.format("error: %s" ,je));
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getOutputStream().print(String.format("{\"error\":\"%s\"}%n", Encode.forHtmlContent(je.getMessage())));        		
+                response.getOutputStream().print(String.format("{\"error\":\"%s\"}%n", Encode.forHtmlContent(je.getMessage())));
             } catch (IOException exception) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }           

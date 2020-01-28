@@ -1,11 +1,11 @@
 digraph perseocore {
-	rankdir=LR
+    rankdir=LR
     node [fontname = "arial"];
     perseo[shape=circle, style=dashed];
-	core[label=" core ", shape=circle];
+    core[label=" core ", shape=circle];
 
-	perseo->core[label="rule"]
-	perseo->core[label="event"]
-	core->perseo[label="action"]
+    perseo->core[label="rule"]
+    perseo->core[label="event"]
+    core->perseo[label="action"]
 
  }
