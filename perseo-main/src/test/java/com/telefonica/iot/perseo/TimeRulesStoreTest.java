@@ -72,7 +72,7 @@ public class TimeRulesStoreTest {
 
         HashMap<String, JSONObject> emptyHasmap = new HashMap<String, JSONObject>();
         HashMap<String, JSONObject> result = instance.getAllRulesInfo();
-        LOGGER.debug(String.format("testing ------- %s",result));
+        logger.debug(String.format("testing ------- %s",result));
         assertEquals(result, emptyHasmap);
     }
 
