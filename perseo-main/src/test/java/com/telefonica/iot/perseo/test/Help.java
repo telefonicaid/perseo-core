@@ -52,18 +52,18 @@ public class Help {
     }
     public static String[] ExampleNotices() {
         return new String[]{
-                "{\n"
-                        + "\"BloodPressure\": 2,\n"
-                        + "\"id\":\"guay!\",\n"
-                        + "\"otro\":\"mas\",\n"
-                        + "\"numero\":4,\n"
-                        + "\"sub\": {\n"
-                        + " \"subnumero\":18,\n"
-                        + " \"subcadena\":\"SUB2\",\n"
-                        + " \"subflotante\": 12.3,\n"
-                        + " \"sub2\": { \"valor\": 3}\n"
-                        + " }\n"
-                        + "}"};
+            "{\n"
+            + "\"BloodPressure\": 2,\n"
+            + "\"id\":\"guay!\",\n"
+            + "\"otro\":\"mas\",\n"
+            + "\"numero\":4,\n"
+            + "\"sub\": {\n"
+            + "	\"subnumero\":18,\n"
+            + "	\"subcadena\":\"SUB2\",\n"
+            + "	\"subflotante\": 12.3,\n"
+            + "	\"sub2\": { \"valor\": 3}\n"
+            + "	}\n"
+            + "}"};
     }
            
        

@@ -103,7 +103,7 @@ public class LogLevelServlet extends HttpServlet {
             throws ServletException, IOException {
         logger.debug("getting log level");
         synchronized (mutex) {
-             try {
+            try {
                 String currentLevel = LogManager.getRootLogger().getLevel().toString();
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("application/json");
