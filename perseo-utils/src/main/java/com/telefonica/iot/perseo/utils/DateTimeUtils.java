@@ -193,7 +193,7 @@ public class DateTimeUtils {
         LocalDateTime localDateTime = LocalDateTime.of(LocalDateTime.now()
             .getYear(),
                 LocalDateTime.now().getMonth(),
-                LocalDateTime.now().getDayOfMonth() + 1,
+                LocalDateTime.now().getDayOfMonth(),
                 time,
                 LocalDateTime.now().getMinute());
         ZonedDateTime isoDateZLDT = localDateTime.atZone(ZoneId.of(timeZone));
