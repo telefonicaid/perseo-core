@@ -49,8 +49,7 @@ public class GenericListener implements UpdateListener {
      */
     @Override
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
-        try {
-            HashMap<String, JSONObject> rules = TimeRulesStore.getInstance().getAllRulesInfo();
+        try {          
             for (EventBean event : newEvents) {
 
                 JSONObject jo = Utils.Event2JSONObject(event);
@@ -64,15 +63,15 @@ public class GenericListener implements UpdateListener {
 
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
-                    LOGGER.info("Firing temporal rule: " + event);
+                    LOGGER.info(String.format("Firing temporal rule: %s",event));
 
                 } else {
 
-                    LOGGER.info("Firing Rule: " + event);
+                    LOGGER.info(String.format("Firing Rule: %s",event));
                 }
 
-                LOGGER.debug("result errors: " + jo.optJSONObject("errors"));
-                LOGGER.debug("result json: " + jo);
+                LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
+                LOGGER.debug(String.format("result json: %s", jo));
 
                 boolean ok = Utils.DoHTTPPost(Configuration.getActionURL(), jo.toString());
                 if (!ok) {
@@ -80,7 +79,7 @@ public class GenericListener implements UpdateListener {
                 }
             }
         } catch (PropertyAccessException pae) {
-            LOGGER.error("doing action " + pae);
+            LOGGER.error(String.format("doing action %s",pae));
         }
     }
 }

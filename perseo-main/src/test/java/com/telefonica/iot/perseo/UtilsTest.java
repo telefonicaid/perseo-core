@@ -36,7 +36,6 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import org.json.JSONObject;
 import org.junit.After;
@@ -44,6 +43,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
 
 /**
@@ -51,7 +53,7 @@ import static org.junit.Assert.*;
  * @author brox
  */
 public class UtilsTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(UtilsTest.class);
     public UtilsTest() {
     }
 
@@ -76,14 +78,13 @@ public class UtilsTest {
      */
     @Test
     public void testInitEPService() {
-        System.out.println("initEPService");
+        logger.info("initEPService");
         ServletContext sc = new ServletContextMock();
         EPServiceProvider result = Utils.initEPService(sc);
         assertEquals(sc.getAttribute("epService"), result);
         //Do not create a new one if it already exists
         EPServiceProvider result2 = Utils.initEPService(sc);
         assertEquals(result, result2);
-
     }
 
     /**
@@ -91,15 +92,15 @@ public class UtilsTest {
      */
     @Test
     public void testDestroyEPService() {
-        System.out.println("destroyEPService");
+        logger.info("destroyEPService");
         ServletContextMock sc = new ServletContextMock();
         //Empty sc
         Utils.destroyEPService(sc);
-        assertEquals(sc.map.size(), 0);
+        assertEquals(sc.getMap().size(), 0);
         //With a epservice
         Utils.initEPService(sc);
         Utils.destroyEPService(sc);
-        assertEquals(sc.map.size(), 0);
+        assertEquals(sc.getMap().size(), 0);
     }
 
     /**
@@ -107,7 +108,7 @@ public class UtilsTest {
      */
     @Test
     public void testJSONObject2Map() {
-        System.out.println("JSONObject2Map");
+        logger.info("JSONObject2Map");
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
@@ -121,7 +122,7 @@ public class UtilsTest {
      */
     @Test
     public void testEvent2JSONObject() {
-        System.out.println("Event2JSONObject");
+        logger.info("Event2JSONObject");
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
@@ -136,9 +137,9 @@ public class UtilsTest {
      */
     @Test
     public void testStatement2JSONObject() {
-        final String epl = Help.ExampleRules[1];
+        final String epl = Help.ExampleRules()[1];
         final String name = "rule name";
-        System.out.println("Statement2JSONObject");
+        logger.info("Statement2JSONObject");
         EPServiceProvider epService = EPServiceProviderManager.getDefaultProvider();
         Map<String, Object> def = new HashMap<String, Object>();
         def.put("id", String.class);
@@ -161,7 +162,7 @@ public class UtilsTest {
      */
     @Test
     public void testDoHTTPPost() {
-        System.out.println("DoHTTPPost");
+        logger.info("DoHTTPPost");
         InetSocketAddress address = new InetSocketAddress(Help.PORT);
         HttpServer httpServer = null;
         try {
@@ -188,14 +189,13 @@ public class UtilsTest {
             assertEquals(false, result);
 
         } catch (IOException ex) {
-            Logger.getLogger(UtilsTest.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.toString());
             fail(ex.toString());
         } finally {
             if (httpServer != null) {
                 httpServer.stop(0);
             }
         }
-
     }
 
     /**
@@ -203,7 +203,6 @@ public class UtilsTest {
      */
     @Test
     public void testURLValidator() {
-
         assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
         assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
     }

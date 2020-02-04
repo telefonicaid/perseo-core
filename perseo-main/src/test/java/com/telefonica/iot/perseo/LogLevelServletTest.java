@@ -29,13 +29,16 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author brox
  */
 public class LogLevelServletTest {
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(LogLevelServletTest.class);
     public LogLevelServletTest() {
     }
 
@@ -62,7 +65,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutOK() throws Exception {
-        System.out.println("doPut log level valid");
+        logger.info("doPut log level valid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {
@@ -70,7 +73,7 @@ public class LogLevelServletTest {
             for (String level : levels) {
                 String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
                 Help.Res r = Help.sendPut(url, "");
-                assertEquals(200, r.code);
+                assertEquals(200, r.getCode());
             }
         } finally {
             server.stop();
@@ -84,7 +87,7 @@ public class LogLevelServletTest {
      */
     @Test
     public void testDoPutBad() throws Exception {
-        System.out.println("doPut log level invalid");
+        logger.info("doPut log level invalid");
         Server server = Help.getServer(LogLevelServlet.class);
         server.start();
         try {
@@ -92,7 +95,7 @@ public class LogLevelServletTest {
             for (String level : levels) {
                 String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
                 Help.Res r = Help.sendPut(url, "");
-                assertEquals(400, r.code);
+                assertEquals(400, r.getCode());
             }
         } finally {
             server.stop();
@@ -113,10 +116,10 @@ public class LogLevelServletTest {
             for (String level : levels) {
                 String url = String.format("http://127.0.0.1:%d/admin/log?level=%s", Help.PORT, level);
                 Help.Res r = Help.sendPut(url, "");
-                assertEquals(200, r.code);
+                assertEquals(200, r.getCode());
                 r = Help.doGet(String.format("http://127.0.0.1:%d/admin/log", Help.PORT));
-                assertEquals(200, r.code);
-                JSONObject jo = new JSONObject(r.text);
+                assertEquals(200, r.getCode());
+                JSONObject jo = new JSONObject(r.getText());
                 assertEquals(jo.optString("level"), "WARNING".equals(level)?"WARN":level);
             }
         } finally {
