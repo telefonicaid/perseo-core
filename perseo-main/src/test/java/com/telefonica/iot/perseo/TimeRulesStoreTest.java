@@ -29,6 +29,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,7 +41,8 @@ import static org.junit.Assert.*;
 public class TimeRulesStoreTest {
 
     private TimeRulesStore instance = TimeRulesStore.getInstance();
-
+    private static final Logger logger = LoggerFactory.getLogger(TimeRulesStoreTest.class);
+    
     public TimeRulesStoreTest() {
     }
 
@@ -68,7 +72,7 @@ public class TimeRulesStoreTest {
 
         HashMap<String, JSONObject> emptyHasmap = new HashMap<String, JSONObject>();
         HashMap<String, JSONObject> result = instance.getAllRulesInfo();
-        System.out.println("testing ------- " + result);
+        logger.debug(String.format("testing ------- %s",result));
         assertEquals(result, emptyHasmap);
     }
 
@@ -129,7 +133,6 @@ public class TimeRulesStoreTest {
         body2.put("text", ruleText2);
         instance.saveTimeRules(body2.toString());
 
-
         HashMap<String, JSONObject> result1 = instance.getAllRulesInfo();
         assertEquals(2, result1.size());
 
@@ -173,5 +176,3 @@ public class TimeRulesStoreTest {
         assertEquals(0, result.size());
     }
 }
-
-

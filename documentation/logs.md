@@ -3,7 +3,7 @@
 Logs have levels `FATAL`, `ERROR`, `INFO` and `DEBUG`. The log level must be set in the configuration file `log4j.xml`
 
 ```xml
-		<priority value="info" />
+        <priority value="info" />
 ```
 
 Each log line contains several fields of the form *name*`=` *value*, separated by `|`

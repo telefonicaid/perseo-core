@@ -46,7 +46,6 @@ public final class Version {
             LOGGER.error(ioe.getMessage());
             POM.setProperty("version", "UNKNOWN");
         }
-
     }
 
     /**

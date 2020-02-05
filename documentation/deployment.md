@@ -10,7 +10,7 @@ The only dependecy for perseo-core is the servlet engine container for its WAR f
 
 You only need to do this once in your system:
 
-	docker build -t perseo .
+    docker build -t perseo .
 
 The parameter `-t perseo` gives the image a name. This name could be anything, or even include an organization like
 `-t org/fiware-perseo`. This name is later used to run the container based on the image.
@@ -22,12 +22,12 @@ If you want to know more about images and the building process you can find it i
 The following line will run the container, using a manually built image (see above),
 exposing port `8080`, give it a name -in this case `perseo1`, and present a bash prompt:
 
-		docker run -d --name perseo1 -p 8080:8080 perseo
+        docker run -d --name perseo1 -p 8080:8080 perseo
 
 As a result of this command, there is a PERSEO listening on port 8080 on localhost. Try to see if it works now with
 
-	curl localhost:8080/perseo-core/version
-	
+    curl localhost:8080/perseo-core/version
+    
 To get access to the log file of Perseo Core you can run:
 
 ```
@@ -40,7 +40,7 @@ The following line will run the container, from Dockerhub, exposing port `8080`,
 and binding it to a [Perseo Front-End](https://github.com/telefonicaid/perseo-fe)
 instance (hostname `perseo-frontend`) listening on port 9090.
 
-		docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:master -perseo_fe_url perseo-frontend:9090
+        docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:master -perseo_fe_url perseo-frontend:9090
 
 A few points to consider:
 
@@ -121,5 +121,5 @@ Independently of how the service is installed, the log files will need an extern
 Logrotate is installed as RPM dependency along with perseo. The system is configured to rotate every day and whenever the log file size is greater than 100MB (checked very 30 minutes by default):
 * For daily rotation: /etc/logrotate.d/logrotate-perseo-daily: which enables daily log rotation
 * For size-based rotation:
-	* /etc/sysconfig/logrotate-perseo-size: in addition to the previous rotation, this file ensures log rotation if the log file grows beyond a given threshold (100 MB by default)
-	* /etc/cron.d/cron-logrotate-perseo-size: which ensures the execution of etc/sysconfig/logrotate-perseo-size at a regular frecuency (default is 30 minutes)
+    * /etc/sysconfig/logrotate-perseo-size: in addition to the previous rotation, this file ensures log rotation if the log file grows beyond a given threshold (100 MB by default)
+    * /etc/cron.d/cron-logrotate-perseo-size: which ensures the execution of etc/sysconfig/logrotate-perseo-size at a regular frecuency (default is 30 minutes)

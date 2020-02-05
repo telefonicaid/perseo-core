@@ -1,0 +1,2 @@
+- Haredning: add json library as proper dependency in pom.xml (version 20180813) instead of third-party source code
+- Hardening: software quality improvement based on ISO25010 recommendations 

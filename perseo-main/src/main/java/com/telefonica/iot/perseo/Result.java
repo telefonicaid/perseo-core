@@ -41,7 +41,6 @@ public class Result {
     Result(int code, String msg) {
         this.statusCode = code;
         this.message = msg;
-
     }
 
     /**
