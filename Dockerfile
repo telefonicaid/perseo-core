@@ -29,13 +29,13 @@ ADD perseo-utils /code/perseo-utils/
 ADD perseo_core-entrypoint.sh /code
 
 RUN apt-get update && \
-    apt-get install -y maven openjdk-8-jdk && \
+    apt-get install -y maven openjdk-11-jdk && \
     mvn install && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mvn clean && \
-    apt-get remove -y openjdk-8-jdk && \
+    apt-get remove -y openjdk-11-jdk && \
     apt-get clean && \
     apt-get remove -y maven && \
     apt-get -y autoremove && \
