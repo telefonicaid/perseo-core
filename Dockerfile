@@ -34,6 +34,8 @@ RUN apt-get update && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
+    chown -R 1000:1000 /usr/local/tomcat/webapps && \
+    chmod -R 777 /usr/local/tomcat/webapps && \
     mvn clean && \
     apt-get remove -y openjdk-11-jdk && \
     apt-get clean && \
@@ -41,6 +43,10 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
+    
+RUN mkdir /var/log/perseo && \
+    chown -R 1000:1000 /var/log/perseo && \
+    chmod -R 777 /var/log/perseo
 
 EXPOSE 8080
 
