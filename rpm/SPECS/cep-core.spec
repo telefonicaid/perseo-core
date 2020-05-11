@@ -47,7 +47,7 @@ rm -Rf $RPM_BUILD_ROOT && mkdir -p $RPM_BUILD_ROOT
 [ -d %{_build_root_project} ] || mkdir -p %{_build_root_project}
 
 #FIXME: this line should be adjusted by the release.sh (not yet in the repo). Once the release.sh is ok with this, please remove this fixme line
-cp -ax %{_topdir}/../perseo-main/target/perseo-main-%{_product_version}.war %{_build_root_project}/perseo-main.war
+cp -ax %{_topdir}/../perseo-main/target/perseo-main-%{_product_version}.war %{_build_root_project}/perseo-core.war
 
 cp -R %{_topdir}/SOURCES/etc %{buildroot}
 
@@ -83,7 +83,7 @@ if [ $1 == 0 ]; then
 
   echo "[INFO] Removing application files"
   # Installed files
-  rm -rf %{_install_dir}/perseo-main*
+  rm -rf %{_install_dir}/perseo-core*
 
 fi
 
@@ -99,7 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %config /etc/sysconfig/logrotate-perseo-core-size
 %config /etc/logrotate.d/logrotate-perseo-core.conf
 %config /etc/cron.d/cron-logrotate-perseo-core-size
-%{_install_dir}/perseo-main.war
+%{_install_dir}/perseo-core.war
 
 %changelog
 * Mon Dec 16 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.5.0
