@@ -102,6 +102,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Tue May 12 2020 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.6.0
+- Hardening: add json library as proper dependency in pom.xml (version 20180813) instead of third-party source code
+- Hardening: software quality improvement based on ISO25010 recommendations
+- Upgrade openjdk-8-jdk to openjdk-11-jdk in Dockerfile
+
 * Mon Dec 16 2019 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.5.0
 - Project detached into maven modules (Perseo-core used as parent module)
 - Add: perseo-utils library (date time utility functions) into Esper
