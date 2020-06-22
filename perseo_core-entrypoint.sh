@@ -28,7 +28,7 @@ fi
 mkdir -p /var/log/perseo
 touch /var/log/perseo/perseo-core.log
 
-tail -f /var/log/perseo/perseo-core.log &
+ln -snf /dev/stdout /var/log/perseo/perseo-core.log &
 
 # We use tomcat from Apache, then will be started using catalina.sh, instead service tomcat
 
