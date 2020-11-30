@@ -17,19 +17,22 @@
 #
 
 FROM tomcat:8
+ARG GITHUB_ACCOUNT=telefonicaid
+ARG GITHUB_REPOSITORY=perseo-fe
 
 # Install maven
 
 WORKDIR /code
 
 # Prepare by downloading dependencies
-ADD pom.xml /code/pom.xml
-ADD perseo-main /code/perseo-main/
-ADD perseo-utils /code/perseo-utils/
-ADD perseo_core-entrypoint.sh /code
+COPY pom.xml /code/pom.xml
+COPY perseo-main /code/perseo-main/
+COPY perseo-utils /code/perseo-utils/
+COPY perseo_core-entrypoint.sh /code
 
+# hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get install -y maven openjdk-11-jdk && \
+    apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
     mvn install && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
@@ -43,10 +46,19 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
-    
+
 RUN mkdir /var/log/perseo && \
     chown -R 1000:1000 /var/log/perseo && \
     chmod -R 777 /var/log/perseo
+
+LABEL "maintainer"="FIWARE Perseo Team. Telefónica I+D"
+LABEL "org.opencontainers.image.authors"="iot_support@tid.es"
+LABEL "org.opencontainers.image.documentation"="https://perseo.readthedocs.io/"
+LABEL "org.opencontainers.image.vendor"="Telefónica Investigación y Desarrollo, S.A.U"
+LABEL "org.opencontainers.image.licenses"="GPL-2.0"
+LABEL "org.opencontainers.image.title"="Complex Event Processing component for NGSI-v2 (Backend) "
+LABEL "org.opencontainers.image.description"="An Esper-based Complex Event Processing (CEP) software designed to be fully NGSIv2-compliant."
+LABEL "org.opencontainers.image.source"="https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}"
 
 EXPOSE 8080
 
