@@ -23,14 +23,21 @@ jobs:
   unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version:
+          - 8
+          - 9
+          - 10
+          - 11
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-      - name: Use Java 8
+      - name: 'Use Java ${{ matrix.java-version }}'
         uses: actions/setup-java@v1
         with:
-          java-version: 8
-      - name: 'Unit Tests with Java 8'
+          java-version: '${{ matrix.java-version }}'
+      - name: 'Unit Tests with Java ${{ matrix.java-version }}'
         run: |
           mvn clean test -B
 
