@@ -1,0 +1,43 @@
+name: CI
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+
+  lint-dockerfile:
+    name: Lint Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Run Hadolint Dockerfile Linter
+        uses: burdzwastaken/hadolint-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HADOLINT_ACTION_DOCKERFILE_FOLDER: .
+
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version:
+          - 8
+          - 9
+          - 10
+          - 11
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: 'Use Java ${{ matrix.java-version }}'
+        uses: actions/setup-java@v1
+        with:
+          java-version: '${{ matrix.java-version }}'
+      - name: 'Unit Tests with Java ${{ matrix.java-version }}'
+        run: |
+          mvn clean test -B
+
