@@ -1,1 +1,1 @@
-- Logging: Update entrypoint to create a symlink from the logfile to stdout, and remove tail execution to stream logfile.
+

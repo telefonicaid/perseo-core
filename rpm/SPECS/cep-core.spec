@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Wed Jul 14 2021 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.7.0
+- Logging: Update entrypoint to create a symlink from the logfile to stdout, and remove tail execution to stream logfile.
+
 * Tue May 12 2020 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.6.0
 - Hardening: add json library as proper dependency in pom.xml (version 20180813) instead of third-party source code
 - Hardening: software quality improvement based on ISO25010 recommendations
