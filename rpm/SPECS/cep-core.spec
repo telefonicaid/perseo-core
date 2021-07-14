@@ -103,6 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Jul 14 2021 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.7.0
+- Logging. Update for force to use only console instead of file
 - Logging: Update entrypoint to create a symlink from the logfile to stdout, and remove tail execution to stream logfile.
 
 * Tue May 12 2020 Fermin Galan <fermin.galanmarquez@telefonica.com> 1.6.0
