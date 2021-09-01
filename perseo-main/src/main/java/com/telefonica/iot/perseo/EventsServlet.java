@@ -18,7 +18,8 @@
 */
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EPServiceProvider;
+//import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.runtime.client.EPRuntime;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -43,7 +44,8 @@ import org.owasp.encoder.Encode;
 public class EventsServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(EventsServlet.class);
-    private static EPServiceProvider epService;
+    //private static EPServiceProvider epService;
+    private static EPRuntime epService;    
 
     @Override
     public void init() {

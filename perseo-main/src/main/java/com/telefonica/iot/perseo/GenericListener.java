@@ -21,9 +21,12 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.PropertyAccessException;
-import com.espertech.esper.client.UpdateListener;
+//import com.espertech.esper.client.EventBean;
+import com.espertech.esper.common.client.EventBean;
+//import com.espertech.esper.client.PropertyAccessException;
+import com.espertech.esper.common.client.PropertyAccessException;
+//import com.espertech.esper.client.UpdateListener;
+import com.espertech.esper.common.client.UpdateListener;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

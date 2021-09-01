@@ -63,10 +63,25 @@
             <version>8.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>com.espertech</groupId> -->
+        <!--     <artifactId>esper</artifactId> -->
+        <!--     <version>7.1.0</version> -->
+        <!-- </dependency> -->
         <dependency>
             <groupId>com.espertech</groupId>
-            <artifactId>esper</artifactId>
-            <version>7.1.0</version>
+            <artifactId>esper-runtime</artifactId>
+            <version>8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esper-common</artifactId>
+            <version>8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esper-compiler</artifactId>
+            <version>8.4.0</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

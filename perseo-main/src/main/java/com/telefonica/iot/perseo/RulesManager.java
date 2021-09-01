@@ -19,10 +19,15 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EPAdministrator;
-import com.espertech.esper.client.EPException;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPStatement;
+//import com.espertech.esper.client.EPAdministrator;
+import com.espertech.esper.runtime.client.EPDeploymentService;
+//import com.espertech.esper.client.EPException;
+import com.espertech.esper.common.client.EPException;
+//import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.runtime.client.EPRuntime;
+//import com.espertech.esper.client.EPStatement;
+import com.espertech.esper.runtime.client.EPStatement;
+import com.espertech.esper.common.client.Configuration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -51,30 +56,57 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    public static synchronized Result get(EPServiceProvider epService, String ruleName) {
+    //public static synchronized Result get(EPServiceProvider epService, String ruleName) {
+    public static synchronized Result get(EPRuntime epService, String ruleName) {        
         try {  
             logger.debug(String.format("rule asked for: %s", ruleName));
             ruleName = ruleName == null ? "" : ruleName;
-            EPAdministrator epa = epService.getEPAdministrator();
+            //EPAdministrator epa = epService.getEPAdministrator();
+            EPDeploymentService epa = epService.getEPDeploymentService();
 
             if (ruleName.length() != 0) {
-                EPStatement st = epa.getStatement(ruleName);
-                if (st == null) {
-                    return new Result(HttpServletResponse.SC_NOT_FOUND,
-                            String.format("{\"error\":\"%s not found\"}%n",
-                                    ruleName));
+                JSONArray ja = new JSONArray();                
+                String[] deploymentIds = epa.getDeployments();
+                for (String deploymentId : deploymentIds) {
+                    EPStatement st = epa.getStatement(deploymentId, ruleName);
+                    if (st != null) {
+                        ja.put(Utils.Statement2JSONObject(st));
+                    }
+                }
+                if (ja.length > 0) {
+                    return new Result(HttpServletResponse.SC_OK, ja.toString());
                 } else {
-                    return new Result(HttpServletResponse.SC_OK,
-                            Utils.Statement2JSONObject(st).toString());
+                    return new Result(HttpServletResponse.SC_NOT_FOUND,
+                                      String.format("{\"error\":\"%s not found\"}%n",
+                                                    ruleName));
                 }
+                // EPStatement st = epa.getStatement(ruleName);
+                // if (st == null) {
+                //     return new Result(HttpServletResponse.SC_NOT_FOUND,
+                //             String.format("{\"error\":\"%s not found\"}%n",
+                //                     ruleName));
+                // } else {
+                //     return new Result(HttpServletResponse.SC_OK,
+                //             Utils.Statement2JSONObject(st).toString());
+                // }
             } else {
-                String[] sttmntNames = epa.getStatementNames();
-                JSONArray ja = new JSONArray();
-                for (String name : sttmntNames) {
-                    logger.debug(String.format("getting rule %s", name));
-                    EPStatement st = epa.getStatement(name);
-                    ja.put(Utils.Statement2JSONObject(st));
+                JSONArray ja = new JSONArray();                
+                String[] deploymentIds = epa.getDeployments();
+                for (String deploymentId : deploymentIds) {
+                    EPDeployment deployment = epa.getDeployment(deploymentId);
+                    EPStatement[] statements = deployment.getStatements();
+                    for (EPStatement st : statements) {
+                        logger.debug(String.format("getting rule %s", st.getName());
+                        ja.put(Utils.Statement2JSONObject(st));
+                    }
                 }
+                // String[] sttmntNames = epa.getStatementNames();
+                // JSONArray ja = new JSONArray();
+                // for (String name : sttmntNames) {
+                //     logger.debug(String.format("getting rule %s", name));
+                //     EPStatement st = epa.getStatement(name);
+                //     ja.put(Utils.Statement2JSONObject(st));
+                // }
                 return new Result(HttpServletResponse.SC_OK, ja.toString());
             }
 
@@ -95,7 +127,8 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    public static synchronized Result make(EPServiceProvider epService, String text) {
+    //public static synchronized Result make(EPServiceProvider epService, String text) {
+    public static synchronized Result make(EPRuntime epService, String text) {            
         try {
             logger.debug(String.format("rule text: %s", text));
             org.json.JSONObject jo = new JSONObject(text);
@@ -114,13 +147,38 @@ public class RulesManager {
             }
             logger.debug(String.format("statement name: %s",name));
             logger.debug(String.format("statement text: %s",newEpl));
-
+         
             EPStatement statement;
-            EPStatement prevStmnt = epService.getEPAdministrator().getStatement(name);
+            //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(name);
+            EPStatement prevStmnt;
+            EPDeploymentService epa = epService.getEPDeploymentService();
+            String[] deploymentIds = epa.getDeployments();
+            for (String deploymentId : deploymentIds) {
+                EPStatement st = epa.getStatement(deploymentId, ruleName);
+                if (st != null) {
+                    prevStmnt = st;
+                }
+            }
+
+            // Deployment for compile newEPL
+            Configuration configuration = new Configuration();
+            CompilerArguments arguments = new CompilerArguments(configuration);
+            arguments.getPath().add(epService.getRuntimePath());
+            EPCompiled epCompiled = EPCompilerProvider.getCompiler().compile(newEPL, arguments);
+            EPDeployment deploymentForEPL;
+            try {
+                deploymentForEPL = epService.getDeploymentService().deploy(epCompiled);
+            }
+            catch (EPDeployException ex) {
+                // handle exception here
+                throw new RuntimeException(ex);
+            }
+            
             if (prevStmnt == null) {
                 logger.debug(String.format("found new statement: %s",name));
 
-                statement = epService.getEPAdministrator().createEPL(newEpl, name);
+                //statement = epService.getEPAdministrator().createEPL(newEpl, name);
+                statement = epService.getDeploymentService().getStatement(deploymentForEPL.getDeploymentId(), name);
                 logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                 statement.addListener(new GenericListener());
             } else {
@@ -130,7 +188,9 @@ public class RulesManager {
                     logger.debug(String.format("found changed statement: %s",name));
                     prevStmnt.destroy();
                     logger.debug(String.format("deleted statement: %s",name));
-                    statement = epService.getEPAdministrator().createEPL(newEpl, name);
+                    //statement = epService.getEPAdministrator().createEPL(newEpl, name);
+                    statement = epService.getDeploymentService().getStatement(deploymentForEPL.getDeploymentId(), name);
+                    
                     logger.debug(String.format("re-created statement: %s", name));
                     logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                     statement.addListener(new GenericListener());
@@ -165,7 +225,8 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    public static synchronized Result updateAll(EPServiceProvider epService, String text) {
+    //public static synchronized Result updateAll(EPServiceProvider epService, String text) {
+    public static synchronized Result updateAll(EPRuntime epService, String text) {            
         try {
             long maxAge = Configuration.getMaxAge();
             logger.debug(String.format("rule block text: %s",text));
@@ -191,23 +252,61 @@ public class RulesManager {
                 newOnes.put(name, newEpl);
             }
 
-            oldOnesNames.addAll(Arrays.asList(epService.getEPAdministrator().getStatementNames()));
-
+            //oldOnesNames.addAll(Arrays.asList(epService.getEPAdministrator().getStatementNames()));
+            String stNames[] = new String[] {}; 
+            EPDeploymentService epa = epService.getEPDeploymentService();
+            String[] deploymentIds = epa.getDeployments();
+            for (String deploymentId : deploymentIds) {
+                EPDeployment deployment = epa.getDeployment(deploymentId);
+                EPStatement[] statements = deployment.getStatements();
+                for (EPStatement st : statements) {
+                    stNames.add(st.getName());
+                }
+            }
+            oldOnesNames.addAll(Arrays.asList(stNames));
+            
+            // Deployment for compile newEPL
+            Configuration configuration = new Configuration();
+            CompilerArguments arguments = new CompilerArguments(configuration);
+            arguments.getPath().add(epService.getRuntimePath());
+            EPCompiled epCompiled = EPCompilerProvider.getCompiler().compile(newEPL, arguments);
+            EPDeployment deploymentForEPL;
+            try {
+                deploymentForEPL = epService.getDeploymentService().deploy(epCompiled);
+            }
+            catch (EPDeployException ex) {
+                // handle exception here
+                throw new RuntimeException(ex);
+            }
+            
             for (String n : newOnes.keySet()) {
                 String newEpl = newOnes.get(n);
                 if (!oldOnesNames.contains(n)) {
                     logger.debug(String.format("found new statement: %s", n));
-                    EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
+                    //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
+                    EPStatement statement = epService.getDeploymentService().getStatement(deploymentForEPL.getDeploymentId(), n);
                     logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                     statement.addListener(new GenericListener());
                 } else {
-                    EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
+                    //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
+                    
+                    EPStatement prevStmnt;
+                    EPDeploymentService epa = epService.getEPDeploymentService();
+                    String[] deploymentIds = epa.getDeployments();
+                    for (String deploymentId : deploymentIds) {
+                        EPStatement st = epa.getStatement(deploymentId, ruleName);
+                        if (st != null) {
+                            prevStmnt = st;
+                        }
+                    }
+                    
                     String oldEPL = prevStmnt.getText();
                     if (!oldEPL.equals(newOnes.get(n))) {
                         logger.debug(String.format("found changed statement: %s", n));
                         prevStmnt.destroy();
                         logger.debug(String.format("deleted statement: %s", n));
-                        EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
+                        //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
+                        EPStatement statement = epService.getDeploymentService().getStatement(deploymentForEPL.getDeploymentId(), n);
                         logger.debug(String.format("re-created statement: %s" ,n));
                         logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement)));
                         statement.addListener(new GenericListener());
@@ -219,7 +318,8 @@ public class RulesManager {
             }
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
-                EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
+                //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
+
                 logger.debug(String.format("unexpected statement: %s" ,o));
                 if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
                     logger.debug(String.format("unexpected statement, too old: %s", o));
@@ -250,18 +350,29 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    public static synchronized Result delete(EPServiceProvider epService, String ruleName) {
+    //public static synchronized Result delete(EPServiceProvider epService, String ruleName) {
+    public static synchronized Result delete(EPRuntime epService, String ruleName) {            
         try {
             ruleName = ruleName == null ? "" : ruleName;
             logger.debug(String.format("delete rule: %s" ,ruleName));
-            EPAdministrator epa = epService.getEPAdministrator();
+            //EPAdministrator epa = epService.getEPAdministrator();
+            EPDeploymentService epa = epService.getEPDeploymentService();            
 
             if (ruleName.length() != 0) {
-                EPStatement st = epa.getStatement(ruleName);
+                //EPStatement st = epa.getStatement(ruleName);
+                EPStatement st = null;
+                String[] deploymentIds = epa.getDeployments();
+                for (String deploymentId : deploymentIds) {
+                    EPStatement currentst = epa.getStatement(deploymentId, ruleName);
+                    if (currentst != null) {
+                        st = currentst;
+                        st.destroy();                        
+                    }
+                }
+                
                 //Allow to delete inexistent rule
                 if (st != null) {
                     logger.debug(String.format("deleted statement: %s", ruleName));
-                    st.destroy();
                     return new Result(HttpServletResponse.SC_OK,
                             Utils.Statement2JSONObject(st).toString());
                 } else {
