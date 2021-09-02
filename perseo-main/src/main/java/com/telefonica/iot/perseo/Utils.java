@@ -212,6 +212,18 @@ public class Utils {
         return jo;
     }
 
+    public static JSONObject Statement2JSONObject(EPStatement st, EPDeploymentService epService, String deploymentId) {
+        if (st == null) {
+            return null;
+        }
+        JSONObject jo = new JSONObject()
+                .put("name", st.getName())
+                .put("text", st.getProperty(StatementProperty.EPL))
+                .put("state", st.isDestroyed())
+                .put("timeLastStateChange", epService.getDeployment(deploymentId).getLastUpdateDate());
+        return jo;
+    }
+
     /**
      * Makes an HTTP POST to an URL sending an body. The URL and body are
      * represented as String.
