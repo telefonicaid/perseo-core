@@ -45,7 +45,7 @@ public class RulesServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(RulesServlet.class);
     //private static EPServiceProvider epService;
-    private static EPRuntime epService;    
+    private static EPRuntime epService;
 
     @Override
     public void init() throws ServletException {

@@ -23,7 +23,8 @@ package com.telefonica.iot.perseo;
 //import com.espertech.esper.client.*;
 import com.espertech.esper.runtime.client.*;
 import com.espertech.esper.common.client.*;
-    
+import com.espertech.esper.common.client.util.StatementProperty;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,9 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 //import com.espertech.esper.client.Configuration;
+import com.espertech.esper.common.client.configuration.*;
+import com.espertech.esper.common.client.configuration.common.*;
+import com.espertech.esper.common.client.configuration.compiler.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -66,52 +70,55 @@ public class Utils {
      */
     //public static synchronized EPServiceProvider initEPService(ServletContext sc) {
     public static synchronized EPRuntime initEPService(ServletContext sc) {        
-        Configuration configuration = new Configuration();
-        configuration.getEngineDefaults().getExpression().setUdfCache(false);
+        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
+        //configuration.getEngineDefaults().getExpression().setUdfCache(false);
+        configuration.getCompiler().getExpression().setUdfCache(false);
         //EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
             //epService = EPServiceProviderManager.getDefaultProvider(configuration);
-            epService = EPRuntimeProvider.getDefaultRuntime(configuration);            
+            epService = EPRuntimeProvider.getDefaultRuntime(configuration);
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
             def.put(Constants.SUBSERVICE_FIELD, String.class);
             def.put(Constants.SERVICE_FIELD, String.class);
             //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-            Configuration cfgCopy = epService.getConfigurationDeepCopy();
+            com.espertech.esper.common.client.configuration.Configuration cfgCopy = epService.getConfigurationDeepCopy();
             ConfigurationCommon cfg = cfgCopy.getCommon();
             cfg.addEventType(Constants.IOT_EVENT, def);
 
             // Add perseo-utils library
             cfg.addImport("com.telefonica.iot.perseo.utils.*");
 
+            ConfigurationCompiler cfgCpl = cfgCopy.getCompiler();
+
             // Add Single row function for perseo-utils functions
             try {
-                cfg.addPlugInSingleRowFunction("getNextSunrise",
+                cfgCpl.addPlugInSingleRowFunction("getNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("getNextSunset",
+                        "getNextSunrise", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("getNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("getMilisToNextSunrise",
+                        "getNextSunset", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("getMilisToNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getMilisToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("getMilisToNextSunset",
+                        "getMilisToNextSunrise", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("getMilisToNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getMilisToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("dateToUTC",
+                        "getMilisToNextSunset", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("dateToUTC",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "dateToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("timeToUTC",
+                        "dateToUTC", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("timeToUTC",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "timeToUTC", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("getSecondsToNextSunset",
+                        "timeToUTC", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("getSecondsToNextSunset",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getSecondsToNextSunset", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
-                cfg.addPlugInSingleRowFunction("getSecondsToNextSunrise",
+                        "getSecondsToNextSunset", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
+                cfgCpl.addPlugInSingleRowFunction("getSecondsToNextSunrise",
                         "com.telefonica.iot.perseo.utils.DateTimeUtils",
-                        "getSecondsToNextSunrise", ConfigurationPlugInSingleRowFunction.ValueCache.DISABLED);
+                        "getSecondsToNextSunrise", ConfigurationCompilerPlugInSingleRowFunction.ValueCache.DISABLED);
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }
@@ -127,7 +134,7 @@ public class Utils {
      */
     public static synchronized void destroyEPService(ServletContext sc) {
         //EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
-        EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);        
+        EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService != null) {
             epService.destroy();
             sc.removeAttribute(EPSERV_ATTR_NAME);
@@ -196,9 +203,12 @@ public class Utils {
         }
         JSONObject jo = new JSONObject()
                 .put("name", st.getName())
-                .put("text", st.getText())
-                .put("state", st.getState())
-                .put("timeLastStateChange", st.getTimeLastStateChange());
+             // .put("text", st.getText())
+                .put("text", st.getProperty(StatementProperty.EPL))
+             // .put("state", st.getState())
+                .put("state", st.isDestroyed())
+             // .put("timeLastStateChange", st.getTimeLastStateChange());
+                .put("timeLastStateChange", "TBD");
         return jo;
     }
 
