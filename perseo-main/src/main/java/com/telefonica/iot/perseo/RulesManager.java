@@ -41,7 +41,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -171,8 +170,9 @@ public class RulesManager {
             com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
             CompilerArguments arguments = new CompilerArguments(configuration);
             arguments.getPath().add(epService.getRuntimePath());
+            EPCompiled epCompiled = null;
             try {
-                EPCompiled epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
+                epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
             } catch (EPCompileException ex) {
                 throw new RuntimeException(ex);
             }
@@ -287,8 +287,9 @@ public class RulesManager {
                 Configuration configuration = new Configuration();
                 CompilerArguments arguments = new CompilerArguments(configuration);
                 arguments.getPath().add(epService.getRuntimePath());
+                EPCompiled epCompiled = null;
                 try {
-                    EPCompiled epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
+                    epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
                 } catch (EPCompileException ex) {
                     throw new RuntimeException(ex);
                 }

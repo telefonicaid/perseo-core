@@ -18,15 +18,23 @@
 */
 
 package com.telefonica.iot.perseo.test;
-
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.EventPropertyDescriptor;
-import com.espertech.esper.client.EventPropertyGetter;
-import com.espertech.esper.client.EventPropertyGetterIndexed;
-import com.espertech.esper.client.EventPropertyGetterMapped;
-import com.espertech.esper.client.EventType;
-import com.espertech.esper.client.FragmentEventType;
-import com.espertech.esper.client.PropertyAccessException;
+// import com.espertech.esper.client.EventBean;
+// import com.espertech.esper.client.EventPropertyDescriptor;
+// import com.espertech.esper.client.EventPropertyGetter;
+// import com.espertech.esper.client.EventPropertyGetterIndexed;
+// import com.espertech.esper.client.EventPropertyGetterMapped;
+// import com.espertech.esper.client.EventType;
+// import com.espertech.esper.client.FragmentEventType;
+// import com.espertech.esper.client.PropertyAccessException;
+import com.espertech.esper.common.client.EventBean;
+import com.espertech.esper.common.client.EventPropertyDescriptor;
+import com.espertech.esper.common.client.EventPropertyGetter;
+import com.espertech.esper.common.client.EventPropertyGetterIndexed;
+import com.espertech.esper.common.client.EventPropertyGetterMapped;
+import com.espertech.esper.common.client.EventTypeMetadata;
+import com.espertech.esper.common.client.EventType;
+import com.espertech.esper.common.client.FragmentEventType;
+import com.espertech.esper.common.client.PropertyAccessException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -123,6 +131,12 @@ public class EventBeanMock implements EventBean {
         public String getEndTimestampPropertyName() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
+        @Override
+        public EventTypeMetadata getMetadata() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
     };
 
     @Override

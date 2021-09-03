@@ -53,7 +53,7 @@ public class GenericListener implements UpdateListener {
      * @param oldEvents old events leaving the window
      */
     @Override
-    public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statement ,EPRuntime epruntime) {
+    public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statement, EPRuntime epruntime) {
         try {          
             for (EventBean event : newEvents) {
 
