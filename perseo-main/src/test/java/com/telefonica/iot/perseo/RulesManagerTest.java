@@ -65,7 +65,9 @@ public class RulesManagerTest {
     private static final Logger logger = LoggerFactory.getLogger(RulesManagerTest.class);
     public RulesManagerTest() {
         //epService = EPServiceProviderManager.getDefaultProvider();
-        epService = EPRuntimeProvider.getDefaultRuntime();
+        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
+        epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+        epService.initialize();
 
         Map<String, Object> def = new HashMap<String, Object>();
         def.put("id", String.class);
@@ -89,7 +91,11 @@ public class RulesManagerTest {
     @Before
     public void setUp() {
         //epService.getEPAdministrator().destroyAllStatements();
-        epService.getDeploymentService().undeployAll();
+        try {
+            epService.getDeploymentService().undeployAll();
+        } catch (EPUndeployException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @After
@@ -210,7 +216,7 @@ public class RulesManagerTest {
 
         //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
         EPStatement st = null;
-        String[] deploymentIds = epa.getDeployments();
+        deploymentIds = epa.getDeployments();
         String dId = null;
         for (String deploymentId : deploymentIds) {
             st = epa.getStatement(deploymentId, ruleName);

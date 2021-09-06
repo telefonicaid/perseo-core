@@ -163,7 +163,9 @@ public class UtilsTest {
         final String name = "rule name";
         logger.info("Statement2JSONObject");
         //EPServiceProvider epService = EPServiceProviderManager.getDefaultProvider();
+        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
         EPRuntime epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+        epService.initialize();
         Map<String, Object> def = new HashMap<String, Object>();
         def.put("id", String.class);
         def.put("type", String.class);
@@ -175,8 +177,9 @@ public class UtilsTest {
         cfg.addEventType("iotEvent", def);
         //EPStatement st = epService.getEPAdministrator().createEPL(epl, name);
 
+        EPDeploymentService epa = epService.getDeploymentService();
+
         // Deployment for compile newEPL
-        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
         CompilerArguments arguments = new CompilerArguments(configuration);
         arguments.getPath().add(epService.getRuntimePath());
         EPCompiled epCompiled = null;
@@ -192,8 +195,8 @@ public class UtilsTest {
             throw new RuntimeException(ex);
         }
 
-        dId = deploymentForEPL.getDeploymentId();
-        EPStatement st = epa.getStatement(dId, ruleName);
+        String dId = deploymentForEPL.getDeploymentId();
+        EPStatement st = epa.getStatement(dId, name);
 
 
         JSONObject result = Utils.Statement2JSONObject(st);
@@ -204,7 +207,7 @@ public class UtilsTest {
         assertEquals(st.isDestroyed(), result.get("state"));
         //assertEquals(st.getName(), result.getString("name"));
         //assertEquals(st.getTimeLastStateChange(), result.getLong("timeLastStateChange"));
-        assertEquals(epService.getDeployment(dId).getLastUpdateDate(), result.getLong("timeLastStateChange"));
+        assertEquals(epa.getDeployment(dId).getLastUpdateDate(), result.getLong("timeLastStateChange"));
     }
 
     /**

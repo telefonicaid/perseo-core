@@ -31,7 +31,7 @@ import com.espertech.esper.common.client.EventPropertyDescriptor;
 import com.espertech.esper.common.client.EventPropertyGetter;
 import com.espertech.esper.common.client.EventPropertyGetterIndexed;
 import com.espertech.esper.common.client.EventPropertyGetterMapped;
-import com.espertech.esper.common.client.EventTypeMetadata;
+import com.espertech.esper.common.client.meta.EventTypeMetadata;
 import com.espertech.esper.common.client.EventType;
 import com.espertech.esper.common.client.FragmentEventType;
 import com.espertech.esper.common.client.PropertyAccessException;
@@ -117,10 +117,10 @@ public class EventBeanMock implements EventBean {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        @Override
-        public int getEventTypeId() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+        // @Override
+        // public int getEventTypeId() {
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // }
 
         @Override
         public String getStartTimestampPropertyName() {
@@ -137,6 +137,10 @@ public class EventBeanMock implements EventBean {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
+        @Override
+        public java.util.Set<EventType> getDeepSuperTypesAsSet(){
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     };
 
     @Override
