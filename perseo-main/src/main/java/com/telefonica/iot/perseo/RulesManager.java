@@ -155,12 +155,13 @@ public class RulesManager {
 
                 EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
                 String dId = deployment.getDeploymentId();
+                statement = deployment.getStatements()[0];
                 logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
-                                                                                            deployment.getStatements()[0],
+                                                                                            statement,
                                                                                             epa,
                                                                                             dId
                                                                                             )));
-                deployment.getStatements()[0].addListener(new GenericListener());
+                statement.addListener(new GenericListener());
             } else {
                 //String oldEpl = prevStmnt.getText();
                 String oldEpl = prevStmnt.getProperty(StatementProperty.EPL).toString();
@@ -178,12 +179,13 @@ public class RulesManager {
 
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
                     String dId = deployment.getDeploymentId();
+                    statement = deployment.getStatements()[0];
                     logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
-                                                                                                deployment.getStatements()[0],
+                                                                                                statement,
                                                                                                 epa,
                                                                                                 dId
                                                                                                 )));
-                    deployment.getStatements()[0].addListener(new GenericListener());
+                    statement.addListener(new GenericListener());
                 } else {
                     logger.debug(String.format("found repeated statement: %s", name));
                     statement = prevStmnt;
