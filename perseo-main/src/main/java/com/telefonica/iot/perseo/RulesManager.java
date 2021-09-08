@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,24 +74,15 @@ public class RulesManager {
             EPDeploymentService epa = epService.getDeploymentService();
 
             if (ruleName.length() != 0) {
-                EPStatement st = null;
-                String[] deploymentIds = epa.getDeployments();
-                String dId = null;
-                for (String deploymentId : deploymentIds) {
-                    st = epa.getStatement(deploymentId, ruleName);
-                    if (st != null) {
-                        dId = deploymentId;
-                        break;
-                    }
-                }
                 // EPStatement st = epa.getStatement(ruleName);
+                EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
                 if (st == null) {
                     return new Result(HttpServletResponse.SC_NOT_FOUND,
                             String.format("{\"error\":\"%s not found\"}%n",
                                     ruleName));
                 } else {
                     return new Result(HttpServletResponse.SC_OK,
-                                      Utils.Statement2JSONObject(st,epa, dId).toString());
+                                      Utils.Statement2JSONObject(st, epa, st.getDeploymentId()).toString());
                 }
             } else {
                 JSONArray ja = new JSONArray();
@@ -153,44 +145,22 @@ public class RulesManager {
          
             EPStatement statement = null;
             //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(name);
-            EPStatement prevStmnt = null;
             EPDeploymentService epa = epService.getDeploymentService();
-            String[] deploymentIds = epa.getDeployments();
-            String dId = null;
-            for (String deploymentId : deploymentIds) {
-                EPStatement st = epa.getStatement(deploymentId, name);
-                if (st != null) {
-                    prevStmnt = st;
-                    dId = deploymentId;
-                    break;
-                }
-            }
-
-            // Deployment for compile newEPL
-            com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-            CompilerArguments arguments = new CompilerArguments(configuration);
-            arguments.getPath().add(epService.getRuntimePath());
-            EPCompiled epCompiled = null;
-            try {
-                epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
-            } catch (EPCompileException ex) {
-                throw new RuntimeException(ex);
-            }
-            EPDeployment deploymentForEPL;
-            try {
-                deploymentForEPL = epa.deploy(epCompiled);
-            } catch (EPDeployException ex) {
-                throw new RuntimeException(ex);
-            }
+            EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, name);
 
             if (prevStmnt == null) {
-                logger.debug(String.format("found new statement: %s",name));
+                logger.debug(String.format("found new statement: %s", name));
 
                 //statement = epService.getEPAdministrator().createEPL(newEpl, name);
-                dId = deploymentForEPL.getDeploymentId();
-                statement = epService.getDeploymentService().getStatement(dId, name);
-                logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement, epa, dId)));
-                statement.addListener(new GenericListener());
+
+                EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
+                String dId = deployment.getDeploymentId();
+                logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                                                                                            deployment.getStatements()[0],
+                                                                                            epa,
+                                                                                            dId
+                                                                                            )));
+                deployment.getStatements()[0].addListener(new GenericListener());
             } else {
                 //String oldEpl = prevStmnt.getText();
                 String oldEpl = prevStmnt.getProperty(StatementProperty.EPL).toString();
@@ -199,25 +169,28 @@ public class RulesManager {
                     logger.debug(String.format("found changed statement: %s",name));
                     //prevStmnt.destroy();
                     try {
-                        epa.undeploy(dId);
+                        epa.undeploy(prevStmnt.getDeploymentId());
                     } catch (EPUndeployException ex) {
                         throw new RuntimeException(ex);
                     }
                     logger.debug(String.format("deleted statement: %s",name));
                     //statement = epService.getEPAdministrator().createEPL(newEpl, name);
-                    dId = deploymentForEPL.getDeploymentId();
-                    statement = epService.getDeploymentService().getStatement(dId, name);
-                    
-                    logger.debug(String.format("re-created statement: %s", name));
-                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement, epa, dId)));
-                    statement.addListener(new GenericListener());
+
+                    EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
+                    String dId = deployment.getDeploymentId();
+                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                                                                                                deployment.getStatements()[0],
+                                                                                                epa,
+                                                                                                dId
+                                                                                                )));
+                    deployment.getStatements()[0].addListener(new GenericListener());
                 } else {
                     logger.debug(String.format("found repeated statement: %s", name));
                     statement = prevStmnt;
                 }
             }
             return new Result(HttpServletResponse.SC_OK,
-                              Utils.Statement2JSONObject(statement, epa, dId).toString());
+                              Utils.Statement2JSONObject(statement, epa, statement.getDeploymentId()).toString());
         } catch (EPException epe) {
             logger.error(String.format("creating statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
@@ -283,43 +256,20 @@ public class RulesManager {
             for (String n : newOnes.keySet()) {
                 String newEpl = newOnes.get(n);
 
-                // Deployment for compile newEPL
-                Configuration configuration = new Configuration();
-                CompilerArguments arguments = new CompilerArguments(configuration);
-                arguments.getPath().add(epService.getRuntimePath());
-                EPCompiled epCompiled = null;
-                try {
-                    epCompiled = EPCompilerProvider.getCompiler().compile(newEpl, arguments);
-                } catch (EPCompileException ex) {
-                    throw new RuntimeException(ex);
-                }
-                EPDeployment deploymentForEPL;
-                try {
-                    deploymentForEPL = epService.getDeploymentService().deploy(epCompiled);
-                } catch (EPDeployException ex) {
-                    throw new RuntimeException(ex);
-                }
-
                 if (!oldOnesNames.contains(n)) {
                     logger.debug(String.format("found new statement: %s", n));
                     //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
-                    String dId = deploymentForEPL.getDeploymentId();
-                    EPStatement statement = epService.getDeploymentService().getStatement(dId, n);
-                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement, epa, dId)));
-                    statement.addListener(new GenericListener());
+
+                    EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
+                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                                                                                                deployment.getStatements()[0],
+                                                                                                epa,
+                                                                                                deployment.getDeploymentId()
+                                                                                                )));
+                    deployment.getStatements()[0].addListener(new GenericListener());
                 } else {
                     //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
-                    EPStatement prevStmnt = null;
-                    deploymentIds = epa.getDeployments();
-                    String dId = null;
-                    for (String deploymentId : deploymentIds) {
-                        EPStatement st = epa.getStatement(deploymentId, n);
-                        if (st != null) {
-                            prevStmnt = st;
-                            dId = deploymentId;
-                            break;
-                        }
-                    }
+                    EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, n);
 
                     //String oldEPL = prevStmnt.getText();
                     String oldEPL = prevStmnt.getProperty(StatementProperty.EPL).toString();
@@ -327,17 +277,20 @@ public class RulesManager {
                         logger.debug(String.format("found changed statement: %s", n));
                         //prevStmnt.destroy();
                         try {
-                            epa.undeploy(dId);
+                            epa.undeploy(prevStmnt.getDeploymentId());
                         } catch (EPUndeployException ex) {
                             throw new RuntimeException(ex);
                         }
                         logger.debug(String.format("deleted statement: %s", n));
                         //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
-                        dId = deploymentForEPL.getDeploymentId();
-                        EPStatement statement = epService.getDeploymentService().getStatement(dId, n);
-                        logger.debug(String.format("re-created statement: %s" ,n));
-                        logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(statement, epa, dId)));
-                        statement.addListener(new GenericListener());
+
+                        EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
+                        logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                                                                                                    deployment.getStatements()[0],
+                                                                                                    epa,
+                                                                                                    deployment.getDeploymentId()
+                                                                                                    )));
+                        deployment.getStatements()[0].addListener(new GenericListener());
                     } else {
                         logger.debug(String.format("identical statement: %s", n));
                     }
@@ -347,20 +300,11 @@ public class RulesManager {
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
                 //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
-                EPStatement prevStmnt = null;
-                deploymentIds = epa.getDeployments();
-                String dId = null;
-                for (String deploymentId : deploymentIds) {
-                    EPStatement st = epa.getStatement(deploymentId, o);
-                    if (st != null) {
-                        prevStmnt = st;
-                        dId = deploymentId;
-                        break;
-                    }
-                }
+                EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, o);
 
                 logger.debug(String.format("unexpected statement: %s", o));
                 //if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
+                String dId = prevStmnt.getDeploymentId();
                 if (epa.getDeployment(dId).getLastUpdateDate().getTime() < now - maxAge) {
                     logger.debug(String.format("unexpected statement, too old: %s", o));
                     //prevStmnt.destroy();
@@ -405,18 +349,8 @@ public class RulesManager {
 
             if (ruleName.length() != 0) {
                 //EPStatement st = epa.getStatement(ruleName);
-                EPStatement st = null;
-                String[] deploymentIds = epa.getDeployments();
-                String dId = null;
-                for (String deploymentId : deploymentIds) {
-                    EPStatement currentst = epa.getStatement(deploymentId, ruleName);
-                    if (currentst != null) {
-                        st = currentst;
-                        dId = deploymentId;
-                        break;
-                    }
-                }
-
+                EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
+                String dId = st.getDeploymentId();
                 //Allow to delete inexistent rule
                 if (st != null) {
                     //st.destroy();
@@ -429,7 +363,7 @@ public class RulesManager {
                     return new Result(HttpServletResponse.SC_OK,
                                       Utils.Statement2JSONObject(st, epa, dId).toString());
                 } else {
-                    logger.debug(String.format("asked for deleting inexistent statement: %s",ruleName));
+                    logger.debug(String.format("asked for deleting inexistent statement: %s", ruleName));
                     return new Result(HttpServletResponse.SC_OK, "{}");
                 }
 

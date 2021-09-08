@@ -66,8 +66,6 @@ public class RulesManagerTest {
     public RulesManagerTest() {
         //epService = EPServiceProviderManager.getDefaultProvider();
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-        epService = EPRuntimeProvider.getDefaultRuntime(configuration);
-        epService.initialize();
 
         Map<String, Object> def = new HashMap<String, Object>();
         def.put("id", String.class);
@@ -75,9 +73,11 @@ public class RulesManagerTest {
         def.put(Constants.SUBSERVICE_FIELD, String.class);
         def.put(Constants.SERVICE_FIELD, String.class);
         //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-        ConfigurationCommon cfg = epService.getConfigurationDeepCopy().getCommon();
+        //cfg.addEventType("iotEvent", def);
+        configuration.getCommon().addEventType("iotEvent", def);
 
-        cfg.addEventType("iotEvent", def);
+        epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+        //epService.initialize(); // ?
     }
 
     @BeforeClass
@@ -114,42 +114,16 @@ public class RulesManagerTest {
         String epl = Help.ExampleRules()[0];
         //EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
 
-        // Deployment for compile newEPL
-        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-        CompilerArguments arguments = new CompilerArguments(configuration);
-        arguments.getPath().add(epService.getRuntimePath());
-        EPCompiled epCompiled = null;
-        try {
-            epCompiled = EPCompilerProvider.getCompiler().compile(epl, arguments);
-        } catch (EPCompileException ex) {
-            throw new RuntimeException(ex);
-        }
-        EPDeployment deploymentForEPL;
-        try {
-            deploymentForEPL = epa.deploy(epCompiled);
-        } catch (EPDeployException ex) {
-            throw new RuntimeException(ex);
-        }
+        EPDeployment deployment = Utils.compileDeploy(epService, epl, ruleName);
+        EPStatement st = deployment.getStatements()[0];
 
-        String dId = deploymentForEPL.getDeploymentId();
-        EPStatement st = epa.getStatement(dId, ruleName);
         Result result = RulesManager.get(epService, ruleName);
         assertEquals(200, result.getStatusCode());
         result = RulesManager.get(epService, "it does not exist, we hope");
         assertEquals(404, result.getStatusCode());
 
-
         //EPStatement st2 = epService.getEPAdministrator().getStatement(ruleName);
-        EPStatement st2 = null;
-        String[] deploymentIds = epa.getDeployments();
-        dId = null;
-        for (String deploymentId : deploymentIds) {
-            st2 = epa.getStatement(deploymentId, ruleName);
-            if (st2 != null) {
-                dId = deploymentId;
-                break;
-            }
-        }
+        EPStatement st2 = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(st, st2);
     }
@@ -166,20 +140,10 @@ public class RulesManagerTest {
 
         Result result = RulesManager.make(epService, text);
         assertEquals(200, result.getStatusCode());
+
         //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
-
         EPDeploymentService epa = epService.getDeploymentService();
-
-        EPStatement st = null;
-        String[] deploymentIds = epa.getDeployments();
-        String dId = null;
-        for (String deploymentId : deploymentIds) {
-            st = epa.getStatement(deploymentId, ruleName);
-            if (st != null) {
-                dId = deploymentId;
-                break;
-            }
-        }
+        EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
         assertEquals(ruleName, st.getName());
@@ -201,7 +165,6 @@ public class RulesManagerTest {
         EPDeploymentService epa = epService.getDeploymentService();
 
         //String[] names = epService.getEPAdministrator().getStatementNames();
-
         ArrayList<String> names = new ArrayList<String>();
         String[] deploymentIds = epa.getDeployments();
         for (String deploymentId : deploymentIds) {
@@ -215,16 +178,7 @@ public class RulesManagerTest {
         assertEquals(1, names.size());
 
         //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
-        EPStatement st = null;
-        deploymentIds = epa.getDeployments();
-        String dId = null;
-        for (String deploymentId : deploymentIds) {
-            st = epa.getStatement(deploymentId, ruleName);
-            if (st != null) {
-                dId = deploymentId;
-                break;
-            }
-        }
+        EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
         assertEquals(ruleName, st.getName());
@@ -243,41 +197,17 @@ public class RulesManagerTest {
 
         //EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
 
-        // Deployment for compile newEPL
-        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-        CompilerArguments arguments = new CompilerArguments(configuration);
-        arguments.getPath().add(epService.getRuntimePath());
-        EPCompiled epCompiled = null;
-        try {
-            epCompiled = EPCompilerProvider.getCompiler().compile(epl, arguments);
-        } catch (EPCompileException ex) {
-            throw new RuntimeException(ex);
-        }
-        EPDeployment deploymentForEPL;
-        try {
-            deploymentForEPL = epa.deploy(epCompiled);
-        } catch (EPDeployException ex) {
-            throw new RuntimeException(ex);
-        }
-        String dId = deploymentForEPL.getDeploymentId();
-        EPStatement st = epa.getStatement(dId, ruleName);
+        EPDeployment deployment = Utils.compileDeploy(epService, epl, ruleName);
+        EPStatement st = deployment.getStatements()[0];
 
         assertNotNull(st);
+
         Result result = RulesManager.delete(epService, ruleName);
         assertEquals(200, result.getStatusCode());
 
         //EPStatement st2 = epService.getEPAdministrator().getStatement(ruleName);
+        EPStatement st2 = Utils.getStatementFromDeployService(epa, ruleName);
 
-        EPStatement st2 = null;
-        String[] deploymentIds = epa.getDeployments();
-        dId = null;
-        for (String deploymentId : deploymentIds) {
-            st2 = epa.getStatement(deploymentId, ruleName);
-            if (st2 != null) {
-                dId = deploymentId;
-                break;
-            }
-        }
         assertEquals(null, st2);
     }
 }

@@ -24,6 +24,10 @@ package com.telefonica.iot.perseo;
 import com.espertech.esper.runtime.client.*;
 import com.espertech.esper.common.client.*;
 import com.espertech.esper.common.client.util.StatementProperty;
+import com.espertech.esper.compiler.client.CompilerArguments;
+import com.espertech.esper.compiler.client.option.StatementNameOption;
+import com.espertech.esper.compiler.client.option.StatementNameContext;
+import com.espertech.esper.compiler.client.EPCompilerProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,21 +81,22 @@ public class Utils {
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
             //epService = EPServiceProviderManager.getDefaultProvider(configuration);
-            epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
             def.put(Constants.SUBSERVICE_FIELD, String.class);
             def.put(Constants.SERVICE_FIELD, String.class);
+
+            configuration.getCommon().addEventType("iotEvent", def);
+
             //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-            com.espertech.esper.common.client.configuration.Configuration cfgCopy = epService.getConfigurationDeepCopy();
-            ConfigurationCommon cfg = cfgCopy.getCommon();
-            cfg.addEventType(Constants.IOT_EVENT, def);
+            //cfg.addEventType(Constants.IOT_EVENT, def);
 
             // Add perseo-utils library
-            cfg.addImport("com.telefonica.iot.perseo.utils.*");
+            configuration.getCommon().addImport("com.telefonica.iot.perseo.utils.*");
 
-            ConfigurationCompiler cfgCpl = cfgCopy.getCompiler();
+            ConfigurationCompiler cfgCpl = configuration.getCompiler();
 
             // Add Single row function for perseo-utils functions
             try {
@@ -122,6 +127,10 @@ public class Utils {
             } catch (ConfigurationException e) {
                 logger.error(e.getMessage());
             }
+
+            epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+            //epService.initialize();
+
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
         }
         return epService;
@@ -197,20 +206,20 @@ public class Utils {
      * @param st Esper statement
      * @return JSONObject
      */
-    public static JSONObject Statement2JSONObject(EPStatement st) {
-        if (st == null) {
-            return null;
-        }
-        JSONObject jo = new JSONObject()
-                .put("name", st.getName())
-             // .put("text", st.getText())
-                .put("text", st.getProperty(StatementProperty.EPL))
-             // .put("state", st.getState())
-                .put("state", st.isDestroyed())
-             // .put("timeLastStateChange", st.getTimeLastStateChange());
-                .put("timeLastStateChange", "TBD");
-        return jo;
-    }
+    // public static JSONObject Statement2JSONObject(EPStatement st) {
+    //     if (st == null) {
+    //         return null;
+    //     }
+    //     JSONObject jo = new JSONObject()
+    //             .put("name", st.getName())
+    //          // .put("text", st.getText())
+    //             .put("text", st.getProperty(StatementProperty.EPL))
+    //          // .put("state", st.getState())
+    //             .put("state", st.isDestroyed())
+    //          // .put("timeLastStateChange", st.getTimeLastStateChange());
+    //             .put("timeLastStateChange", "TBD");
+    //     return jo;
+    // }
 
     public static JSONObject Statement2JSONObject(EPStatement st, EPDeploymentService epService, String deploymentId) {
         if (st == null) {
@@ -220,7 +229,7 @@ public class Utils {
                 .put("name", st.getName())
                 .put("text", st.getProperty(StatementProperty.EPL))
                 .put("state", st.isDestroyed())
-                .put("timeLastStateChange", epService.getDeployment(deploymentId).getLastUpdateDate());
+                .put("timeLastStateChange", epService.getDeployment(deploymentId).getLastUpdateDate().getTime());
         return jo;
     }
 
@@ -380,4 +389,73 @@ public class Utils {
             return false;
         }
     }
+
+    /*
+     * A name resolver
+     */
+    private static class MyStatementNameResolver implements StatementNameOption {
+        private String name;
+        public MyStatementNameResolver(String n) {
+            this.name = n;
+        }
+        public String getValue(StatementNameContext env) {
+            return this.name;
+        }
+    }
+
+    /*
+     * A method that can replace createEPL calls of Esper-7
+     */
+    public static EPDeployment compileDeploy(EPRuntime runtime, String epl, String name) {
+
+        try {
+            // Obtain a copy of the engine configuration
+            com.espertech.esper.common.client.configuration.Configuration configuration = runtime.getConfigurationDeepCopy();
+
+            Map<String, Object> def = new HashMap<String, Object>();
+            def.put("id", String.class);
+            def.put("type", String.class);
+            def.put(Constants.SUBSERVICE_FIELD, String.class);
+            def.put(Constants.SERVICE_FIELD, String.class);
+            configuration.getCommon().addEventType("iotEvent", def);
+
+            // Build compiler arguments
+            CompilerArguments args = new CompilerArguments(configuration);
+
+            args.getOptions().setStatementName(new MyStatementNameResolver(name));
+
+            // Make the existing EPL objects available to the compiler
+            args.getPath().add(runtime.getRuntimePath());
+
+            // Compile
+            EPCompiled compiled = EPCompilerProvider.getCompiler().compile(epl, args);
+
+            // Return the deployment
+            return runtime.getDeploymentService().deploy(compiled);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /*
+     * A method that can replace getStatement calls of Esper-7:
+     */
+    public static EPStatement getStatementFromDeployService(EPDeploymentService epDeployService, String ruleName) {
+        try {
+            EPStatement st = null;
+            String[] deploymentIds = epDeployService.getDeployments();
+            for (String deploymentId : deploymentIds) {
+                st = epDeployService.getStatement(deploymentId, ruleName);
+                if (st != null) {
+                    break;
+                }
+            }
+            return st;
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
 }
