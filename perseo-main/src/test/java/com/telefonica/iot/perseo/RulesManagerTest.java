@@ -77,7 +77,6 @@ public class RulesManagerTest {
         configuration.getCommon().addEventType("iotEvent", def);
 
         epService = EPRuntimeProvider.getDefaultRuntime(configuration);
-        //epService.initialize(); // ?
     }
 
     @BeforeClass

@@ -356,14 +356,14 @@ public class RulesManager {
                 //Allow to delete inexistent rule
                 if (st != null) {
                     //st.destroy();
+                    String stString = Utils.Statement2JSONObject(st, epa, dId).toString();
                     try {
                         epa.undeploy(dId);
                     } catch (EPUndeployException ex) {
                         throw new RuntimeException(ex);
                     }
                     logger.debug(String.format("deleted statement: %s", ruleName));
-                    return new Result(HttpServletResponse.SC_OK,
-                                      Utils.Statement2JSONObject(st, epa, dId).toString());
+                    return new Result(HttpServletResponse.SC_OK, stString);
                 } else {
                     logger.debug(String.format("asked for deleting inexistent statement: %s", ruleName));
                     return new Result(HttpServletResponse.SC_OK, "{}");

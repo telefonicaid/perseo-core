@@ -129,7 +129,6 @@ public class Utils {
             }
 
             epService = EPRuntimeProvider.getDefaultRuntime(configuration);
-            //epService.initialize();
 
             sc.setAttribute(EPSERV_ATTR_NAME, epService);
         }

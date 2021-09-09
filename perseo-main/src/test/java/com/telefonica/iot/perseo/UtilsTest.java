@@ -176,7 +176,6 @@ public class UtilsTest {
         //EPStatement st = epService.getEPAdministrator().createEPL(epl, name);
 
         EPRuntime epService = EPRuntimeProvider.getDefaultRuntime(configuration);
-        //epService.initialize();
 
         EPDeployment deployment = Utils.compileDeploy(epService, epl, name);
         EPStatement st = deployment.getStatements()[0];
@@ -188,10 +187,9 @@ public class UtilsTest {
         //assertEquals(st.getText(), result.getString("text"));
         assertEquals(st.getProperty(StatementProperty.EPL).toString(), result.getString("text"));
         //assertEquals(st.getState(), result.get("state"));
-        // TBD: assertEquals(st.isDestroyed(), result.get("state"));
-        //assertEquals(st.getName(), result.getString("name"));
+        assertEquals(st.isDestroyed(), result.get("state"));
         //assertEquals(st.getTimeLastStateChange(), result.getLong("timeLastStateChange"));
-        assertEquals(epa.getDeployment(deployment.getDeploymentId()).getLastUpdateDate(), result.getLong("timeLastStateChange"));
+        assertEquals(epa.getDeployment(deployment.getDeploymentId()).getLastUpdateDate().getTime(), result.getLong("timeLastStateChange"));
     }
 
     /**
