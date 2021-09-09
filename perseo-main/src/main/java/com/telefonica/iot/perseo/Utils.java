@@ -28,6 +28,7 @@ import com.espertech.esper.compiler.client.CompilerArguments;
 import com.espertech.esper.compiler.client.option.StatementNameOption;
 import com.espertech.esper.compiler.client.option.StatementNameContext;
 import com.espertech.esper.compiler.client.EPCompilerProvider;
+import com.espertech.esper.common.client.util.EventTypeBusModifier;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,6 +78,9 @@ public class Utils {
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
         //configuration.getEngineDefaults().getExpression().setUdfCache(false);
         configuration.getCompiler().getExpression().setUdfCache(false);
+        configuration.getCompiler().getByteCode().setAllowSubscriber(true);
+        configuration.getCompiler().getByteCode().setAccessModifiersPublic();
+        configuration.getCompiler().getByteCode().setBusModifierEventType(EventTypeBusModifier.BUS);
         //EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
@@ -88,7 +92,7 @@ public class Utils {
             def.put(Constants.SUBSERVICE_FIELD, String.class);
             def.put(Constants.SERVICE_FIELD, String.class);
 
-            configuration.getCommon().addEventType("iotEvent", def);
+            configuration.getCommon().addEventType(Constants.IOT_EVENT, def);
 
             //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
             //cfg.addEventType(Constants.IOT_EVENT, def);
@@ -410,7 +414,9 @@ public class Utils {
         try {
             // Obtain a copy of the engine configuration
             com.espertech.esper.common.client.configuration.Configuration configuration = runtime.getConfigurationDeepCopy();
-
+            configuration.getCompiler().getByteCode().setAllowSubscriber(true);
+            configuration.getCompiler().getByteCode().setAccessModifiersPublic();
+            configuration.getCompiler().getByteCode().setBusModifierEventType(EventTypeBusModifier.BUS);
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
             def.put("type", String.class);
