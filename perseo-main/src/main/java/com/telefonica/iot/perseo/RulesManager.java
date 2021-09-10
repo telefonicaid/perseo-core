@@ -263,7 +263,7 @@ public class RulesManager {
                     //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
 
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
-                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                    logger.info(String.format("statement json: %s", Utils.Statement2JSONObject(
                                                                                                 deployment.getStatements()[0],
                                                                                                 epa,
                                                                                                 deployment.getDeploymentId()
@@ -304,11 +304,11 @@ public class RulesManager {
                 //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
                 EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, o);
 
-                logger.debug(String.format("unexpected statement: %s", o));
+                logger.info(String.format("unexpected statement: %s", o));
                 //if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
                 String dId = prevStmnt.getDeploymentId();
                 if (epa.getDeployment(dId).getLastUpdateDate().getTime() < now - maxAge) {
-                    logger.debug(String.format("unexpected statement, too old: %s", o));
+                    logger.info(String.format("unexpected statement, too old: %s", o));
                     //prevStmnt.destroy();
                     try {
                         epa.undeploy(dId);
@@ -348,27 +348,26 @@ public class RulesManager {
             logger.debug(String.format("delete rule: %s" ,ruleName));
             //EPAdministrator epa = epService.getEPAdministrator();
             EPDeploymentService epa = epService.getDeploymentService();
-
             if (ruleName.length() != 0) {
                 //EPStatement st = epa.getStatement(ruleName);
                 EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
-                String dId = st.getDeploymentId();
-                //Allow to delete inexistent rule
                 if (st != null) {
-                    //st.destroy();
-                    String stString = Utils.Statement2JSONObject(st, epa, dId).toString();
+                    String stString = null;
                     try {
+                        //st.destroy();
+                        String dId = st.getDeploymentId();
+                        stString = Utils.Statement2JSONObject(st, epa, dId).toString();
                         epa.undeploy(dId);
                     } catch (EPUndeployException ex) {
+                        logger.error(String.format("undeploy error %s", ex));
                         throw new RuntimeException(ex);
                     }
-                    logger.debug(String.format("deleted statement: %s", ruleName));
+                    logger.debug(String.format("deleted statement: name %s and rule %s", ruleName, stString));
                     return new Result(HttpServletResponse.SC_OK, stString);
-                } else {
+                } else { //Allow to delete inexistent rule
                     logger.debug(String.format("asked for deleting inexistent statement: %s", ruleName));
                     return new Result(HttpServletResponse.SC_OK, "{}");
                 }
-
             } else {
                 return new Result(HttpServletResponse.SC_NOT_FOUND, "{\"error\":\"not rule specified for deleting\"}");
             }
