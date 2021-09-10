@@ -168,11 +168,7 @@ public class RulesServletTest {
         try {
             String url = String.format("http://127.0.0.1:%d/nothing", Help.PORT);
             Help.Res r = Help.doDelete(url);
-            //assertEquals(200, r.getCode());
-            assertEquals(400, r.getCode());
-            url = String.format("http://127.0.0.1:%d/", Help.PORT);
-            r = Help.doDelete(url);
-            assertEquals(404, r.getCode());
+            assertEquals(200, r.getCode());
         } finally {
             server.stop();
         }
