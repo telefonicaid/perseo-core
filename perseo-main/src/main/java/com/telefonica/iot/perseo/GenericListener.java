@@ -61,18 +61,21 @@ public class GenericListener implements UpdateListener {
                 Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
 
                 // Get Rule Information from TimeRulesStore
-                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo((String) eventMap.get("ruleName"));
+                String ruleName = (String) eventMap.get("ruleName");
+                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo(ruleName);
 
                 // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
                 if (rule != null) {
 
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
-                    LOGGER.info(String.format("Firing temporal rule: %s",event));
+                    LOGGER.info(String.format("Firing temporal rule: %s with name %s from event: %s",
+                                               rule.toString(), ruleName, event));
 
                 } else {
 
-                    LOGGER.info(String.format("Firing Rule: %s",event));
+                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
+                                              ruleName, event));
                 }
 
                 LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));

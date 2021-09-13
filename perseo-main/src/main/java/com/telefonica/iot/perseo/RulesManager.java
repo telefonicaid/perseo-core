@@ -180,6 +180,7 @@ public class RulesManager {
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
                     String dId = deployment.getDeploymentId();
                     statement = deployment.getStatements()[0];
+                    logger.debug(String.format("re-created statement: %s", name));
                     logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
                                                                                                 statement,
                                                                                                 epa,
@@ -263,7 +264,7 @@ public class RulesManager {
                     //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
 
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
-                    logger.info(String.format("statement json: %s", Utils.Statement2JSONObject(
+                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
                                                                                                 deployment.getStatements()[0],
                                                                                                 epa,
                                                                                                 deployment.getDeploymentId()
@@ -287,6 +288,7 @@ public class RulesManager {
                         //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
 
                         EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
+                        logger.debug(String.format("re-created statement: %s" ,n));
                         logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
                                                                                                     deployment.getStatements()[0],
                                                                                                     epa,
@@ -304,11 +306,11 @@ public class RulesManager {
                 //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
                 EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, o);
 
-                logger.info(String.format("unexpected statement: %s", o));
+                logger.debug(String.format("unexpected statement: %s", o));
                 //if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
                 String dId = prevStmnt.getDeploymentId();
                 if (epa.getDeployment(dId).getLastUpdateDate().getTime() < now - maxAge) {
-                    logger.info(String.format("unexpected statement, too old: %s", o));
+                    logger.debug(String.format("unexpected statement, too old: %s", o));
                     //prevStmnt.destroy();
                     try {
                         epa.undeploy(dId);
