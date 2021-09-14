@@ -36,6 +36,7 @@ import com.espertech.esper.common.client.EventType;
 import com.espertech.esper.common.client.FragmentEventType;
 import com.espertech.esper.common.client.PropertyAccessException;
 import com.espertech.esper.common.client.type.EPTypeClass;
+import com.espertech.esper.common.client.type.EPType;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -145,6 +146,11 @@ public class EventBeanMock implements EventBean {
 
         @Override
         public EPTypeClass getUnderlyingEPType() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public EPType getPropertyEPType(java.lang.String)
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         };
