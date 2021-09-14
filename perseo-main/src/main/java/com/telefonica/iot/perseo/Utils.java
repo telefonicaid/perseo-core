@@ -439,7 +439,7 @@ public class Utils {
             return runtime.getDeploymentService().deploy(compiled);
         }
         catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new EPException(ex.getMessage());
         }
     }
 
@@ -459,7 +459,7 @@ public class Utils {
             return st;
         }
         catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new EPException(ex.getMessage());
         }
     }
 
