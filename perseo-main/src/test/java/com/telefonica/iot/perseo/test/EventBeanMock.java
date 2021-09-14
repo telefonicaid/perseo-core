@@ -142,7 +142,12 @@ public class EventBeanMock implements EventBean {
         public java.util.Set<EventType> getDeepSuperTypesAsSet(){
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-    };
+
+        @Override
+        public EPTypeClass getUnderlyingEPType() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        };
 
     @Override
     public EventType getEventType() {
@@ -159,9 +164,7 @@ public class EventBeanMock implements EventBean {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public EPTypeClass getUnderlyingEPType() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
     @Override
     public Object getFragment(String string) throws PropertyAccessException {
