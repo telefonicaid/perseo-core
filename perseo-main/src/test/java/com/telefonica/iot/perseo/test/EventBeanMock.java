@@ -150,7 +150,7 @@ public class EventBeanMock implements EventBean {
         }
 
         @Override
-        public EPType getPropertyEPType(java.lang.String)
+        public EPType getPropertyEPType(java.lang.String) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         };
