@@ -35,7 +35,7 @@ import com.espertech.esper.common.client.meta.EventTypeMetadata;
 import com.espertech.esper.common.client.EventType;
 import com.espertech.esper.common.client.FragmentEventType;
 import com.espertech.esper.common.client.PropertyAccessException;
-import com.espertech.esper.common.client.type.EPTypeClass:
+import com.espertech.esper.common.client.type.EPTypeClass;
 import java.util.Iterator;
 import java.util.Map;
 
