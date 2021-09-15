@@ -44,14 +44,19 @@ public class Help {
 
     public static String[] ExampleRules() {
         return new String[]{
-                 "select id, price? as Price from iotEvent.win:length(100) group by id",
-                    "@Audit select *,'blood_1_action' as iotcepaction,"
+            // Put here all EPL text rules to be compiled at test execution time
+                 "select id, price? as Price from iotEvent.win:length(100) group by id"
+                 ,"@Audit select *,'blood_1_action' as iotcepaction,"
                     + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
                     + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
-                    + " and type='BloodMeter')]"};  
+                    + " and type='BloodMeter')]"
+                 ,"SELECT current_timestamp() as r FROM iotEvent WHERE cast(value?,int) > 10"
+                 ,"expression twoPI alias for { java.lang.Math.PI * 2 > 5 } SELECT *, twoPI as r FROM iotEvent WHERE twoPI"
+        };
     }
     public static String[] ExampleNotices() {
         return new String[]{
+            // Put here all notices to be sent perseo-core at test execution time
             "{\n"
             + "\"BloodPressure\": 2,\n"
             + "\"id\":\"guay!\",\n"
@@ -63,10 +68,23 @@ public class Help {
             + " \"subflotante\": 12.3,\n"
             + " \"sub2\": { \"valor\": 3}\n"
             + " }\n"
-            + "}"};
+            + "}"
+            ,"{ \n"
+            + "\"BloodPressure\": 4,\n"
+            + "\"id\":\"perfect!\",\n"
+            + "\"otro\":\"mas\",\n"
+            + "\"numero\":33,\n"
+            + "\"sub\": {\n"
+            + " \"subnumero\":18,\n"
+            + " \"subcadena\":\"SUB2\",\n"
+            + " \"subflotante\": 12.3,\n"
+            + " \"sub2\": { \"valor\": 5}\n"
+            + " }\n"
+            + "}"
+        };
     }
-           
-       
+
+
     public static class Res {
 
         private int code;
