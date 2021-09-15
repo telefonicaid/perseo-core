@@ -19,14 +19,10 @@
 
 package com.telefonica.iot.perseo;
 
-//import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.runtime.client.EPDeploymentService;
 import com.espertech.esper.runtime.client.EPDeployment;
-//import com.espertech.esper.client.EPException;
 import com.espertech.esper.common.client.EPException;
-//import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.runtime.client.EPRuntime;
-//import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.runtime.client.EPStatement;
 import com.espertech.esper.common.client.configuration.Configuration;
 import com.espertech.esper.compiler.client.CompilerArguments;
@@ -65,16 +61,13 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    //public static synchronized Result get(EPServiceProvider epService, String ruleName) {
     public static synchronized Result get(EPRuntime epService, String ruleName) {
         try {
             logger.debug(String.format("rule asked for: %s", ruleName));
             ruleName = ruleName == null ? "" : ruleName;
-            //EPAdministrator epa = epService.getEPAdministrator();
             EPDeploymentService epa = epService.getDeploymentService();
 
             if (ruleName.length() != 0) {
-                // EPStatement st = epa.getStatement(ruleName);
                 EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
                 if (st == null) {
                     return new Result(HttpServletResponse.SC_NOT_FOUND,
@@ -95,13 +88,6 @@ public class RulesManager {
                         ja.put(Utils.Statement2JSONObject(st, epa, deploymentId));
                     }
                 }
-                // String[] sttmntNames = epa.getStatementNames();
-                // JSONArray ja = new JSONArray();
-                // for (String name : sttmntNames) {
-                //     logger.debug(String.format("getting rule %s", name));
-                //     EPStatement st = epa.getStatement(name);
-                //     ja.put(Utils.Statement2JSONObject(st));
-                // }
                 return new Result(HttpServletResponse.SC_OK, ja.toString());
             }
 
@@ -122,7 +108,6 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    //public static synchronized Result make(EPServiceProvider epService, String text) {
     public static synchronized Result make(EPRuntime epService, String text) {
         try {
             logger.debug(String.format("rule text: %s", text));
@@ -144,14 +129,11 @@ public class RulesManager {
             logger.debug(String.format("statement text: %s",newEpl));
          
             EPStatement statement = null;
-            //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(name);
             EPDeploymentService epa = epService.getDeploymentService();
             EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, name);
 
             if (prevStmnt == null) {
                 logger.debug(String.format("found new statement: %s", name));
-
-                //statement = epService.getEPAdministrator().createEPL(newEpl, name);
 
                 EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
                 String dId = deployment.getDeploymentId();
@@ -163,19 +145,16 @@ public class RulesManager {
                                                                                             )));
                 statement.addListener(new GenericListener());
             } else {
-                //String oldEpl = prevStmnt.getText();
                 String oldEpl = prevStmnt.getProperty(StatementProperty.EPL).toString();
                 logger.debug(String.format("old epl: %s", oldEpl));
                 if (!newEpl.equals(oldEpl)) {
                     logger.debug(String.format("found changed statement: %s",name));
-                    //prevStmnt.destroy();
                     try {
                         epa.undeploy(prevStmnt.getDeploymentId());
                     } catch (EPUndeployException ex) {
                         throw new RuntimeException(ex);
                     }
                     logger.debug(String.format("deleted statement: %s",name));
-                    //statement = epService.getEPAdministrator().createEPL(newEpl, name);
 
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
                     String dId = deployment.getDeploymentId();
@@ -218,7 +197,6 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    //public static synchronized Result updateAll(EPServiceProvider epService, String text) {
     public static synchronized Result updateAll(EPRuntime epService, String text) {
         try {
             long maxAge = com.telefonica.iot.perseo.Configuration.getMaxAge();
@@ -245,7 +223,6 @@ public class RulesManager {
                 newOnes.put(name, newEpl);
             }
 
-            //oldOnesNames.addAll(Arrays.asList(epService.getEPAdministrator().getStatementNames()));
             EPDeploymentService epa = epService.getDeploymentService();
             String[] deploymentIds = epa.getDeployments();
             for (String deploymentId : deploymentIds) {
@@ -261,7 +238,6 @@ public class RulesManager {
 
                 if (!oldOnesNames.contains(n)) {
                     logger.debug(String.format("found new statement: %s", n));
-                    //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
 
                     EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
                     logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
@@ -271,21 +247,17 @@ public class RulesManager {
                                                                                                 )));
                     deployment.getStatements()[0].addListener(new GenericListener());
                 } else {
-                    //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(n);
                     EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, n);
 
-                    //String oldEPL = prevStmnt.getText();
                     String oldEPL = prevStmnt.getProperty(StatementProperty.EPL).toString();
                     if (!oldEPL.equals(newOnes.get(n))) {
                         logger.debug(String.format("found changed statement: %s", n));
-                        //prevStmnt.destroy();
                         try {
                             epa.undeploy(prevStmnt.getDeploymentId());
                         } catch (EPUndeployException ex) {
                             throw new RuntimeException(ex);
                         }
                         logger.debug(String.format("deleted statement: %s", n));
-                        //EPStatement statement = epService.getEPAdministrator().createEPL(newEpl, n);
 
                         EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
                         logger.debug(String.format("re-created statement: %s" ,n));
@@ -303,15 +275,12 @@ public class RulesManager {
             }
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
-                //EPStatement prevStmnt = epService.getEPAdministrator().getStatement(o);
                 EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, o);
 
                 logger.debug(String.format("unexpected statement: %s", o));
-                //if (prevStmnt.getTimeLastStateChange() < now - maxAge) {
                 String dId = prevStmnt.getDeploymentId();
                 if (epa.getDeployment(dId).getLastUpdateDate().getTime() < now - maxAge) {
                     logger.debug(String.format("unexpected statement, too old: %s", o));
-                    //prevStmnt.destroy();
                     try {
                         epa.undeploy(dId);
                     } catch (EPUndeployException ex) {
@@ -343,20 +312,16 @@ public class RulesManager {
      *
      * @return Result object with a code and a JSON response
      */
-    //public static synchronized Result delete(EPServiceProvider epService, String ruleName) {
     public static synchronized Result delete(EPRuntime epService, String ruleName) {            
         try {
             ruleName = ruleName == null ? "" : ruleName;
             logger.debug(String.format("delete rule: %s" ,ruleName));
-            //EPAdministrator epa = epService.getEPAdministrator();
             EPDeploymentService epa = epService.getDeploymentService();
             if (ruleName.length() != 0) {
-                //EPStatement st = epa.getStatement(ruleName);
                 EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
                 if (st != null) {
                     String stString = null;
                     try {
-                        //st.destroy();
                         String dId = st.getDeploymentId();
                         stString = Utils.Statement2JSONObject(st, epa, dId).toString();
                         epa.undeploy(dId);

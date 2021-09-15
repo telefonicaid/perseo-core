@@ -18,14 +18,6 @@
 */
 
 package com.telefonica.iot.perseo.test;
-// import com.espertech.esper.client.EventBean;
-// import com.espertech.esper.client.EventPropertyDescriptor;
-// import com.espertech.esper.client.EventPropertyGetter;
-// import com.espertech.esper.client.EventPropertyGetterIndexed;
-// import com.espertech.esper.client.EventPropertyGetterMapped;
-// import com.espertech.esper.client.EventType;
-// import com.espertech.esper.client.FragmentEventType;
-// import com.espertech.esper.client.PropertyAccessException;
 import com.espertech.esper.common.client.EventBean;
 import com.espertech.esper.common.client.EventPropertyDescriptor;
 import com.espertech.esper.common.client.EventPropertyGetter;
@@ -35,8 +27,8 @@ import com.espertech.esper.common.client.meta.EventTypeMetadata;
 import com.espertech.esper.common.client.EventType;
 import com.espertech.esper.common.client.FragmentEventType;
 import com.espertech.esper.common.client.PropertyAccessException;
-// import com.espertech.esper.common.client.type.EPTypeClass;
-// import com.espertech.esper.common.client.type.EPType;
+import com.espertech.esper.common.client.type.EPTypeClass;
+import com.espertech.esper.common.client.type.EPType;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -119,11 +111,6 @@ public class EventBeanMock implements EventBean {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        // @Override
-        // public int getEventTypeId() {
-        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        // }
-
         @Override
         public String getStartTimestampPropertyName() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -144,15 +131,15 @@ public class EventBeanMock implements EventBean {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        // @Override
-        // public EPTypeClass getUnderlyingEPType() {
-        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        // }
+        @Override
+        public EPTypeClass getUnderlyingEPType() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 
-        // @Override
-        // public EPType getPropertyEPType(java.lang.String string) {
-        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        // }
+        @Override
+        public EPType getPropertyEPType(java.lang.String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
         };
 
     @Override

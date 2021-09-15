@@ -21,18 +21,13 @@ package com.telefonica.iot.perseo;
 
 import com.telefonica.iot.perseo.test.ServletContextMock;
 import com.telefonica.iot.perseo.test.EventBeanMock;
-// import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.common.client.configuration.Configuration;
 import com.espertech.esper.common.client.configuration.*;
 import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
-// import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.runtime.client.EPRuntime;
-// import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.runtime.client.EPRuntimeProvider;
-// import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.runtime.client.EPStatement;
-// import com.espertech.esper.client.EventBean;
 import com.espertech.esper.common.client.EventBean;
 import com.espertech.esper.runtime.client.EPStatement;
 import com.espertech.esper.runtime.client.EPDeploymentService;
@@ -100,11 +95,9 @@ public class UtilsTest {
     public void testInitEPService() {
         logger.info("initEPService");
         ServletContext sc = new ServletContextMock();
-        //EPServiceProvider result = Utils.initEPService(sc);
         EPRuntime result = Utils.initEPService(sc);
         assertEquals(sc.getAttribute("epService"), result);
         //Do not create a new one if it already exists
-        //EPServiceProvider result2 = Utils.initEPService(sc);
         EPRuntime result2 = Utils.initEPService(sc);
         assertEquals(result, result2);
     }
@@ -162,7 +155,6 @@ public class UtilsTest {
         final String epl = Help.ExampleRules()[1];
         final String name = "rule name";
         logger.info("Statement2JSONObject");
-        //EPServiceProvider epService = EPServiceProviderManager.getDefaultProvider();
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
 
         Map<String, Object> def = new HashMap<String, Object>();
@@ -170,10 +162,7 @@ public class UtilsTest {
         def.put("type", String.class);
         def.put(Constants.SUBSERVICE_FIELD, String.class);
         def.put(Constants.SERVICE_FIELD, String.class);
-        //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-        //cfg.addEventType("iotEvent", def);
         configuration.getCommon().addEventType("iotEvent", def);
-        //EPStatement st = epService.getEPAdministrator().createEPL(epl, name);
 
         EPRuntime epService = EPRuntimeProvider.getDefaultRuntime(configuration);
 
@@ -184,11 +173,8 @@ public class UtilsTest {
 
         JSONObject result = Utils.Statement2JSONObject(st, epa, deployment.getDeploymentId());
         assertEquals(st.getName(), result.getString("name"));
-        //assertEquals(st.getText(), result.getString("text"));
         assertEquals(st.getProperty(StatementProperty.EPL).toString(), result.getString("text"));
-        //assertEquals(st.getState(), result.get("state"));
         assertEquals(st.isDestroyed(), result.get("state"));
-        //assertEquals(st.getTimeLastStateChange(), result.getLong("timeLastStateChange"));
         assertEquals(epa.getDeployment(deployment.getDeploymentId()).getLastUpdateDate().getTime(), result.getLong("timeLastStateChange"));
     }
 

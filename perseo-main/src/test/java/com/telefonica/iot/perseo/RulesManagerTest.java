@@ -19,16 +19,12 @@
 
 package com.telefonica.iot.perseo;
 
-//import com.espertech.esper.client.ConfigurationOperations;
 import com.espertech.esper.common.client.configuration.Configuration;
 import com.espertech.esper.common.client.configuration.*;
 import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
-//import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.runtime.client.EPRuntime;
-//import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.runtime.client.EPRuntimeProvider;
-//import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.runtime.client.EPStatement;
 import com.espertech.esper.runtime.client.EPDeploymentService;
 import com.espertech.esper.runtime.client.EPDeployment;
@@ -60,11 +56,9 @@ import static org.junit.Assert.*;
  */
 public class RulesManagerTest {
 
-    //EPServiceProvider epService;
     EPRuntime epService;
     private static final Logger logger = LoggerFactory.getLogger(RulesManagerTest.class);
     public RulesManagerTest() {
-        //epService = EPServiceProviderManager.getDefaultProvider();
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
 
         Map<String, Object> def = new HashMap<String, Object>();
@@ -72,8 +66,6 @@ public class RulesManagerTest {
         def.put("type", String.class);
         def.put(Constants.SUBSERVICE_FIELD, String.class);
         def.put(Constants.SERVICE_FIELD, String.class);
-        //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-        //cfg.addEventType("iotEvent", def);
         configuration.getCommon().addEventType("iotEvent", def);
 
         epService = EPRuntimeProvider.getDefaultRuntime(configuration);
@@ -89,7 +81,6 @@ public class RulesManagerTest {
 
     @Before
     public void setUp() {
-        //epService.getEPAdministrator().destroyAllStatements();
         try {
             epService.getDeploymentService().undeployAll();
         } catch (EPUndeployException ex) {
@@ -111,7 +102,6 @@ public class RulesManagerTest {
         logger.info("get");
         String ruleName = "ccc";
         String epl = Help.ExampleRules()[0];
-        //EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
 
         EPDeployment deployment = Utils.compileDeploy(epService, epl, ruleName);
         EPStatement st = deployment.getStatements()[0];
@@ -121,7 +111,6 @@ public class RulesManagerTest {
         result = RulesManager.get(epService, "it does not exist, we hope");
         assertEquals(404, result.getStatusCode());
 
-        //EPStatement st2 = epService.getEPAdministrator().getStatement(ruleName);
         EPStatement st2 = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(st, st2);
@@ -142,7 +131,6 @@ public class RulesManagerTest {
             Result result = RulesManager.make(epService, text);
             assertEquals(200, result.getStatusCode());
 
-            //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
             EPDeploymentService epa = epService.getDeploymentService();
             EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
@@ -167,7 +155,6 @@ public class RulesManagerTest {
 
         EPDeploymentService epa = epService.getDeploymentService();
 
-        //String[] names = epService.getEPAdministrator().getStatementNames();
         ArrayList<String> names = new ArrayList<String>();
         String[] deploymentIds = epa.getDeployments();
         for (String deploymentId : deploymentIds) {
@@ -180,7 +167,6 @@ public class RulesManagerTest {
 
         assertEquals(1, names.size());
 
-        //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
         EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
@@ -198,8 +184,6 @@ public class RulesManagerTest {
 
         EPDeploymentService epa = epService.getDeploymentService();
 
-        //EPStatement st = epService.getEPAdministrator().createEPL(epl, ruleName);
-
         EPDeployment deployment = Utils.compileDeploy(epService, epl, ruleName);
         EPStatement st = deployment.getStatements()[0];
 
@@ -208,7 +192,6 @@ public class RulesManagerTest {
         Result result = RulesManager.delete(epService, ruleName);
         assertEquals(200, result.getStatusCode());
 
-        //EPStatement st2 = epService.getEPAdministrator().getStatement(ruleName);
         EPStatement st2 = Utils.getStatementFromDeployService(epa, ruleName);
 
         assertEquals(null, st2);

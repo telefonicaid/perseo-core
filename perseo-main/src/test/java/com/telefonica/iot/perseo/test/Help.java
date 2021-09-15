@@ -48,10 +48,12 @@ public class Help {
                  "select id, price? as Price from iotEvent.win:length(100) group by id"
                  ,"@Audit select *,'blood_1_action' as iotcepaction,"
                     + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
-                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
+                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1"
                     + " and type='BloodMeter')]"
                  ,"SELECT current_timestamp() as r FROM iotEvent WHERE cast(value?,int) > 10"
                  ,"expression twoPI alias for { java.lang.Math.PI * 2 > 5 } SELECT *, twoPI as r FROM iotEvent WHERE twoPI"
+                 ,"expression E {(v1,v2) => max(v1,v2)} select E(1, 2) from iotEvent"
+                 ,"expression double js:fib(num) [ fib(num); function fib(n) {  if(n <= 1) return n; return fib(n-1) + fib(n-2);}] select fib(5) from iotEvent"
         };
     }
     public static String[] ExampleNotices() {

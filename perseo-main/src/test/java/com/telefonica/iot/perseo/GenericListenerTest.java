@@ -21,7 +21,6 @@
 
 package com.telefonica.iot.perseo;
 
-//import com.espertech.esper.client.EventBean;
 import com.espertech.esper.common.client.EventBean;
 import com.telefonica.iot.perseo.test.EventBeanMock;
 import com.espertech.esper.runtime.client.EPStatement;
@@ -72,7 +71,6 @@ public class GenericListenerTest {
         EventBean[] newEvents = new EventBean[0];
         EventBean[] oldEvents = new EventBean[0];
         GenericListener instance = new GenericListener();
-        //instance.update(newEvents, oldEvents);
         instance.update(newEvents, oldEvents, null, null);
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");

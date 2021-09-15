@@ -21,7 +21,6 @@
 
 package com.telefonica.iot.perseo;
 
-//import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.runtime.client.EPRuntime;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +43,6 @@ import org.slf4j.LoggerFactory;
 public class RulesServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(RulesServlet.class);
-    //private static EPServiceProvider epService;
     private static EPRuntime epService;
 
     @Override

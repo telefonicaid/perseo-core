@@ -20,7 +20,6 @@
 */
 package com.telefonica.iot.perseo;
 
-//import com.espertech.esper.client.*;
 import com.espertech.esper.runtime.client.*;
 import com.espertech.esper.common.client.*;
 import com.espertech.esper.common.client.util.StatementProperty;
@@ -45,7 +44,6 @@ import java.util.Map;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-//import com.espertech.esper.client.Configuration;
 import com.espertech.esper.common.client.configuration.*;
 import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
@@ -73,18 +71,14 @@ public class Utils {
      * @param sc ServleContext to add ESPServiceProvider
      * @return the initialized EPServiceProvider
      */
-    //public static synchronized EPServiceProvider initEPService(ServletContext sc) {
     public static synchronized EPRuntime initEPService(ServletContext sc) {        
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-        //configuration.getEngineDefaults().getExpression().setUdfCache(false);
         configuration.getCompiler().getExpression().setUdfCache(false);
         configuration.getCompiler().getByteCode().setAllowSubscriber(true);
         configuration.getCompiler().getByteCode().setAccessModifiersPublic();
         configuration.getCompiler().getByteCode().setBusModifierEventType(EventTypeBusModifier.BUS);
-        //EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
-            //epService = EPServiceProviderManager.getDefaultProvider(configuration);
 
             Map<String, Object> def = new HashMap<String, Object>();
             def.put("id", String.class);
@@ -93,9 +87,6 @@ public class Utils {
             def.put(Constants.SERVICE_FIELD, String.class);
 
             configuration.getCommon().addEventType(Constants.IOT_EVENT, def);
-
-            //ConfigurationOperations cfg = epService.getEPAdministrator().getConfiguration();
-            //cfg.addEventType(Constants.IOT_EVENT, def);
 
             // Add perseo-utils library
             configuration.getCommon().addImport("com.telefonica.iot.perseo.utils.*");
@@ -145,7 +136,6 @@ public class Utils {
      * @param sc ServleContext to add ESPServiceProvider
      */
     public static synchronized void destroyEPService(ServletContext sc) {
-        //EPServiceProvider epService = (EPServiceProvider) sc.getAttribute(EPSERV_ATTR_NAME);
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService != null) {
             epService.destroy();
@@ -209,21 +199,6 @@ public class Utils {
      * @param st Esper statement
      * @return JSONObject
      */
-    // public static JSONObject Statement2JSONObject(EPStatement st) {
-    //     if (st == null) {
-    //         return null;
-    //     }
-    //     JSONObject jo = new JSONObject()
-    //             .put("name", st.getName())
-    //          // .put("text", st.getText())
-    //             .put("text", st.getProperty(StatementProperty.EPL))
-    //          // .put("state", st.getState())
-    //             .put("state", st.isDestroyed())
-    //          // .put("timeLastStateChange", st.getTimeLastStateChange());
-    //             .put("timeLastStateChange", "TBD");
-    //     return jo;
-    // }
-
     public static JSONObject Statement2JSONObject(EPStatement st, EPDeploymentService epService, String deploymentId) {
         if (st == null) {
             return null;
