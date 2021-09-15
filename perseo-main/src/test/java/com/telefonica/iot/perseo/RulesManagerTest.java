@@ -133,19 +133,23 @@ public class RulesManagerTest {
     @Test
     public void testMake() {
         logger.info("make");
-        String ruleName = "ccc";
-        String epl = Help.ExampleRules()[0];
-        String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
+        Integer i = new Integer(0);
+        for (String epl : Help.ExampleRules() ) {
+            String ruleName = "ccc" + i.toString();
+            logger.info("make ruleName: " + ruleName + " epl: " + epl);
+            String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
 
-        Result result = RulesManager.make(epService, text);
-        assertEquals(200, result.getStatusCode());
+            Result result = RulesManager.make(epService, text);
+            assertEquals(200, result.getStatusCode());
 
-        //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
-        EPDeploymentService epa = epService.getDeploymentService();
-        EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
+            //EPStatement st = epService.getEPAdministrator().getStatement(ruleName);
+            EPDeploymentService epa = epService.getDeploymentService();
+            EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
-        assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
-        assertEquals(ruleName, st.getName());
+            assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
+            assertEquals(ruleName, st.getName());
+            i++;
+        }
     }
 
     /**
