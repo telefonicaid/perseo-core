@@ -1,5 +1,5 @@
 /**
-* Copyright 2015 Telefonica Investigación y Desarrollo, S.A.U
+* Copyright 2015 Telefonica InvestigaciÃ³n y Desarrollo, S.A.U
 *
 * This file is part of perseo-core project.
 *
@@ -45,10 +45,11 @@ public class Help {
     public static String[] ExampleRules() {
         return new String[]{
                  "select id, price? as Price from iotEvent.win:length(100) group by id",
-                    "@Audit select *,\"blood_1_action\" as iotcepaction,"
+                 "@Audit select *,\"blood_1_action\" as iotcepaction,"
                     + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
-                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
-                    + " and type=\"BloodMeter\")]"};  
+                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),double)>1.5"
+                    + " and type=\"BloodMeter\")]"
+        };
     }
     public static String[] ExampleNotices() {
         return new String[]{
@@ -58,11 +59,11 @@ public class Help {
             + "\"otro\":\"mas\",\n"
             + "\"numero\":4,\n"
             + "\"sub\": {\n"
-            + "	\"subnumero\":18,\n"
-            + "	\"subcadena\":\"SUB2\",\n"
-            + "	\"subflotante\": 12.3,\n"
-            + "	\"sub2\": { \"valor\": 3}\n"
-            + "	}\n"
+            + " \"subnumero\":18,\n"
+            + " \"subcadena\":\"SUB2\",\n"
+            + " \"subflotante\": 12.3,\n"
+            + " \"sub2\": { \"valor\": 3}\n"
+            + " }\n"
             + "}"};
     }
            
