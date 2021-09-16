@@ -54,6 +54,7 @@ public class Help {
                  ,"expression twoPI alias for { java.lang.Math.PI * 2 > 5 } SELECT *, twoPI as r FROM iotEvent WHERE twoPI"
                  ,"expression E {(v1,v2) => max(v1,v2)} select E(1, 2) from iotEvent"
                  ,"expression double js:fib(num) [ fib(num); function fib(n) {  if(n <= 1) return n; return fib(n-1) + fib(n-2);}] select fib(5) from iotEvent"
+                 ,"expression E {(v) => case when v is null or cast(v,float) < 0 or cast(v,string) = 'null' or cast(v,string) = ' ' then 0 else v end}  select E(5) from iotEvent"
         };
     }
     public static String[] ExampleNotices() {
