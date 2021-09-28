@@ -132,7 +132,7 @@ public class EventBeanMock implements EventBean {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        // To be included with using Esper 8.7
+        // To be used with Esper 8.7
         // @Override
         // public EPTypeClass getUnderlyingEPType() {
         //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
