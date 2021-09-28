@@ -71,8 +71,8 @@ public class RulesManager {
                 EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
                 if (st == null) {
                     return new Result(HttpServletResponse.SC_NOT_FOUND,
-                            String.format("{\"error\":\"%s not found\"}%n",
-                                    ruleName));
+                                      String.format("{\"error\":\"%s not found\"}%n",
+                                                    ruleName));
                 } else {
                     return new Result(HttpServletResponse.SC_OK,
                                       Utils.Statement2JSONObject(st, epa, st.getDeploymentId()).toString());
@@ -94,8 +94,8 @@ public class RulesManager {
         } catch (EPException epe) {
             logger.error(String.format("getting statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(epe.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(epe.getMessage())));
         }
     }
 
@@ -118,12 +118,12 @@ public class RulesManager {
             logger.info(String.format("post rule: %s",name));
             if ("".equals(name.trim())) {
                 return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                        "{\"error\":\"missing name\"}");
+                                  "{\"error\":\"missing name\"}");
             }
             String newEpl = jo.optString("text", "");
             if ("".equals(newEpl.trim())) {
                 return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                        "{\"error\":\"missing text\"}");
+                                  "{\"error\":\"missing text\"}");
             }
             logger.debug(String.format("statement name: %s",name));
             logger.debug(String.format("statement text: %s",newEpl));
@@ -176,13 +176,13 @@ public class RulesManager {
         } catch (EPException epe) {
             logger.error(String.format("creating statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(epe.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(epe.getMessage())));
         } catch (JSONException je) {
             logger.error(String.format("creating statement %s",je));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(je.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(je.getMessage())));
         }
     }
 
@@ -213,12 +213,12 @@ public class RulesManager {
                 String name = jo.optString("name", "");
                 if ("".equals(name.trim())) {
                     return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                            "{\"error\":\"missing name\"}");
+                                      "{\"error\":\"missing name\"}");
                 }
                 String newEpl = jo.optString("text", "");
                 if ("".equals(newEpl.trim())) {
                     return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                            "{\"error\":\"missing text\"}");
+                                      "{\"error\":\"missing text\"}");
                 }
                 newOnes.put(name, newEpl);
             }
@@ -293,13 +293,13 @@ public class RulesManager {
         } catch (EPException epe) {
             logger.error(String.format("creating statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(epe.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(epe.getMessage())));
         } catch (JSONException je) {
             logger.error(String.format("creating statement %s", je));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(je.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(je.getMessage())));
         }
     }
 
@@ -342,8 +342,8 @@ public class RulesManager {
         } catch (EPException epe) {
             logger.error(String.format("deleting statement %s", epe));
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
-                    String.format("{\"error\":%s}%n",
-                            JSONObject.valueToString(epe.getMessage())));
+                              String.format("{\"error\":%s}%n",
+                                            JSONObject.valueToString(epe.getMessage())));
         }
     }
 }
