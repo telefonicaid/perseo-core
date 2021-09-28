@@ -21,9 +21,11 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.PropertyAccessException;
-import com.espertech.esper.client.UpdateListener;
+import com.espertech.esper.common.client.EventBean;
+import com.espertech.esper.common.client.PropertyAccessException;
+import com.espertech.esper.runtime.client.UpdateListener;
+import com.espertech.esper.runtime.client.EPStatement;
+import com.espertech.esper.runtime.client.EPRuntime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,7 @@ public class GenericListener implements UpdateListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericListener.class);
     
      /**
-     * Implements method to execute an action whe a rule is fired . It makes an
+     * Implements method to execute an action when a rule is fired . It makes an
      * HTTP POST to the configured URL sending the JSON representation of the
      * Events fired by the rule. If the activated rule is a timed rule, this
      * method set the correct headers for the request.
@@ -48,7 +50,7 @@ public class GenericListener implements UpdateListener {
      * @param oldEvents old events leaving the window
      */
     @Override
-    public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+    public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statement, EPRuntime epruntime) {
         try {          
             for (EventBean event : newEvents) {
 
@@ -56,18 +58,21 @@ public class GenericListener implements UpdateListener {
                 Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
 
                 // Get Rule Information from TimeRulesStore
-                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo((String) eventMap.get("ruleName"));
+                String ruleName = (String) eventMap.get("ruleName");
+                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo(ruleName);
 
                 // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
                 if (rule != null) {
 
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
-                    LOGGER.info(String.format("Firing temporal rule: %s",event));
+                    LOGGER.info(String.format("Firing temporal rule: %s with name %s from event: %s",
+                                               rule.toString(), ruleName, event));
 
                 } else {
 
-                    LOGGER.info(String.format("Firing Rule: %s",event));
+                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
+                                              ruleName, event));
                 }
 
                 LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));

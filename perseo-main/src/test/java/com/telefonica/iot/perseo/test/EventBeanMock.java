@@ -18,15 +18,18 @@
 */
 
 package com.telefonica.iot.perseo.test;
-
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.EventPropertyDescriptor;
-import com.espertech.esper.client.EventPropertyGetter;
-import com.espertech.esper.client.EventPropertyGetterIndexed;
-import com.espertech.esper.client.EventPropertyGetterMapped;
-import com.espertech.esper.client.EventType;
-import com.espertech.esper.client.FragmentEventType;
-import com.espertech.esper.client.PropertyAccessException;
+import com.espertech.esper.common.client.EventBean;
+import com.espertech.esper.common.client.EventPropertyDescriptor;
+import com.espertech.esper.common.client.EventPropertyGetter;
+import com.espertech.esper.common.client.EventPropertyGetterIndexed;
+import com.espertech.esper.common.client.EventPropertyGetterMapped;
+import com.espertech.esper.common.client.meta.EventTypeMetadata;
+import com.espertech.esper.common.client.EventType;
+import com.espertech.esper.common.client.FragmentEventType;
+import com.espertech.esper.common.client.PropertyAccessException;
+// To be used with Esper 8.7
+// import com.espertech.esper.common.client.type.EPTypeClass;
+// import com.espertech.esper.common.client.type.EPType;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -110,11 +113,6 @@ public class EventBeanMock implements EventBean {
         }
 
         @Override
-        public int getEventTypeId() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
         public String getStartTimestampPropertyName() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
@@ -123,7 +121,28 @@ public class EventBeanMock implements EventBean {
         public String getEndTimestampPropertyName() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-    };
+
+        @Override
+        public EventTypeMetadata getMetadata() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public java.util.Set<EventType> getDeepSuperTypesAsSet(){
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        // To be used with Esper 8.7
+        // @Override
+        // public EPTypeClass getUnderlyingEPType() {
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // }
+
+        // @Override
+        // public EPType getPropertyEPType(java.lang.String string) {
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // }
+        };
 
     @Override
     public EventType getEventType() {
@@ -139,6 +158,8 @@ public class EventBeanMock implements EventBean {
     public Object getUnderlying() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
 
     @Override
     public Object getFragment(String string) throws PropertyAccessException {

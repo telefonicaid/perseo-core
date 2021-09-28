@@ -21,8 +21,10 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EventBean;
+import com.espertech.esper.common.client.EventBean;
 import com.telefonica.iot.perseo.test.EventBeanMock;
+import com.espertech.esper.runtime.client.EPStatement;
+import com.espertech.esper.runtime.client.EPRuntime;
 import java.util.HashMap;
 
 import org.json.JSONObject;
@@ -69,13 +71,13 @@ public class GenericListenerTest {
         EventBean[] newEvents = new EventBean[0];
         EventBean[] oldEvents = new EventBean[0];
         GenericListener instance = new GenericListener();
-        instance.update(newEvents, oldEvents);
+        instance.update(newEvents, oldEvents, null, null);
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
         EventBean event = new EventBeanMock(m);
         newEvents = new EventBean[]{event};
-        instance.update(newEvents, oldEvents);
+        instance.update(newEvents, oldEvents, null, null);
     }
 
     /**
@@ -104,7 +106,7 @@ public class GenericListenerTest {
         m.put("ruleName", "testrule");
         EventBean event = new EventBeanMock(m);
         EventBean[] newEvents = new EventBean[]{event};
-        instance.update(newEvents, oldEvents);
+        instance.update(newEvents, oldEvents, null, null);
         tRInfoInstance.cleanAllRules();
     }
 

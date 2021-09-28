@@ -44,29 +44,55 @@ public class Help {
 
     public static String[] ExampleRules() {
         return new String[]{
-                 "select id, price? as Price from iotEvent.win:length(100) group by id",
-                    "@Audit select *,\"blood_1_action\" as iotcepaction,"
+            // Put here all EPL text rules to be compiled at test execution time
+                 "select id, price? as Price from iotEvent.win:length(100) group by id"
+                 ,"@Audit select *,'blood_1_action' as iotcepaction,"
                     + "ev.BloodPressure? as Pression, ev.id? as Meter from pattern "
-                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1.5"
-                    + " and type=\"BloodMeter\")]"};  
+                    + "[every ev=iotEvent(cast(cast(BloodPressure?,String),float)>1"
+                    + " and type='BloodMeter')]"
+                 ,"SELECT current_timestamp() as r FROM iotEvent WHERE cast(value?,int) > 10"
+                 ,"expression twoPI alias for { java.lang.Math.PI * 2 > 5 } SELECT *, twoPI as r FROM iotEvent WHERE twoPI"
+                 ,"expression E {(v1,v2) => max(v1,v2)} select E(1, 2) from iotEvent"
+                 ,"expression E {(v) => case when v is null or cast(v,float) < 0 or cast(v,string) = 'null' or cast(v,string) = ' ' then 0 else v end}  select E(5) from iotEvent"
+                 ,"select current_timestamp() as r from iotEvent where (cast(price?,String) != '321' and (cast(price?,String) != '123'))"
+                 // The following epl text will be work with a future esper version ?
+                 //,"inlined_class \"\"\"\n  public class MyUtility {\n    public static double fib(int n) {\n      if (n <= 1) {\n        return n;\n      }\n      return fib(n-1) + fib(n-2);\n    }\n  }\n\"\"\"\n expression FIBC alias for { MyUtility.fib(5) > 3 } SELECT *, FIBC as r FROM iotEvent WHERE FIBC"
+                 //,"expression double js:fib(num) [\nfib(num);\nfunction fib(n) {\n  if(n <= 1)\n    return n;\n  return fib(n-1) + fib(n-2);\n}\n]\nexpression FIBE alias for { fib(5) > 3 } SELECT *, FIBE as r FROM iotEvent WHERE FIBE"
+
+
+        };
     }
     public static String[] ExampleNotices() {
         return new String[]{
+            // Put here all notices to be sent perseo-core at test execution time
             "{\n"
             + "\"BloodPressure\": 2,\n"
             + "\"id\":\"guay!\",\n"
             + "\"otro\":\"mas\",\n"
             + "\"numero\":4,\n"
             + "\"sub\": {\n"
-            + "	\"subnumero\":18,\n"
-            + "	\"subcadena\":\"SUB2\",\n"
-            + "	\"subflotante\": 12.3,\n"
-            + "	\"sub2\": { \"valor\": 3}\n"
-            + "	}\n"
-            + "}"};
+            + " \"subnumero\":18,\n"
+            + " \"subcadena\":\"SUB2\",\n"
+            + " \"subflotante\": 12.3,\n"
+            + " \"sub2\": { \"valor\": 3}\n"
+            + " }\n"
+            + "}"
+            ,"{ \n"
+            + "\"BloodPressure\": 4,\n"
+            + "\"id\":\"perfect!\",\n"
+            + "\"otro\":\"mas\",\n"
+            + "\"numero\":33,\n"
+            + "\"sub\": {\n"
+            + " \"subnumero\":18,\n"
+            + " \"subcadena\":\"SUB2\",\n"
+            + " \"subflotante\": 12.3,\n"
+            + " \"sub2\": { \"valor\": 5}\n"
+            + " }\n"
+            + "}"
+        };
     }
-           
-       
+
+
     public static class Res {
 
         private int code;

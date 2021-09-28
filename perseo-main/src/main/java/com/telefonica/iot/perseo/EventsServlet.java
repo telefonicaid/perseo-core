@@ -18,7 +18,7 @@
 */
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EPServiceProvider;
+import com.espertech.esper.runtime.client.EPRuntime;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -43,7 +43,7 @@ import org.owasp.encoder.Encode;
 public class EventsServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(EventsServlet.class);
-    private static EPServiceProvider epService;
+    private static EPRuntime epService;
 
     @Override
     public void init() {
@@ -85,7 +85,7 @@ public class EventsServlet extends HttpServlet {
             logger.debug(String.format("event as JSONObject: %s", jo));
             Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
             logger.debug(String.format("event as map: %s" , eventMap));
-            epService.getEPRuntime().sendEvent(eventMap, Constants.IOT_EVENT);
+            epService.getEventService().sendEventMap(eventMap, Constants.IOT_EVENT);
 
             logger.debug(String.format("event was sent: %s", eventMap));
         } catch (Exception je) {
