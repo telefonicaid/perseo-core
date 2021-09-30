@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Thu Sep 30 2021 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.8.0
+- Upgrade to use Esper 8.4 from Exper 7.X (#136)
+
 * Wed Jul 14 2021 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.7.0
 - Logging. Update for force to use only console instead of file
 - Logging: Update entrypoint to create a symlink from the logfile to stdout, and remove tail execution to stream logfile.
