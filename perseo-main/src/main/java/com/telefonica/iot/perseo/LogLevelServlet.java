@@ -51,6 +51,7 @@ public class LogLevelServlet extends HttpServlet {
         levels.put("INFO", Level.INFO);
         levels.put("WARN", Level.WARN);
         levels.put("WARNING", Level.WARN);
+        levels.put("WARN", Level.WARN);
         levels.put("ERROR", Level.ERROR);
         levels.put("FATAL", Level.FATAL);
     }
