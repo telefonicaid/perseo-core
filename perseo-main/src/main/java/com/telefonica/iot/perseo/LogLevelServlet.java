@@ -28,8 +28,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+//import org.apache.log4j.Level;
+//import org.apache.log4j.LogManager;
 import org.owasp.encoder.Encode;
 
 
@@ -80,7 +85,12 @@ public class LogLevelServlet extends HttpServlet {
                 return;
             }
             synchronized (mutex) {
-                LogManager.getRootLogger().setLevel(level);
+                //LogManager.getRootLogger().setLevel(level);
+                LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+                Configuration config = ctx.getConfiguration();
+                LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME); 
+                loggerConfig.setLevel(level);
+                ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
             }
             response.setStatus(HttpServletResponse.SC_OK);      
         } catch (IOException e) {

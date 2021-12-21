@@ -51,7 +51,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.apache.logging.log4j.ThreadContext;
+//import org.slf4j.MDC;
+
 
 import com.telefonica.iot.perseo.utils.DateTimeUtils;
 
@@ -227,10 +229,14 @@ public class Utils {
             HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, MDC.get(Constants.CORRELATOR_ID));
-            urlConn.setRequestProperty(Constants.SERVICE_HEADER, MDC.get(Constants.SERVICE_FIELD));
-            urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, MDC.get(Constants.SUBSERVICE_FIELD));
-            urlConn.setRequestProperty(Constants.REALIP_HEADER, MDC.get(Constants.REALIP_FIELD));
+            urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, ThreadContext.get(Constants.CORRELATOR_ID));
+            urlConn.setRequestProperty(Constants.SERVICE_HEADER, ThreadContext.get(Constants.SERVICE_FIELD));
+            urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, ThreadContext.get(Constants.SUBSERVICE_FIELD));
+            urlConn.setRequestProperty(Constants.REALIP_HEADER, ThreadContext.get(Constants.REALIP_FIELD));
+            // urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, MDC.get(Constants.CORRELATOR_ID));
+            // urlConn.setRequestProperty(Constants.SERVICE_HEADER, MDC.get(Constants.SERVICE_FIELD));
+            // urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, MDC.get(Constants.SUBSERVICE_FIELD));
+            // urlConn.setRequestProperty(Constants.REALIP_HEADER, MDC.get(Constants.REALIP_FIELD));
             
             OutputStreamWriter printout = new OutputStreamWriter(urlConn.getOutputStream(), Charset.forName("UTF-8"));
             printout.write(content);
@@ -279,19 +285,23 @@ public class Utils {
         if (correlatorId == null) {
             correlatorId = transId;
         }
-        MDC.put(Constants.TRANSACTION_ID, transId);
-        MDC.put(Constants.CORRELATOR_ID, correlatorId);
+        ThreadContext.put(Constants.TRANSACTION_ID, transId);
+        ThreadContext.put(Constants.CORRELATOR_ID, correlatorId);
+        //MDC.put(Constants.TRANSACTION_ID, transId);
+        //MDC.put(Constants.CORRELATOR_ID, correlatorId);
         String service = req.getHeader(Constants.SERVICE_HEADER);
         if (service == null) {
             service = "?";
         }
-        MDC.put(Constants.SERVICE_FIELD, service);
+        ThreadContext.put(Constants.SERVICE_FIELD, service);
+        //MDC.put(Constants.SERVICE_FIELD, service);
        
         String subservice = req.getHeader(Constants.SUBSERVICE_HEADER);
         if (subservice == null) {
             subservice = "?";
         }
-        MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+        ThreadContext.put(Constants.SUBSERVICE_FIELD, subservice);
+        //MDC.put(Constants.SUBSERVICE_FIELD, subservice);
         
         {
             String realIP = req.getHeader(Constants.REALIP_HEADER);
@@ -299,7 +309,8 @@ public class Utils {
             if (realIP == null) {
                 realIP = req.getRemoteAddr();
             }
-            MDC.put(Constants.REALIP_FIELD, realIP);
+            ThreadContext.put(Constants.REALIP_FIELD, realIP);
+            //MDC.put(Constants.REALIP_FIELD, realIP);
         }
     }
 
@@ -335,21 +346,27 @@ public class Utils {
     public static void setTimerRuleHeaders(JSONObject rule) {
 
         String id = UUID.randomUUID().toString();
-        MDC.put(Constants.TRANSACTION_ID, id);
-        MDC.put(Constants.CORRELATOR_ID, id);
+        ThreadContext.put(Constants.TRANSACTION_ID, id);
+        ThreadContext.put(Constants.CORRELATOR_ID, id);
+        //MDC.put(Constants.TRANSACTION_ID, id);
+        //MDC.put(Constants.CORRELATOR_ID, id);
         String service = (String) rule.get("service");
         if (service == null) {
             service = "?";
         }
-        MDC.put(Constants.SERVICE_FIELD, service);
+        ThreadContext.put(Constants.SERVICE_FIELD, service);
+        //MDC.put(Constants.SERVICE_FIELD, service);
 
         String subservice = (String) rule.get("subservice");
         if (subservice == null) {
             subservice = "?";
         }
-        MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+        ThreadContext.put(Constants.SUBSERVICE_FIELD, subservice);
 
-        MDC.put(Constants.REALIP_FIELD, "Perseo-core-timer-rule");
+        ThreadContext.put(Constants.REALIP_FIELD, "Perseo-core-timer-rule");
+        // MDC.put(Constants.SUBSERVICE_FIELD, subservice);
+
+        // MDC.put(Constants.REALIP_FIELD, "Perseo-core-timer-rule");
     }
 
     /**

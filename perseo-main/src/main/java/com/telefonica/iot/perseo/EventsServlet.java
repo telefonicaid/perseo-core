@@ -22,6 +22,7 @@ import com.espertech.esper.runtime.client.EPRuntime;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.UUID;
 import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.MDC;
+import org.apache.logging.log4j.ThreadContext;
+//import org.apache.log4j.MDC;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.owasp.encoder.Encode;
@@ -47,8 +49,11 @@ public class EventsServlet extends HttpServlet {
 
     @Override
     public void init() {
-        MDC.put(Constants.CORRELATOR_ID, "n/a");
-        MDC.put(Constants.TRANSACTION_ID, "n/a");
+        ThreadContext.put("id", UUID.randomUUID().toString());
+        ThreadContext.put(Constants.CORRELATOR_ID, "n/a");
+        ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
+        //MDC.put(Constants.CORRELATOR_ID, "n/a");
+        //MDC.put(Constants.TRANSACTION_ID, "n/a");
         ServletContext sc = getServletContext();
         epService = Utils.initEPService(sc);
         logger.debug("init at events servlet");
@@ -58,9 +63,12 @@ public class EventsServlet extends HttpServlet {
     @Override
     public void destroy() {
         Utils.destroyEPService(getServletContext());
-        MDC.put(Constants.CORRELATOR_ID, "n/a");
-        MDC.put(Constants.TRANSACTION_ID, "n/a");
+        ThreadContext.put(Constants.CORRELATOR_ID, "n/a");
+        ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
+        // MDC.put(Constants.CORRELATOR_ID, "n/a");
+        // MDC.put(Constants.TRANSACTION_ID, "n/a");
         logger.debug("destroy at events servlet");
+        ThreadContext.clearMap();
     }
 
     /**
