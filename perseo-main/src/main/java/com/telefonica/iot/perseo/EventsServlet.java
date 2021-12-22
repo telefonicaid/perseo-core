@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.ThreadContext;
-//import org.apache.log4j.MDC;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.owasp.encoder.Encode;
@@ -52,8 +51,6 @@ public class EventsServlet extends HttpServlet {
         ThreadContext.put("id", UUID.randomUUID().toString());
         ThreadContext.put(Constants.CORRELATOR_ID, "n/a");
         ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
-        //MDC.put(Constants.CORRELATOR_ID, "n/a");
-        //MDC.put(Constants.TRANSACTION_ID, "n/a");
         ServletContext sc = getServletContext();
         epService = Utils.initEPService(sc);
         logger.debug("init at events servlet");
@@ -65,8 +62,6 @@ public class EventsServlet extends HttpServlet {
         Utils.destroyEPService(getServletContext());
         ThreadContext.put(Constants.CORRELATOR_ID, "n/a");
         ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
-        // MDC.put(Constants.CORRELATOR_ID, "n/a");
-        // MDC.put(Constants.TRANSACTION_ID, "n/a");
         logger.debug("destroy at events servlet");
         ThreadContext.clearMap();
     }

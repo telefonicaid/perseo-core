@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.ThreadContext;
-//import org.apache.log4j.MDC;
 import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +53,6 @@ public class RulesServlet extends HttpServlet {
         ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
         ThreadContext.put(Constants.SERVICE_FIELD, "n/a");
         ThreadContext.put(Constants.SUBSERVICE_FIELD, "n/a");
-        // MDC.put(Constants.CORRELATOR_ID, "n/a");
-        // MDC.put(Constants.TRANSACTION_ID, "n/a");
-        // MDC.put(Constants.SERVICE_FIELD, "n/a");
-        // MDC.put(Constants.SUBSERVICE_FIELD, "n/a");
         ServletContext sc = getServletContext();
         epService = Utils.initEPService(sc);
         logger.debug("init at rules servlet");
@@ -69,10 +64,6 @@ public class RulesServlet extends HttpServlet {
         ThreadContext.put(Constants.TRANSACTION_ID, "n/a");
         ThreadContext.put(Constants.SERVICE_FIELD, "n/a");
         ThreadContext.put(Constants.SUBSERVICE_FIELD, "n/a");
-        // MDC.put(Constants.CORRELATOR_ID, "n/a");
-        // MDC.put(Constants.TRANSACTION_ID, "n/a");
-        // MDC.put(Constants.SERVICE_FIELD, "n/a");
-        // MDC.put(Constants.SUBSERVICE_FIELD, "n/a");
         // Clean timed rules
         TimeRulesStore.getInstance().cleanAllRules();
         Utils.destroyEPService(getServletContext());
