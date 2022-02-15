@@ -16,9 +16,9 @@
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
 
-FROM tomcat:8
+FROM tomcat:9
 ARG GITHUB_ACCOUNT=telefonicaid
-ARG GITHUB_REPOSITORY=perseo-fe
+ARG GITHUB_REPOSITORY=perseo-core
 
 # Install maven
 
