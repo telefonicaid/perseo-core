@@ -47,7 +47,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
 
-RUN mkdir /var/log/perseo && \
+RUN mkdir -p /var/log/perseo && \
     chown -R 1000:1000 /var/log/perseo && \
     chmod -R 777 /var/log/perseo
 
