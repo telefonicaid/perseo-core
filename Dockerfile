@@ -16,9 +16,9 @@
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
 
-FROM tomcat:8
+FROM tomcat:9
 ARG GITHUB_ACCOUNT=telefonicaid
-ARG GITHUB_REPOSITORY=perseo-fe
+ARG GITHUB_REPOSITORY=perseo-core
 
 # Install maven
 
@@ -30,8 +30,10 @@ COPY perseo-main /code/perseo-main/
 COPY perseo-utils /code/perseo-utils/
 COPY perseo_core-entrypoint.sh /code
 
-# hadolint ignore=DL3008
-RUN apt-get update && \
+
+# hadolint ignore=DL3005,DL3008
+RUN apt-get -y update && \
+    apt-get -y upgrade && \
     apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
     mvn install && \
     mvn package && \
@@ -47,7 +49,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
 
-RUN mkdir /var/log/perseo && \
+RUN mkdir -p /var/log/perseo && \
     chown -R 1000:1000 /var/log/perseo && \
     chmod -R 777 /var/log/perseo
 
