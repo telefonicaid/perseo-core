@@ -30,8 +30,8 @@ COPY perseo-main /code/perseo-main/
 COPY perseo-utils /code/perseo-utils/
 COPY perseo_core-entrypoint.sh /code
 
-# hadolint ignore=DL3008
-# hadolint ignore=DL3005
+
+# hadolint ignore=DL3005,DL3008
 RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
