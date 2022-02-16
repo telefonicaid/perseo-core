@@ -1,1 +1,3 @@
+ADD: upgrade docker based image from Tomcat8 to Tomcat9
+ADD: migrate log4j v1 to v2 (#184)
 ADD: allow use WARN as WARNING log level
