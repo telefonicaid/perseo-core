@@ -9,7 +9,7 @@ Resource | HTTP | Description
 /perseo-core/rules | PUT | Updates the whole set of rules
 /perseo-core/rules/{name} | DELETE | Deletes the rule with name {name}
 
-Each rule is represented as an plain object in JSON with a field `name` with the identifier of the rule inside the engine and a field `text` with the text of the EPL statement of the rule. The field `timeLastStateChange` has a timestamp with the last time when the state of rule changed. In this implementation, that value is the time when the rule was created. The field `state` will be `STARTED` usually, meaning the rule is working. Less frequently it could be `DESTROYED` if the rule has been removed recently and not "garbage-colleted" by the engine *yet*.
+Each rule is represented as an plain object in JSON with a field `name` with the identifier of the rule inside the engine and a field `text` with the text of the EPL statement of the rule. The field `timeLastStateChange` has a timestamp with the last time when the state of rule changed. In this implementation, that value is the time when the rule was created. The field `state` will be `STARTED` usually, meaning the rule is working. Less frequently it could be `DESTROYED` if the rule has been removed recently and not "garbage-colleted" by the engine *yet*. Since perseo-core 1.8 (and aligned with esper8 upgrade) the meaning of state changed to a boolean which indicates if the statement was destroyed or not.
 
 #### GET (all)
 
