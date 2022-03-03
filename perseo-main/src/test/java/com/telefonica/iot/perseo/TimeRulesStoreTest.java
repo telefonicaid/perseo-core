@@ -114,6 +114,44 @@ public class TimeRulesStoreTest {
     }
 
     /**
+     * Test save two timed rules
+     */
+    @Test
+    public void testAddRulesWIthSameName() {
+
+        // save 2 timed rules
+        JSONObject body = new JSONObject();
+        String ruleName = "timer_test_rule3@ttestservice1/test/timerRule1";
+        String ruleText = "context ctxt$ttestservice1$test$timerRule1 select \"timer_test_rule3\" as ruleName, *, current_timestamp() as currentTS from pattern [every timer:interval(30 sec)]";
+        body.put("name", ruleName);
+        body.put("text", ruleText);
+        instance.saveTimeRules(body.toString());
+        JSONObject body2 = new JSONObject();
+        String ruleName2 = "timer_test_rule3@ttestservice2/test/timerRule2";
+        String ruleText2 = "context ctxt$ttestservice2$test$timerRule2 select \"timer_test_rule3\" as ruleName, *, current_timestamp() as currentTS from pattern [every timer:interval(90 sec)]";
+        body2.put("name", ruleName2);
+        body2.put("text", ruleText2);
+        instance.saveTimeRules(body2.toString());
+
+        HashMap<String, JSONObject> result = instance.getAllRulesInfo();
+
+        assertEquals(2, result.size());
+        JSONObject r1 = result.get("timer_test_rule3"); // use service and subservice
+        JSONObject r2 = result.get("timer_test_rule3");
+        assertNotNull(r1);
+        assertNotNull(r2);
+        assertEquals(r1.get("service"), "ttestservice1");
+        assertEquals(r2.get("service"), "ttestservice2");
+        assertEquals(r1.get("subservice"), "/test/timerRule1");
+        assertEquals(r2.get("subservice"), "/test/timerRule2");
+        assertEquals(r1.get("name"), ruleName);
+        assertEquals(r2.get("name"), ruleName2);
+        assertEquals(r1.get("text"), ruleText);
+        assertEquals(r2.get("text"), ruleText2);
+    }
+
+
+    /**
      * Test remove a timed rule
      */
     @Test
