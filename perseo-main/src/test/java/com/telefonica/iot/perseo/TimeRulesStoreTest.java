@@ -99,8 +99,8 @@ public class TimeRulesStoreTest {
         HashMap<String, JSONObject> result = instance.getAllRulesInfo();
 
         assertEquals(2, result.size());
-        JSONObject r1 = result.get("timer_test_rule1");
-        JSONObject r2 = result.get("timer_test_rule2");
+        JSONObject r1 = result.get("timer_test_rule1@ttestservice1/test/timerRule1");
+        JSONObject r2 = result.get("timer_test_rule2@ttestservice2/test/timerRule2");
         assertNotNull(r1);
         assertNotNull(r2);
         assertEquals(r1.get("service"), "ttestservice1");
@@ -136,8 +136,8 @@ public class TimeRulesStoreTest {
         HashMap<String, JSONObject> result = instance.getAllRulesInfo();
 
         assertEquals(2, result.size());
-        JSONObject r1 = result.get("timer_test_rule3"); // use service and subservice
-        JSONObject r2 = result.get("timer_test_rule3");
+        JSONObject r1 = result.get("timer_test_rule3@ttestservice1/test/timerRule1");
+        JSONObject r2 = result.get("timer_test_rule3@ttestservice2/test/timerRule2");
         assertNotNull(r1);
         assertNotNull(r2);
         assertEquals(r1.get("service"), "ttestservice1");
@@ -174,12 +174,12 @@ public class TimeRulesStoreTest {
         HashMap<String, JSONObject> result1 = instance.getAllRulesInfo();
         assertEquals(2, result1.size());
 
-        instance.removeTimeRule("timer_test_rule1");
+        instance.removeTimeRule("timer_test_rule1@ttestservice1/test/timerRule1");
         HashMap<String, JSONObject> result = instance.getAllRulesInfo();
 
         assertEquals(1, result.size());
-        JSONObject r1 = result.get("timer_test_rule1");
-        JSONObject r2 = result.get("timer_test_rule2");
+        JSONObject r1 = result.get("timer_test_rule1@ttestservice1/test/timerRule1");
+        JSONObject r2 = result.get("timer_test_rule2@ttestservice2/test/timerRule2");
         assertNull(r1);
         assertNotNull(r2);
         assertEquals(r2.get("service"), "ttestservice2");
