@@ -70,7 +70,6 @@ public class GenericListener implements UpdateListener {
                                                rule.toString(), ruleName, event));
 
                 } else {
-
                     LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
                                               ruleName, event));
                 }
