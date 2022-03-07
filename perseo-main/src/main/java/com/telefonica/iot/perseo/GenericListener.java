@@ -71,7 +71,7 @@ public class GenericListener implements UpdateListener {
 
                 } else {
                     LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
-                                               ruleName, event));
+                                              ruleName, event));
                 }
 
                 LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
