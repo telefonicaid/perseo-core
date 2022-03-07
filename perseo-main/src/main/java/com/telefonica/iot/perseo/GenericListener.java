@@ -70,8 +70,8 @@ public class GenericListener implements UpdateListener {
                                                rule.toString(), ruleName, event));
 
                 } else {
-                    LOGGER.info(String.format("Firing Rule %s with name: %s from Event: %s",
-                                              rule.toString(), ruleName, event));
+                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
+                                               ruleName, event));
                 }
 
                 LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
