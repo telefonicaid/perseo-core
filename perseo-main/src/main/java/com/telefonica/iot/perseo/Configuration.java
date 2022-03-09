@@ -42,16 +42,21 @@ public final class Configuration {
 
     private static final String DEFAULT_PERSEO_FE_URL = "http://127.0.0.1:9090";
     private static final long DEFAULT_MAX_AGE = 60000;
+    private static final long DEFAULT_INTERNAL_TIMER_MSEC_RESOLUTION = 30;
+
     private static final String PERSEO_FE_URL_ENV = "PERSEO_FE_URL";
     private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
+    private static final String PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION;
 
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/etc/perseo-core.properties";
     private static final String ACTION_URL_PROP = "action.url";
     private static final String MAX_AGE_PROP = "rule.max_age";
+    private static final String INTERNAL_TIMER_MSEC_RESOLUTION = "internal_msec_resolution";
 
     private static String actionRule;
     private static long maxAge;
+    private static long internalTimerMsecResolution;
 
     static {
         LOGGER.debug(String.format("Configuration init: %s",reload()));
@@ -67,6 +72,7 @@ public final class Configuration {
         LOGGER.info("Configuration is being reloaded");
         InputStream stream;
         String defaultMaxAge;
+        String defaultInternalTimerMsecResolution;
         String defaultURL;
         String actionPath = "/actions/do";
 
@@ -78,10 +84,12 @@ public final class Configuration {
             stream.close();
             defaultURL = PROPERTIES.getProperty(ACTION_URL_PROP);
             defaultMaxAge = PROPERTIES.getProperty(MAX_AGE_PROP);
+            defaultInternalTimerMsecResolution = PROPERTIES.getProperty(INTERNAL_TIMER_MSEC_RESOLUTION);
         } catch (IOException e) {
             // No config file. Set basic default values
             defaultURL = DEFAULT_PERSEO_FE_URL;
             defaultMaxAge = String.valueOf(DEFAULT_MAX_AGE);
+            defaultInternalTimerMsecResolution = String.valueOf(DEFAULT_INTERNAL_TIMER_MSEC_RESOLUTION);
         }
 
         // Add 'http://' if necessary (backward compatibility with existing deployments)
@@ -112,6 +120,17 @@ public final class Configuration {
         }
         LOGGER.info(String.format("maxAge configuration is: %s",maxAge));
 
+        // Get INTERNAL_TIMER_MSEC_RESOLUTION from env var if exist, else default
+        String internalTimerMsecResolutionEnv = System.getenv(PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION);
+        // Check maxAge numerical value
+        try {
+            internalTimerMsecResolution = internalTimerMsecResolutionEnv != null ? Long.parseLong(internalTimerMsecResolutionEnv) : Long.parseLong(defaultInternalTimerMsecResolution);
+        } catch (NumberFormatException nfe) {
+            LOGGER.error(String.format("Invalid value for %s: %s",PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION,nfe));
+            return false;
+        }
+        LOGGER.info(String.format("internalTimerMsecResolution configuration is: %s",internalTimerMsecResolution));
+
         return true;
     }
 
@@ -131,5 +150,9 @@ public final class Configuration {
      */
     public static synchronized long getMaxAge() {
         return maxAge;
+    }
+
+    public static synchronized long getInternalTimerMsecResolution() {
+        return internalTimerMsecResolution;
     }
 }
