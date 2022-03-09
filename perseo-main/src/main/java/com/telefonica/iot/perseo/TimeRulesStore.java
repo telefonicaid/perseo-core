@@ -95,7 +95,7 @@ public final class TimeRulesStore {
                     context.remove(0);
                     jo.getJSONObject(i).put("subservice", "/" + String.join("/", context));
                     rulesInfo.put(strName, jo.getJSONObject(i));
-                    LOGGER.info(String.format("Time rule %s %s added",i, ruleName));
+                    LOGGER.info(String.format("Time rule %s %s added", i, strName));
                 }
             }
         }
