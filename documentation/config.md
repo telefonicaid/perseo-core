@@ -24,6 +24,13 @@ Example:
 MAX_AGE=6000
 ```
 
+INTERNAL_TIMER_MSEC_RESOLUTION is the millisecond resolutuion of the internal timer thread.
+
+Example:
+```
+INTERNAL_TIMER_MSEC_RESOLUTION=100
+```
+
 
 ### Configure Perseo-core with configuration file
 
@@ -37,9 +44,13 @@ action.url = http://127.0.0.1:9090/actions/do
 
 # Time in milliseconds (long) to "expire" a "dangling" rule
 rule.max_age= 60000
+
+# millisecond resolutuion of the internal timer thread
+internal_timer_msec_resolution = 30
 ```
 
 The `action.url` field is the URL used to make a POST in the case of a rule being fired by an incoming event. The content POSTed is the JSON representation of the derived  ("complex") event.
 
 The `rule.max_age` field is the value in milliseconds used as a threshold for the age of a rule to deleted safely in case of a PUT request over the rules resource does not contain the rule. All the rules older than rule.max_age will be deleted if they are not in the new set. If a rule is younger than `rule.max_age` it will be kept despite not being in the set sent by the PUT request.
 
+The `internal_timer_msec_resolution` field is the value in milliseconds used for resolutuion of the internal timer thread

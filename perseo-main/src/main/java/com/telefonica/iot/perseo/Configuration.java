@@ -46,13 +46,13 @@ public final class Configuration {
 
     private static final String PERSEO_FE_URL_ENV = "PERSEO_FE_URL";
     private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
-    private static final String PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION;
+    private static final String PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION_ENV = "INTERNAL_TIMER_MSEC_RESOLUTION";
 
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/etc/perseo-core.properties";
     private static final String ACTION_URL_PROP = "action.url";
     private static final String MAX_AGE_PROP = "rule.max_age";
-    private static final String INTERNAL_TIMER_MSEC_RESOLUTION = "internal_msec_resolution";
+    private static final String INTERNAL_TIMER_MSEC_RESOLUTION = "internal_timer_msec_resolution";
 
     private static String actionRule;
     private static long maxAge;
@@ -121,12 +121,12 @@ public final class Configuration {
         LOGGER.info(String.format("maxAge configuration is: %s",maxAge));
 
         // Get INTERNAL_TIMER_MSEC_RESOLUTION from env var if exist, else default
-        String internalTimerMsecResolutionEnv = System.getenv(PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION);
+        String internalTimerMsecResolutionEnv = System.getenv(PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION_ENV);
         // Check maxAge numerical value
         try {
             internalTimerMsecResolution = internalTimerMsecResolutionEnv != null ? Long.parseLong(internalTimerMsecResolutionEnv) : Long.parseLong(defaultInternalTimerMsecResolution);
         } catch (NumberFormatException nfe) {
-            LOGGER.error(String.format("Invalid value for %s: %s",PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION,nfe));
+            LOGGER.error(String.format("Invalid value for %s: %s",PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION_ENV,nfe));
             return false;
         }
         LOGGER.info(String.format("internalTimerMsecResolution configuration is: %s",internalTimerMsecResolution));
@@ -152,6 +152,10 @@ public final class Configuration {
         return maxAge;
     }
 
+    /**
+     *
+     * @return millisecond resolutuion of the internal timer thread
+     */
     public static synchronized long getInternalTimerMsecResolution() {
         return internalTimerMsecResolution;
     }
