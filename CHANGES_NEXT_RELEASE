@@ -1,3 +1,4 @@
+ADD: Set default internal timer msec resolution (millisecond resolutuion of the internal timer thread) (#194)
 FIX: Ensure timerules are stored with unique name by using full name which includes service and subservice (#191)
 FIX: upgrade docker based image from Tomcat8 to Tomcat9
 FIX: migrate log4j v1 (1.7.25) to v2 (2.17.2) (#184)
