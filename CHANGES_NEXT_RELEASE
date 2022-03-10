@@ -1,4 +1,4 @@
-ADD: unhardwire default internal timer msec resolution (millisecond resolution of the internal timer thread) with a default of 30ms (#194)
+ADD: unhardwire default internal timer msec resolution (millisecond resolution of the internal timer thread) with a default of 10ms (#194)
 ADD: INTERNAL_TIMER_MSEC_RESOLUTION env var for internal msec resolution (#194)
 FIX: Ensure timerules are stored with unique name by using full name which includes service and subservice (#191)
 FIX: upgrade docker based image from Tomcat8 to Tomcat9
