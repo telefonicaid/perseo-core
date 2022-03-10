@@ -67,7 +67,7 @@ public class GenericListener implements UpdateListener {
 
                 // TBD: include service and subservice
                 JSONObject rule = TimeRulesStore.getInstance().getRuleInfo(ruleName);
-                LOGGER.debug(String.format("Rule name: %s  event %s jo %s",
+                LOGGER.debug(String.format("Rule name: %s event %s jo %s",
                                            ruleName, event, jo));
 
                 // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
@@ -76,7 +76,7 @@ public class GenericListener implements UpdateListener {
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
                     // Timed rule is stored in TImesRuleStored with normalized/unique name)
-                    // But simple rule name should be restored in order to post perseo-fe
+                    // But simple rule name should be used in order to post perseo-fe
                     List<String> name = new ArrayList(Arrays.asList(ruleName.split("@")));
                     jo.put("ruleName", name.get(0));
                     LOGGER.info(String.format("Firing temporal rule: %s with name %s from event: %s",
@@ -86,8 +86,10 @@ public class GenericListener implements UpdateListener {
                     LOGGER.info(String.format("Firing Rule with name: %s from Event: %s Jo: %s",
                                               ruleName, event, jo));
                 }
-
-                LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
+                JSONObject errors = jo.optJSONObject("errors");
+                if (errors != null) {
+                    LOGGER.info(String.format("result errors: %s", errors));
+                }
                 LOGGER.debug(String.format("result json: %s", jo));
 
                 boolean ok = Utils.DoHTTPPost(Configuration.getActionURL(), jo.toString());
