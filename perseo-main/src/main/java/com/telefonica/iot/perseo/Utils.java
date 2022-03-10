@@ -78,6 +78,7 @@ public class Utils {
         configuration.getCompiler().getByteCode().setAllowSubscriber(true);
         configuration.getCompiler().getByteCode().setAccessModifiersPublic();
         configuration.getCompiler().getByteCode().setBusModifierEventType(EventTypeBusModifier.BUS);
+        configuration.getRuntime().getThreading().setInternalTimerMsecResolution(com.telefonica.iot.perseo.Configuration.getInternalTimerMsecResolution());
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
 
