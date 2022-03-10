@@ -56,7 +56,7 @@ public class Help {
                  ,"expression E {(v) => case when v is null or cast(v,float) < 0 or cast(v,string) = 'null' or cast(v,string) = ' ' then 0 else v end}  select E(5) from iotEvent"
                  ,"select current_timestamp() as r from iotEvent where (cast(price?,String) != '321' and (cast(price?,String) != '123'))"
                  ,"insert into mynewstream select window(price) as winprice from iotEvent.win:length(2) as price"
-                 ,"select *, winprice.get(0) as primero from mynewstream having count(winprice)>1"
+                 ,"select *, winprice.get(0) as first from mynewstream having count(winprice)>1"
                  // The following epl text will be work with a future esper version ?
                  //,"inlined_class \"\"\"\n  public class MyUtility {\n    public static double fib(int n) {\n      if (n <= 1) {\n        return n;\n      }\n      return fib(n-1) + fib(n-2);\n    }\n  }\n\"\"\"\n expression FIBC alias for { MyUtility.fib(5) > 3 } SELECT *, FIBC as r FROM iotEvent WHERE FIBC"
                  //,"expression double js:fib(num) [\nfib(num);\nfunction fib(n) {\n  if(n <= 1)\n    return n;\n  return fib(n-1) + fib(n-2);\n}\n]\nexpression FIBE alias for { fib(5) > 3 } SELECT *, FIBE as r FROM iotEvent WHERE FIBE"
