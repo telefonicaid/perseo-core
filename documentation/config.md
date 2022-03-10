@@ -53,4 +53,4 @@ The `action.url` field is the URL used to make a POST in the case of a rule bein
 
 The `rule.max_age` field is the value in milliseconds used as a threshold for the age of a rule to deleted safely in case of a PUT request over the rules resource does not contain the rule. All the rules older than rule.max_age will be deleted if they are not in the new set. If a rule is younger than `rule.max_age` it will be kept despite not being in the set sent by the PUT request.
 
-The `internal_timer_msec_resolution` field is the value in milliseconds used for resolution of the internal timer thread
+The `internal_timer_msec_resolution` field is the value in milliseconds used for resolution of the internal timer thread. More detail in [esper](http://esper.espertech.com/release-8.4.0/javadoc-esper/com/espertech/esper/common/client/configuration/runtime/ConfigurationRuntimeThreading.html#setInternalTimerMsecResolution-long-)
