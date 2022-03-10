@@ -42,7 +42,7 @@ public final class Configuration {
 
     private static final String DEFAULT_PERSEO_FE_URL = "http://127.0.0.1:9090";
     private static final long DEFAULT_MAX_AGE = 60000;
-    private static final long DEFAULT_INTERNAL_TIMER_MSEC_RESOLUTION = 30;
+    private static final long DEFAULT_INTERNAL_TIMER_MSEC_RESOLUTION = 10;
 
     private static final String PERSEO_FE_URL_ENV = "PERSEO_FE_URL";
     private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
