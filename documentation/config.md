@@ -46,7 +46,7 @@ action.url = http://127.0.0.1:9090/actions/do
 rule.max_age= 60000
 
 # Length of the interval (resolution) of the timer thread
-internal_timer_msec_resolution = 30
+internal_timer_msec_resolution = 10
 ```
 
 The `action.url` field is the URL used to make a POST in the case of a rule being fired by an incoming event. The content POSTed is the JSON representation of the derived  ("complex") event.
