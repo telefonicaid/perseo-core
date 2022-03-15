@@ -103,12 +103,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Mar 15 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.9.0
-- ADD: unhardwire default internal timer msec resolution (millisecond resolution of the internal timer thread) with a default of 10ms (#194)
-- ADD: INTERNAL_TIMER_MSEC_RESOLUTION env var for internal msec resolution (#194)
-- ADD: allow use WARN as WARNING log level
-- FIX: Ensure timerules are stored with unique name by using full name which includes service and subservice (#191)
-- FIX: upgrade docker based image from Tomcat8 to Tomcat9
-- FIX: migrate log4j v1 (1.7.25) to v2 (2.17.2) (#184)
+- Add: unhardwire default internal timer msec resolution (millisecond resolution of the internal timer thread) with a default of 10ms (#194)
+- Add: INTERNAL_TIMER_MSEC_RESOLUTION env var for internal msec resolution (#194)
+- Add: allow use WARN as WARNING log level
+- Fix: Ensure timerules are stored with unique name by using full name which includes service and subservice (#191)
+- Fix: upgrade docker based image from Tomcat8 to Tomcat9
+- Fix: migrate log4j v1 (1.7.25) to v2 (2.17.2) (#184)
 
 * Thu Sep 30 2021 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.8.0
 - Upgrade to use Esper 8.4 from Exper 7.X (#136)
