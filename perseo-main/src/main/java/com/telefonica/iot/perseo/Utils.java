@@ -49,6 +49,7 @@ import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.logging.log4j.ThreadContext;
@@ -159,7 +160,9 @@ public class Utils {
         while (it.hasNext()) {
             String key = (String) it.next();
             Object o = jo.get(key);
-            if (o instanceof JSONObject) {
+            if (o instanceof JSONArray) {
+                map.put(key, o.toList());
+            } else if (o instanceof JSONObject) {
                 map.put(key, JSONObject2Map((JSONObject) o));
             } else {
                 map.put(key, o);
