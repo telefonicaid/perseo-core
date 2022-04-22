@@ -161,7 +161,7 @@ public class Utils {
             String key = (String) it.next();
             Object o = jo.get(key);
             if (o instanceof JSONArray) {
-                map.put(key, o.toList());
+                map.put(key, ((JSONArray)o).toList());
             } else if (o instanceof JSONObject) {
                 map.put(key, JSONObject2Map((JSONObject) o));
             } else {
