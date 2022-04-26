@@ -182,7 +182,8 @@ public class Utils {
         String[] propertyNames = event.getEventType().getPropertyNames();
         for (String propertyName : propertyNames) {
             try {
-                jo.put(propertyName, event.get(propertyName) == null ? JSONObject.NULL : event.get(propertyName));
+                Object objProp = event.get(propertyName);
+                jo.put(propertyName, objProp == null ? JSONObject.NULL : objProp);
             } catch (JSONException je) {
                 errors.put(propertyName, je.getMessage());
                 logger.error(je.getMessage());
