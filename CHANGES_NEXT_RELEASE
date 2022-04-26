@@ -1,1 +1,1 @@
-- FIX: allow null values in json object from event
+- FIX: allow null values in json object from event (#200)
