@@ -141,10 +141,12 @@ public class UtilsTest {
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
+        m.put("nulo", null);
         EventBean event = new EventBeanMock(m);
         JSONObject result = Utils.Event2JSONObject(event);
         assertEquals(result.get("one"), "1");
         assertEquals(result.get("two"), 2);
+        assertEquals(result.get("nulo"), null);
     }
 
     /**
