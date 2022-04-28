@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Wed Apr 27 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.10.0
+- Fix: allow null values in json object from event (#200)
+
 * Tue Mar 15 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.9.0
 - Add: unhardwire default internal timer msec resolution (millisecond resolution of the internal timer thread) with a default of 10ms (#194)
 - Add: INTERNAL_TIMER_MSEC_RESOLUTION env var for internal msec resolution (#194)
