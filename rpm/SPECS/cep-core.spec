@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Thu Apr 28 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.11.0
+- Fix: allow null values in json object from event (#200, reopened)
+    
 * Wed Apr 27 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.10.0
 - Fix: allow null values in json object from event (#200)
 
