@@ -162,7 +162,7 @@ public class Utils {
             if (o instanceof JSONObject) {
                 map.put(key, JSONObject2Map((JSONObject) o));
             } else {
-                map.put(key, o);
+                map.put(key, o == JSONObject.NULL ? null : o);
             }
         }
         return map;

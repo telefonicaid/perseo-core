@@ -127,9 +127,12 @@ public class UtilsTest {
         HashMap<String, Object> m = new HashMap();
         m.put("one", "1");
         m.put("two", 2);
+        m.put("nulo", JSONObject.NULL);
         JSONObject jo = new JSONObject(m);
         Map<String, Object> result = Utils.JSONObject2Map(jo);
-        assertEquals(m, result);
+        assertEquals(result.get("one"), "1");
+        assertEquals(result.get("two"), 2);
+        assertEquals(result.get("nulo"), null);
     }
 
     /**
