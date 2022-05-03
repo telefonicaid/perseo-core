@@ -153,7 +153,7 @@ public class Utils {
      * @param jsonArray JSONArray to convert
      * @return ArrayList of Object
      */
-    public static ArrayList<Object> toArrayList(JSONArray jsonArray){
+    public static ArrayList<Object> JSONArray2ArrayList(JSONArray jsonArray){
         ArrayList<Object> list = new ArrayList<Object>();
         if (jsonArray != null) {
             int len = jsonArray.length();
