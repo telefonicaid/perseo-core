@@ -53,6 +53,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -128,11 +130,17 @@ public class UtilsTest {
         m.put("one", "1");
         m.put("two", 2);
         m.put("nulo", JSONObject.NULL);
+        m.put("array", new JSONArray().put(1).put(2).put(3));
         JSONObject jo = new JSONObject(m);
         Map<String, Object> result = Utils.JSONObject2Map(jo);
         assertEquals(result.get("one"), "1");
         assertEquals(result.get("two"), 2);
         assertEquals(result.get("nulo"), null);
+        ArrayList<Integer> arrList = new ArrayList<Integer>();
+        arrList.add(1);
+        arrList.add(2);
+        arrList.add(3);
+        assertEquals(result.get("array"), arrList);
     }
 
     /**
