@@ -1,1 +1,2 @@
+- Upgrade org.json dep from from version 20180813 to 20220320
 - Provide JSONArray as ArrayList in an Esper event map
