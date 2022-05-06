@@ -1,1 +1,2 @@
+- UPGRADE: minor upgrade jetty dep 9.4.12.v20180830 to 9.4.46.v20220331
 - Provide JSONArray as ArrayList in an Esper event map
