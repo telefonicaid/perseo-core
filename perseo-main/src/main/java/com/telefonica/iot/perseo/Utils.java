@@ -49,6 +49,8 @@ import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.logging.log4j.ThreadContext;
@@ -78,6 +80,7 @@ public class Utils {
         configuration.getCompiler().getByteCode().setAllowSubscriber(true);
         configuration.getCompiler().getByteCode().setAccessModifiersPublic();
         configuration.getCompiler().getByteCode().setBusModifierEventType(EventTypeBusModifier.BUS);
+        configuration.getRuntime().getThreading().setInternalTimerMsecResolution(com.telefonica.iot.perseo.Configuration.getInternalTimerMsecResolution());
         EPRuntime epService = (EPRuntime) sc.getAttribute(EPSERV_ATTR_NAME);
         if (epService == null) {
 
@@ -145,6 +148,23 @@ public class Utils {
     }
 
     /**
+     * Converts a JSONArray to a ArrayList of Object.
+     *
+     * @param jsonArray JSONArray to convert
+     * @return ArrayList of Object
+     */
+    public static ArrayList<Object> JSONArray2ArrayList(JSONArray jsonArray){
+        ArrayList<Object> list = new ArrayList<Object>();
+        if (jsonArray != null) {
+            int len = jsonArray.length();
+            for (int i=0;i<len;i++){
+                list.add(jsonArray.get(i));
+            }
+        }
+        return list;
+    }
+
+    /**
      * Converts a JSONObject to a map of String to Object. Nested JSONObject are
      * converted to Map too.
      *
@@ -158,10 +178,12 @@ public class Utils {
         while (it.hasNext()) {
             String key = (String) it.next();
             Object o = jo.get(key);
-            if (o instanceof JSONObject) {
+            if (o instanceof JSONArray) {
+                map.put(key, JSONArray2ArrayList((JSONArray) o));
+            } else if (o instanceof JSONObject) {
                 map.put(key, JSONObject2Map((JSONObject) o));
             } else {
-                map.put(key, o);
+                map.put(key, o == JSONObject.NULL ? null : o);
             }
         }
         return map;
@@ -181,7 +203,8 @@ public class Utils {
         String[] propertyNames = event.getEventType().getPropertyNames();
         for (String propertyName : propertyNames) {
             try {
-                jo.put(propertyName, event.get(propertyName));
+                Object objProp = event.get(propertyName);
+                jo.put(propertyName, objProp == null ? JSONObject.NULL : objProp);
             } catch (JSONException je) {
                 errors.put(propertyName, je.getMessage());
                 logger.error(je.getMessage());

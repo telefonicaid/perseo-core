@@ -94,8 +94,8 @@ public final class TimeRulesStore {
                     jo.getJSONObject(i).put("service", context.get(0));
                     context.remove(0);
                     jo.getJSONObject(i).put("subservice", "/" + String.join("/", context));
-                    rulesInfo.put(ruleName.get(0), jo.getJSONObject(i));
-                    LOGGER.info(String.format("Time rule %s %s added",i, ruleName));
+                    rulesInfo.put(strName, jo.getJSONObject(i));
+                    LOGGER.info(String.format("Time rule %s %s added", i, strName));
                 }
             }
         }
@@ -137,7 +137,7 @@ public final class TimeRulesStore {
         if (ruleName == null) {
             return null;
         }
-        return rulesInfo.get(ruleName.split("@")[0]);
+        return rulesInfo.get(ruleName);
     }
 
     /**
@@ -148,7 +148,7 @@ public final class TimeRulesStore {
     public void removeTimeRule(String ruleName) {
         LOGGER.info(String.format("Removing timerule: %s",ruleName));
         if (ruleName != null) {
-            rulesInfo.remove(ruleName.split("@")[0]);
+            rulesInfo.remove(ruleName);
         }
     }
 

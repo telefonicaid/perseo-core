@@ -27,11 +27,16 @@ import com.espertech.esper.runtime.client.UpdateListener;
 import com.espertech.esper.runtime.client.EPStatement;
 import com.espertech.esper.runtime.client.EPRuntime;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -59,23 +64,32 @@ public class GenericListener implements UpdateListener {
 
                 // Get Rule Information from TimeRulesStore
                 String ruleName = (String) eventMap.get("ruleName");
+
+                // TBD: include service and subservice
                 JSONObject rule = TimeRulesStore.getInstance().getRuleInfo(ruleName);
+                LOGGER.debug(String.format("Rule name: %s event %s jo %s",
+                                           ruleName, event, jo));
 
                 // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
                 if (rule != null) {
 
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
+                    // Timed rule is stored in TImesRuleStored with normalized/unique name)
+                    // But simple rule name should be used in order to post perseo-fe
+                    List<String> name = new ArrayList(Arrays.asList(ruleName.split("@")));
+                    jo.put("ruleName", name.get(0));
                     LOGGER.info(String.format("Firing temporal rule: %s with name %s from event: %s",
                                                rule.toString(), ruleName, event));
 
                 } else {
-
-                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s",
-                                              ruleName, event));
+                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s Jo: %s",
+                                              ruleName, event, jo));
                 }
-
-                LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
+                JSONObject errors = jo.optJSONObject("errors");
+                if (errors != null) {
+                    LOGGER.info(String.format("result errors: %s", errors));
+                }
                 LOGGER.debug(String.format("result json: %s", jo));
 
                 boolean ok = Utils.DoHTTPPost(Configuration.getActionURL(), jo.toString());
