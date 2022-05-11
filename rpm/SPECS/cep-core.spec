@@ -102,6 +102,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Wed May 11 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.12.0
+- Provide JSONArray as ArrayList in an Esper event map
+- Upgrade minor jetty dep 9.4.12.v20180830 to 9.4.46.v20220331
+- Upgrade org.json dep from from version 20180813 to 20220320
+
 * Thu Apr 28 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.11.0
 - Fix: allow null values in json object from event (#200, reopened)
     
