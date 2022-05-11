@@ -30,6 +30,10 @@ touch /var/log/perseo/perseo-core.log
 
 ln -snf /dev/stdout /var/log/perseo/perseo-core.log &
 
+if [ "$PERSEO_LOG_LEVEL" ]; then
+    (sleep 10; curl -X PUT 'http://localhost:8080/perseo-core/admin/log?level=$PERSEO_LOG_LEVEL') &
+fi
+
 # We use tomcat from Apache, then will be started using catalina.sh, instead service tomcat
 
 exec ${CATALINA_HOME}/bin/catalina.sh run
