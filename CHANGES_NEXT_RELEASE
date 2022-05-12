@@ -1,1 +1,1 @@
-
+- Switch log level to PERSEO_LOG_LEVEL env var if was provided to docker (#178)
