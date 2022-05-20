@@ -1,3 +1,3 @@
-- Upgrade to use Esper 8.8 from Exper 8.4
-- Provide JSONArray as ArrayList in an Esper event map
+- Upgrade to use Esper 8.8 from Esper 8.4
+- Switch log level to PERSEO_LOG_LEVEL env var if was provided to docker (#178)
 

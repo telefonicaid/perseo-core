@@ -115,7 +115,7 @@ from the root directory of the project.
 In order to undeploy the proxy just remove the .war and the directoryin webapps/.
 
 
-### Log Rotation
+### Log Rotation (not apply to Docker container)
 Independently of how the service is installed, the log files will need an external rotation (e.g.: the logrotate command) to avoid disk full problems.
 
 Logrotate is installed as RPM dependency along with perseo. The system is configured to rotate every day and whenever the log file size is greater than 100MB (checked very 30 minutes by default):
