@@ -51,51 +51,6 @@ you should change this value to something else, for example `-p 8081:8080`.
 * If you have previously built your own image you can run the same command as above but substituting `telefonicaiot/perseo-core:master` by the
 name given at image build time (`-t` option)
 
-### Installation from RPM
-
-This project provides the specs to create the RPM Package for the project, that may (in the future) be installed in a
-package repository.
-
-To generate the RPM, checkout the project to a machine with the RPM Build Tools installed, and, from the `rpm/` folder,
-execute the following command:
-
-```
-./create-rpm.sh 1 0.1
-```
-
-The create-rpm.sh script uses the following parameters:
-
-* Perseo-core release (1 in the example above), tipically set with the commit number corresponding to the RPM.
-* Perseo-core version (0.1 in the example above), which is the base version of the software
-
-This command will generate some folders, including one called RPMS, holding the RPM created for every architecture
-(x86_64 is currently generated).
-
-In order to install the generated RPM from the local file, use the following command:
-
-```
-yum --nogpgcheck localinstall  perseo-core-0.1-1.x86_64.rpm
-```
-
-It should automatically download all the dependencies provided they are available (Node.js and NPM may require the
-EPEL repositories to be added).
-
-The RPM package can also be deployed in a artifact repository and the installed using:
-
-```
-yum install perseo-core
-```
-
-NOTE: Perseo (front-end) is not installed as part of the dependencies in the RPM, so the URL of an existing Perseo (front-end)
-must be provided and configured for Perseo core to work properly.
-
-#### Activate service
-
-Perseo-core is a web application run in a Tomcat. The service will be active if the Tomcat is running.
-```
-service tomcat start
-```
-
 ### Installation from Sources
 
 Deployment requires a Tomcat 7 with Java 7. The basic steps for deploying it would be
@@ -118,7 +73,7 @@ In order to undeploy the proxy just remove the .war and the directoryin webapps/
 ### Log Rotation (not apply to Docker container)
 Independently of how the service is installed, the log files will need an external rotation (e.g.: the logrotate command) to avoid disk full problems.
 
-Logrotate is installed as RPM dependency along with perseo. The system is configured to rotate every day and whenever the log file size is greater than 100MB (checked very 30 minutes by default):
+Logroate example file can be found in [`etc` directory in this repository](../etc). This example is configured to rotate every day and whenever the log file size is greater than 100MB (checked very 30 minutes by default):
 * For daily rotation: /etc/logrotate.d/logrotate-perseo-daily: which enables daily log rotation
 * For size-based rotation:
     * /etc/sysconfig/logrotate-perseo-size: in addition to the previous rotation, this file ensures log rotation if the log file grows beyond a given threshold (100 MB by default)
