@@ -1,2 +1,0 @@
-- Add java.lang.* and java.util.* packages (all functions) into Esper (#217)
-- Switch log level to PERSEO_LOG_LEVEL env var if was provided to docker (#178)
