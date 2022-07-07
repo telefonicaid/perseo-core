@@ -24,7 +24,7 @@
     <parent>
         <artifactId>perseo-core</artifactId>
         <groupId>com.telefonica.iot</groupId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.13.0</version>
     </parent>
     <packaging>war</packaging>
     <modelVersion>4.0.0</modelVersion>
@@ -94,7 +94,7 @@
         <dependency>
             <artifactId>perseo-utils</artifactId>
             <groupId>com.telefonica.iot</groupId>
-            <version>1.12.0-SNAPSHOT</version>
+            <version>1.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

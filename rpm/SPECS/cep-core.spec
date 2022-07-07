@@ -102,6 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_install_dir}/perseo-core.war
 
 %changelog
+* Thu Jul 7 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.13.0
+- Add java.lang.* and java.util.* packages (all functions) into Esper (#217)
+- Switch log level to PERSEO_LOG_LEVEL env var if was provided to docker (#178)
+
 * Wed May 11 2022 Alvaro Vega <alvaro.vegagarcia@telefonica.com> 1.12.0
 - Provide JSONArray as ArrayList in an Esper event map
 - Upgrade minor jetty dep 9.4.12.v20180830 to 9.4.46.v20220331
