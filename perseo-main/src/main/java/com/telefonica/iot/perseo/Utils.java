@@ -94,6 +94,9 @@ public class Utils {
 
             // Add perseo-utils library
             configuration.getCommon().addImport("com.telefonica.iot.perseo.utils.*");
+            // Add Java lang and utils packages
+            configuration.getCommon().addImport("java.lang.*");
+            configuration.getCommon().addImport("java.util.*");
 
             ConfigurationCompiler cfgCpl = configuration.getCompiler();
 

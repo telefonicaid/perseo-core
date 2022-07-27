@@ -1,3 +1,2 @@
 - Upgrade to use Esper 8.8 from Esper 8.4
-- Switch log level to PERSEO_LOG_LEVEL env var if was provided to docker (#178)
-
+- Remove: RPM package stuff
