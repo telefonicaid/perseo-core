@@ -1,4 +1,4 @@
-- Remove support for java 8, 9, 10
+- Remove: support for Java 8, 9, 10 in GitActions unit testing
 - Upgrade maven-compiler-plugin dep from 3.8.0 to 3.11.0
 - Upgrade maven-war-plugin dep from 3.2.2 to 3.3.2
 - Upgrade maven-dependency-plugin dep from 3.1.1 to 3.5.0
