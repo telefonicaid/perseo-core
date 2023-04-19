@@ -1,2 +1,10 @@
+- Upgrade maven-compiler-plugin dep from 3.8.0 to 3.11.0
+- Upgrade maven-war-plugin dep from 3.2.2 to 3.3.2
+- Upgrade maven-dependency-plugin dep from 3.1.1 to 3.5.0
+- Upgrade maven-site-plugin dep from 2.7.1 to 3.8.2
+- Upgrade maven-surefire-report-plugin dep from 2.22.0 to 3.0.0
+- Upgrade maven-checkstyle-plugin dep from 3.0.0 to 3.2.1
+- Upgrade maven-javadoc-plugin dep from 3.0.1 to 3.5.0
 - Upgrade org.json dep from from version 20220320 to 20230227
+- Remove: support for Java 8, 9, 10 in GitActions unit testing
 - Remove: RPM package stuff
