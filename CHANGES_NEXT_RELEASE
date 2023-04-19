@@ -1,1 +1,2 @@
+- Upgrade org.json dep from from version 20220320 to 20230227
 - Remove: RPM package stuff
