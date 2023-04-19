@@ -1,1 +1,2 @@
+- Remove support for java 8, 9, 10
 - Remove: RPM package stuff
