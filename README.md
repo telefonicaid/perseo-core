@@ -1,7 +1,9 @@
 # Perseo-core (EPL server)
 
 [![FIWARE Processing](https://nexus.lab.fiware.org/static/badges/chapters/processing.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: APGL](https://img.shields.io/github/license/telefonicaid/perseo-core.svg)](https://opensource.org/licenses/AGPL-3.0)</br>
+[![License: APGL](https://img.shields.io/github/license/telefonicaid/perseo-core.svg)](https://opensource.org/licenses/AGPL-3.0)
+[![Docker badge](https://img.shields.io/badge/quay.io-fiware%2Fperseo--core-grey?logo=red%20hat&labelColor=EE0000)](https://quay.io/repository/fiware/perseo-core)
+[![Support badge](https://img.shields.io/badge/tag-fiware--perseo-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware-perseo)</br>
 [![CI](https://github.com/telefonicaid/perseo-fe/workflows/CI/badge.svg)](https://github.com/telefonicaid/perseo-fe/actions?query=workflow%3ACI)
 ![Status](https://nexus.lab.fiware.org/static/badges/statuses/perseo.svg)
 
@@ -19,14 +21,17 @@ This is the code repository for the EPL-server, named perseo-core.
     * [Administration](documentation/admin.md)
 * [API](documentation/api.md)
 
-* [License](#licence)
+* [License](#license)
 
-| :dart: [Roadmap](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/roadmap.md) |
-|---|
+| <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/perseo-core) | :dart: [Roadmap](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/roadmap.md) |
+|---| --- |
 
 ## License
 
 Perseo Core is licensed under General Public License (GPL) version 2.
+
+<details>
+<summary><strong>Further information on the use of the GPL open source license</strong></summary>
 
 ### Are there any legal issues with GPL 2.0? Is it safe for me to use?
 
@@ -44,3 +49,5 @@ wish to make a clarifying public statement as follows:
 > work of the product. Software that merely uses or aggregates (i.e. links to) an otherwise
 > unmodified version of existing software is not considered a derivative work, and therefore
 > it does not need to be released as under the same license, or even released as open source.
+
+</details>
