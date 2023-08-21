@@ -34,7 +34,7 @@ COPY perseo_core-entrypoint.sh /code
 # hadolint ignore=DL3005,DL3008
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
+    apt-get install --no-install-recommends -y maven openjdk-17-jdk && \
     mvn install && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
@@ -42,7 +42,7 @@ RUN apt-get -y update && \
     chown -R 1000:1000 /usr/local/tomcat/webapps && \
     chmod -R 777 /usr/local/tomcat/webapps && \
     mvn clean && \
-    apt-get remove -y openjdk-11-jdk && \
+    apt-get remove -y openjdk-17-jdk && \
     apt-get clean && \
     apt-get remove -y maven && \
     apt-get -y autoremove && \
