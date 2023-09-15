@@ -23,7 +23,7 @@ This is the code repository for the EPL-server, named perseo-core.
 
 * [License](#license)
 
-| <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/perseo-core) | :dart: [Roadmap](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/roadmap.md) |
+| <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/perseo-core)| :whale: [Docker Hub](https://hub.docker.com/r/telefonicaiot/perseo-core)  | :dart: [Roadmap](https://github.com/telefonicaid/perseo-fe/blob/master/documentation/roadmap.md) |
 |---| --- |
 
 ## License
