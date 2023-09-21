@@ -69,17 +69,17 @@
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-runtime</artifactId>
-            <version>8.8.0</version>
+            <version>8.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-common</artifactId>
-            <version>8.8.0</version>
+            <version>8.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-compiler</artifactId>
-            <version>8.8.0</version>
+            <version>8.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
