@@ -8,3 +8,4 @@
 - Upgrade org.json dep from from version 20220320 to 20231013
 - Remove: support for Java 8, 9, 10 in GitActions unit testing
 - Remove: RPM package stuff
+- Fix: change log level at startup after 30 seconds instead of 10
