@@ -1,3 +1,17 @@
+1.14.0 (April 10th, 2025)
+
+- Fix: change log level at startup after 30 seconds instead of 10
+- Upgrade maven-compiler-plugin dep from 3.8.0 to 3.11.0
+- Upgrade maven-war-plugin dep from 3.2.2 to 3.3.2
+- Upgrade maven-dependency-plugin dep from 3.1.1 to 3.5.0
+- Upgrade maven-site-plugin dep from 2.7.1 to 3.8.2
+- Upgrade maven-surefire-report-plugin dep from 2.22.0 to 3.0.0
+- Upgrade maven-checkstyle-plugin dep from 3.0.0 to 3.2.1
+- Upgrade maven-javadoc-plugin dep from 3.0.1 to 3.5.0
+- Upgrade org.json dep from from version 20220320 to 20231013
+- Remove: support for Java 8, 9, 10 in GitActions unit testing
+- Remove: RPM package stuff
+
 1.13.0 (July 7th, 2022)
 
 - Add java.lang.* and java.util.* packages (all functions) into Esper (#217)
@@ -12,7 +26,7 @@
 1.11.0 (April 28th, 2022)
 
 - Fix: allow null values in json object from event (#200, reopened)
-    
+
 1.10.0 (April 27th, 2022)
 
 - Fix: allow null values in json object from event (#200)
