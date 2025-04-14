@@ -39,6 +39,7 @@ RUN apt-get -y update && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
+    cp logging.properties.template /usr/local/tomcat/conf/logging.properties && \
     chown -R 1000:1000 /usr/local/tomcat/webapps && \
     chmod -R 777 /usr/local/tomcat/webapps && \
     mvn clean && \
