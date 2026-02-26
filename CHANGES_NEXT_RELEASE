@@ -1,1 +1,1 @@
-
+- Upgrade log4j-core dep from 2.17.2 to 2.25.3 (solving vulnarability CVE-2025-68161)
