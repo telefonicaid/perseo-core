@@ -429,7 +429,7 @@ public class Utils {
             // Build compiler arguments
             CompilerArguments args = new CompilerArguments(configuration);
 
-            args.getOptions().setStatementName(new MyStatementNameResolver(name));
+            args.getOptions().setStatementName(new MyStatementNameResolver("perseo_internal"));
 
             // Make the existing EPL objects available to the compiler
             args.getPath().add(runtime.getRuntimePath());
@@ -438,7 +438,9 @@ public class Utils {
             EPCompiled compiled = EPCompilerProvider.getCompiler().compile(epl, args);
 
             // Return the deployment
-            return runtime.getDeploymentService().deploy(compiled);
+            DeploymentOptions options = new DeploymentOptions();
+            options.setStatementNameRuntime(context -> name);
+            return runtime.getDeploymentService().deploy(compiled, options);
         }
         catch (Exception ex) {
             throw new EPException(ex.getMessage());

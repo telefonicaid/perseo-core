@@ -191,6 +191,54 @@ public class UtilsTest {
         assertEquals(epa.getDeployment(deployment.getDeploymentId()).getLastUpdateDate().getTime(), result.getLong("timeLastStateChange"));
     }
 
+    @Test
+    public void testCompileDeployWithDollarNames() throws EPUndeployException {
+        Configuration configuration = new Configuration();
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("id", String.class);
+        definition.put("type", String.class);
+        definition.put(Constants.SUBSERVICE_FIELD, String.class);
+        definition.put(Constants.SERVICE_FIELD, String.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("compileDeployDollarNames", configuration);
+        String contextName = "ctxt$alcobendas$inmotica";
+        String ruleName = "rule$alcobendas$inmotica";
+        try {
+            EPDeployment contextDeployment = Utils.compileDeploy(runtime,
+                    "create context " + contextName + " partition by service from "
+                    + "iotEvent(service=\"alcobendas\" and subservice=\"/inmotica\")", contextName);
+            EPDeployment ruleDeployment = Utils.compileDeploy(runtime,
+                    "context " + contextName + " select * from iotEvent", ruleName);
+            EPDeploymentService deployments = runtime.getDeploymentService();
+            EPStatement statement = ruleDeployment.getStatements()[0];
+
+            assertEquals(contextName, contextDeployment.getStatements()[0].getName());
+            assertEquals(ruleName, statement.getName());
+            assertSame(contextDeployment.getStatements()[0],
+                    Utils.getStatementFromDeployService(deployments, contextName));
+            assertSame(statement, Utils.getStatementFromDeployService(deployments, ruleName));
+
+            ArrayList<EventBean> received = new ArrayList<EventBean>();
+            statement.addListener((newEvents, oldEvents, source, service) -> received.add(newEvents[0]));
+            Map<String, Object> event = new HashMap<String, Object>();
+            event.put("id", "sensor1");
+            event.put("type", "sensor");
+            event.put(Constants.SERVICE_FIELD, "alcobendas");
+            event.put(Constants.SUBSERVICE_FIELD, "/inmotica");
+            runtime.getEventService().sendEventMap(event, "iotEvent");
+
+            assertEquals(1, received.size());
+            assertEquals("sensor1", received.get(0).get("id"));
+
+            deployments.undeploy(statement.getDeploymentId());
+            deployments.undeploy(contextDeployment.getDeploymentId());
+            assertNull(Utils.getStatementFromDeployService(deployments, ruleName));
+            assertNull(Utils.getStatementFromDeployService(deployments, contextName));
+        } finally {
+            runtime.destroy();
+        }
+    }
+
     /**
      * Test of DoHTTPPost method, of class Utils.
      */
