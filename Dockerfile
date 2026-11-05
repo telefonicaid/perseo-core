@@ -35,8 +35,7 @@ COPY perseo_core-entrypoint.sh /code
 # hadolint ignore=DL3005,DL3008
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
-    apt-get install -y curl && \
+    apt-get install --no-install-recommends -y maven curl openjdk-11-jdk && \
     # perseo-core is built using JDK 11, as this is a safer and more compatible choice for Esper 8.4.0 and other legacy dependencies than newer Java versions such as JDK 17 or JDK 25. At runtime, it uses the default Java version (JDK 25) provided by the Tomcat 9 image.
     mvn install && \
     mvn package && \
