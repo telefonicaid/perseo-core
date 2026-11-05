@@ -16,7 +16,7 @@
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
 
-FROM tomcat:9
+FROM tomcat:9.0-jdk17-temurin-jammy
 ARG GITHUB_ACCOUNT=telefonicaid
 ARG GITHUB_REPOSITORY=perseo-core
 
@@ -34,15 +34,13 @@ COPY perseo_core-entrypoint.sh /code
 # hadolint ignore=DL3005,DL3008
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
-    mvn install && \
-    mvn package && \
+    apt-get install --no-install-recommends -y maven curl && \
+    mvn -B clean verify && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     chown -R 1000:1000 /usr/local/tomcat/webapps && \
     chmod -R 777 /usr/local/tomcat/webapps && \
     mvn clean && \
-    apt-get remove -y openjdk-11-jdk && \
     apt-get clean && \
     apt-get remove -y maven && \
     apt-get -y autoremove && \
