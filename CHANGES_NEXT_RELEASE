@@ -1,3 +1,4 @@
 - Upgrade to use Esper 9.0.0 from Esper 8.4
 - Require Java 17 or later for building and running; update Docker and CI to Java 17
 - Remove: RPM package stuff
+- Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)

@@ -17,6 +17,7 @@
 #
 
 FROM tomcat:9.0-jdk17-temurin-jammy
+
 ARG GITHUB_ACCOUNT=telefonicaid
 ARG GITHUB_REPOSITORY=perseo-core
 
