@@ -31,7 +31,6 @@ import com.espertech.esper.compiler.client.EPCompilerProvider;
 import com.espertech.esper.compiler.client.EPCompileException;
 import com.espertech.esper.runtime.client.EPDeployException;
 import com.espertech.esper.runtime.client.EPUndeployException;
-import com.espertech.esper.common.client.util.StatementProperty;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -145,18 +144,11 @@ public class RulesManager {
                                                                                             )));
                 statement.addListener(new GenericListener());
             } else {
-                String oldEpl = prevStmnt.getProperty(StatementProperty.EPL).toString();
+                String oldEpl = Utils.getStatementEpl(prevStmnt);
                 logger.debug(String.format("old epl: %s", oldEpl));
                 if (!newEpl.equals(oldEpl)) {
                     logger.debug(String.format("found changed statement: %s",name));
-                    try {
-                        epa.undeploy(prevStmnt.getDeploymentId());
-                    } catch (EPUndeployException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    logger.debug(String.format("deleted statement: %s",name));
-
-                    EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
+                    EPDeployment deployment = replace(epService, prevStmnt, newEpl, name);
                     String dId = deployment.getDeploymentId();
                     statement = deployment.getStatements()[0];
                     logger.debug(String.format("re-created statement: %s", name));
@@ -233,45 +225,42 @@ public class RulesManager {
                 }
             }
 
+            JSONArray errors = new JSONArray();
             for (String n : newOnes.keySet()) {
                 String newEpl = newOnes.get(n);
-
-                if (!oldOnesNames.contains(n)) {
-                    logger.debug(String.format("found new statement: %s", n));
-
-                    EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
-                    logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
-                                                                                                deployment.getStatements()[0],
-                                                                                                epa,
-                                                                                                deployment.getDeploymentId()
-                                                                                                )));
-                    deployment.getStatements()[0].addListener(new GenericListener());
-                } else {
-                    EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, n);
-
-                    String oldEPL = prevStmnt.getProperty(StatementProperty.EPL).toString();
-                    if (!oldEPL.equals(newOnes.get(n))) {
-                        logger.debug(String.format("found changed statement: %s", n));
-                        try {
-                            epa.undeploy(prevStmnt.getDeploymentId());
-                        } catch (EPUndeployException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        logger.debug(String.format("deleted statement: %s", n));
+                try {
+                    if (!oldOnesNames.contains(n)) {
+                        logger.debug(String.format("found new statement: %s", n));
 
                         EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
-                        logger.debug(String.format("re-created statement: %s" ,n));
                         logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
-                                                                                                    deployment.getStatements()[0],
-                                                                                                    epa,
-                                                                                                    deployment.getDeploymentId()
-                                                                                                    )));
+                                deployment.getStatements()[0], epa, deployment.getDeploymentId())));
                         deployment.getStatements()[0].addListener(new GenericListener());
                     } else {
-                        logger.debug(String.format("identical statement: %s", n));
+                        EPStatement prevStmnt = Utils.getStatementFromDeployService(epa, n);
+
+                        String oldEPL = Utils.getStatementEpl(prevStmnt);
+                        if (!oldEPL.equals(newOnes.get(n))) {
+                            logger.debug(String.format("found changed statement: %s", n));
+                            EPDeployment deployment = replace(epService, prevStmnt, newEpl, n);
+                            logger.debug(String.format("re-created statement: %s" ,n));
+                            logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
+                                    deployment.getStatements()[0], epa, deployment.getDeploymentId())));
+                            deployment.getStatements()[0].addListener(new GenericListener());
+                        } else {
+                            logger.debug(String.format("identical statement: %s", n));
+                        }
+                        oldOnesNames.remove(n);
                     }
-                    oldOnesNames.remove(n);
+                } catch (EPException ex) {
+                    logger.error(String.format("updating rule %s failed", n), ex);
+                    errors.put(new JSONObject().put("name", n).put("error", ex.getMessage()));
                 }
+            }
+            if (errors.length() != 0) {
+                return new Result(HttpServletResponse.SC_BAD_REQUEST,
+                        new JSONObject().put("error", "Some rules could not be updated")
+                                .put("details", errors).toString());
             }
             //Delete oldOnes if they are old enough
             for (String o : oldOnesNames) {
@@ -300,6 +289,27 @@ public class RulesManager {
             return new Result(HttpServletResponse.SC_BAD_REQUEST,
                               String.format("{\"error\":%s}%n",
                                             JSONObject.valueToString(je.getMessage())));
+        }
+    }
+
+    private static EPDeployment replace(EPRuntime runtime, EPStatement previous, String epl, String name) {
+        EPCompiled compiled = Utils.compile(runtime, epl, name);
+        String oldEpl = Utils.getStatementEpl(previous);
+        try {
+            runtime.getDeploymentService().undeploy(previous.getDeploymentId());
+        } catch (EPUndeployException ex) {
+            throw new EPException(ex.getMessage(), ex);
+        }
+        try {
+            return Utils.deployCompiled(runtime, compiled, epl, name);
+        } catch (EPException failure) {
+            try {
+                Utils.compileDeploy(runtime, oldEpl, name).getStatements()[0].addListener(new GenericListener());
+            } catch (EPException restoreFailure) {
+                failure.addSuppressed(restoreFailure);
+                logger.error(String.format("restoring rule %s failed", name), restoreFailure);
+            }
+            throw failure;
         }
     }
 

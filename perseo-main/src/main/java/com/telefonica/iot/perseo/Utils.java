@@ -24,6 +24,7 @@ import com.espertech.esper.runtime.client.*;
 import com.espertech.esper.common.client.*;
 import com.espertech.esper.common.client.util.StatementProperty;
 import com.espertech.esper.compiler.client.CompilerArguments;
+import com.espertech.esper.compiler.client.EPCompileException;
 import com.espertech.esper.compiler.client.option.StatementNameOption;
 import com.espertech.esper.compiler.client.option.StatementNameContext;
 import com.espertech.esper.compiler.client.EPCompilerProvider;
@@ -33,11 +34,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -232,10 +232,16 @@ public class Utils {
         }
         JSONObject jo = new JSONObject()
                 .put("name", st.getName())
-                .put("text", st.getProperty(StatementProperty.EPL))
+                .put("text", getStatementEpl(st))
                 .put("state", st.isDestroyed())
                 .put("timeLastStateChange", epService.getDeployment(deploymentId).getLastUpdateDate().getTime());
         return jo;
+    }
+
+    public static String getStatementEpl(EPStatement statement) {
+        Object original = statement.getUserObjectRuntime();
+        return original instanceof String ? (String) original
+                : statement.getProperty(StatementProperty.EPL).toString();
     }
 
     /**
@@ -249,9 +255,19 @@ public class Utils {
      */
     
     public static boolean DoHTTPPost(String urlStr, String content) {
+        return DoHTTPPost(urlStr, content, com.telefonica.iot.perseo.Configuration.getActionConnectTimeout(),
+                com.telefonica.iot.perseo.Configuration.getActionReadTimeout());
+    }
+
+    static boolean DoHTTPPost(String urlStr, String content, int connectTimeout, int readTimeout) {
+        HttpURLConnection urlConn = null;
         try {
             URL url = new URL(urlStr);
-            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            urlConn = (HttpURLConnection) url.openConnection();
+            urlConn.setRequestMethod("POST");
+            urlConn.setConnectTimeout(connectTimeout);
+            urlConn.setReadTimeout(readTimeout);
+            urlConn.setInstanceFollowRedirects(false);
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, ThreadContext.get(Constants.CORRELATOR_ID));
@@ -259,39 +275,43 @@ public class Utils {
             urlConn.setRequestProperty(Constants.SUBSERVICE_HEADER, ThreadContext.get(Constants.SUBSERVICE_FIELD));
             urlConn.setRequestProperty(Constants.REALIP_HEADER, ThreadContext.get(Constants.REALIP_FIELD));
             
-            OutputStreamWriter printout = new OutputStreamWriter(urlConn.getOutputStream(), Charset.forName("UTF-8"));
-            printout.write(content);
-            printout.flush();
-            printout.close();
+            byte[] payload = content.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            urlConn.setFixedLengthStreamingMode(payload.length);
+            try (OutputStream output = urlConn.getOutputStream()) {
+                output.write(payload);
+            }
 
             int code = urlConn.getResponseCode();
             String message = urlConn.getResponseMessage();
             logger.debug(String.format("action http response %s %s",code,message));
-            if (code / 100 == 2) {
-                InputStream input = urlConn.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                for (String line; (line = reader.readLine()) != null;) {
-                    logger.info(String.format("action response body: %s", line));
-                }
-                input.close();
-                return true;
-
-            } else {
+            boolean success = code / 100 == 2;
+            if (!success) {
                 logger.error(String.format("action response is not OK: %s %s",code,message));
-                InputStream error = urlConn.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(error));
-                for (String line; (line = reader.readLine()) != null;) {
-                    logger.error(String.format("action error response body: %s", line));
-                }
-                error.close();
-                return false;
             }
+            InputStream responseBody = success ? urlConn.getInputStream() : urlConn.getErrorStream();
+            if (responseBody != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(responseBody,
+                        java.nio.charset.StandardCharsets.UTF_8))) {
+                    for (String line; (line = reader.readLine()) != null;) {
+                        if (success) {
+                            logger.info(String.format("action response body: %s", line));
+                        } else {
+                            logger.error(String.format("action error response body: %s", line));
+                        }
+                    }
+                }
+            }
+            return success;
         } catch (MalformedURLException me) {
             logger.error(String.format("exception MalformedURLException: %s",me));
             return false;
         } catch (IOException ioe) {
-            logger.error(String.format("exception IOException: %s",ioe));
+            logger.error("Action POST failed; delivery is not confirmed", ioe);
             return false;
+        } finally {
+            if (urlConn != null) {
+                urlConn.disconnect();
+            }
         }
     }
 
@@ -412,6 +432,10 @@ public class Utils {
      * A method that can replace createEPL calls of Esper-7
      */
     public static EPDeployment compileDeploy(EPRuntime runtime, String epl, String name) {
+        return deployCompiled(runtime, compile(runtime, epl, name), epl, name);
+    }
+
+    public static EPCompiled compile(EPRuntime runtime, String epl, String name) {
 
         try {
             // Obtain a copy of the engine configuration
@@ -435,15 +459,40 @@ public class Utils {
             args.getPath().add(runtime.getRuntimePath());
 
             // Compile
-            EPCompiled compiled = EPCompilerProvider.getCompiler().compile(epl, args);
+            com.espertech.esper.common.client.module.Module module =
+                    EplCompatibility.prepare(EPCompilerProvider.getCompiler(), epl, args);
+            EPCompiled compiled;
+            try {
+                compiled = EPCompilerProvider.getCompiler().compile(module, args);
+            } catch (EPCompileException ex) {
+                if (configuration.getCompiler().getExecution().getFilterIndexPlanning()
+                        != ConfigurationCompilerExecution.FilterIndexPlanning.ADVANCED
+                        || ex.getMessage() == null
+                        || !ex.getMessage().contains("(strict filter type coercion)")) {
+                    throw ex;
+                }
+                configuration.getCompiler().getExecution().setFilterIndexPlanning(
+                        ConfigurationCompilerExecution.FilterIndexPlanning.BASIC);
+                compiled = EPCompilerProvider.getCompiler().compile(module, args);
+                logger.warn(String.format("Rule %s compiled with BASIC filter index planning "
+                        + "after a strict filter type coercion failure", name));
+            }
 
-            // Return the deployment
-            DeploymentOptions options = new DeploymentOptions();
-            options.setStatementNameRuntime(context -> name);
-            return runtime.getDeploymentService().deploy(compiled, options);
+            return compiled;
         }
         catch (Exception ex) {
-            throw new EPException(ex.getMessage());
+            throw new EPException(ex.getMessage(), ex);
+        }
+    }
+
+    public static EPDeployment deployCompiled(EPRuntime runtime, EPCompiled compiled, String epl, String name) {
+        DeploymentOptions options = new DeploymentOptions();
+        options.setStatementNameRuntime(context -> name);
+        options.setStatementUserObjectRuntime(context -> epl);
+        try {
+            return runtime.getDeploymentService().deploy(compiled, options);
+        } catch (EPDeployException ex) {
+            throw new EPException(ex.getMessage(), ex);
         }
     }
 
