@@ -57,6 +57,8 @@ public final class Configuration {
     private static String actionRule;
     private static long maxAge;
     private static long internalTimerMsecResolution;
+    private static int actionConnectTimeout = 5000;
+    private static int actionReadTimeout = 10000;
 
     static {
         LOGGER.debug(String.format("Configuration init: %s",reload()));
@@ -131,7 +133,31 @@ public final class Configuration {
         }
         LOGGER.info(String.format("internalTimerMsecResolution configuration is: %s",internalTimerMsecResolution));
 
+        try {
+            actionConnectTimeout = positiveTimeout("ACTION_HTTP_CONNECT_TIMEOUT_MS", "action.http.connect_timeout_ms", 5000);
+            actionReadTimeout = positiveTimeout("ACTION_HTTP_READ_TIMEOUT_MS", "action.http.read_timeout_ms", 10000);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("Invalid action HTTP timeout configuration", ex);
+            return false;
+        }
         return true;
+    }
+
+    private static int positiveTimeout(String environment, String property, int defaultValue) {
+        String value = System.getenv(environment);
+        int timeout = Integer.parseInt(value != null ? value : PROPERTIES.getProperty(property, String.valueOf(defaultValue)));
+        if (timeout <= 0) {
+            throw new IllegalArgumentException(environment + " must be positive");
+        }
+        return timeout;
+    }
+
+    public static synchronized int getActionConnectTimeout() {
+        return actionConnectTimeout;
+    }
+
+    public static synchronized int getActionReadTimeout() {
+        return actionReadTimeout;
     }
 
     /**

@@ -69,22 +69,22 @@
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-runtime</artifactId>
-            <version>8.4.0</version>
+            <version>${esper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-common</artifactId>
-            <version>8.4.0</version>
+            <version>${esper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-compiler</artifactId>
-            <version>8.4.0</version>
+            <version>${esper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.espertech</groupId>
             <artifactId>esper-common-avro</artifactId>
-            <version>8.4.0</version>
+            <version>${esper.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

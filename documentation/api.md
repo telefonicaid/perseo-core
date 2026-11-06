@@ -241,6 +241,16 @@ http://[HOST]/perseo-core/rules/
 ##### RETURNS
 It returns a 200 response with a JSON of an empty object, if there was not errors. In case of any error, it returns an 400 (Bad Request)
 
+Rule compilation and deployment failures are reported by name in a `details` array alongside the top-level
+`error` message. Processing continues with the remaining rules; this operation is best-effort, not an atomic
+transaction. Successful changes remain applied when another rule fails. Cleanup of rules absent from the
+request is skipped if any rule failed.
+
+An existing rule is compiled before its previous deployment is removed. A compilation failure therefore
+leaves the previous rule running. If deployment subsequently fails, Perseo-core attempts to restore the
+previous EPL and listener. Restoration failures are logged; window contents, timer state and other runtime
+state are not restored. The same replacement protection applies to POST updates of an existing rule.
+
 Example: All the rules were processed correctly
 ```JSON
 {}
