@@ -11,6 +11,17 @@ Resource | HTTP | Description
 
 Each rule is represented as an plain object in JSON with a field `name` with the identifier of the rule inside the engine and a field `text` with the text of the EPL statement of the rule. The field `timeLastStateChange` has a timestamp with the last time when the state of rule changed. In this implementation, that value is the time when the rule was created. The field `state` will be `STARTED` usually, meaning the rule is working. Less frequently it could be `DESTROYED` if the rule has been removed recently and not "garbage-colleted" by the engine *yet*. Since perseo-core 1.8 (and aligned with esper8 upgrade) the meaning of state changed to a boolean which indicates if the statement was destroyed or not.
 
+#### Java classes available in EPL
+
+EPL rules can resolve only the following Java classes:
+
+* `java.lang.String`, `java.lang.Boolean`, `java.lang.Byte`, `java.lang.Short`, `java.lang.Integer`, `java.lang.Long`, `java.lang.Float`, `java.lang.Double`, `java.lang.Number`, `java.lang.Character`, `java.lang.Math`
+* `java.util.Collection`, `java.util.List`, `java.util.Set`, `java.util.Map`
+* `java.time.ZoneId`
+* `com.telefonica.iot.perseo.utils.DateTimeUtils`
+
+This is an exact class allowlist; other Java classes are not available to EPL, including other classes in the listed packages. A rule that refers to a class outside this list fails compilation and the Rules API returns `400 Bad Request`. This limits class resolution from EPL but is not a JVM or operating-system sandbox.
+
 #### GET (all)
 
 ##### DESCRIPTION

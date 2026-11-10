@@ -1,1 +1,2 @@
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
+- Restrict Java class resolution in EPL rules to an explicit allowlist.
