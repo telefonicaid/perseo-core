@@ -148,8 +148,8 @@ public final class PerseoClassForNameProvider
 
         String normalizedClassName = className.trim();
 
-    if (isDeniedClass(normalizedClassName)
-        || !allowedClasses.contains(normalizedClassName)) {
+        if (isDeniedClass(normalizedClassName)
+            || !allowedClasses.contains(normalizedClassName)) {
             throw new ClassNotFoundException(
                 "Class access from EPL is not allowed: "
                     + normalizedClassName
