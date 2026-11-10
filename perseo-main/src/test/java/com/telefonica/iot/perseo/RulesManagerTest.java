@@ -207,6 +207,7 @@ public class RulesManagerTest {
             "java.lang.Character",
             "java.lang.Math",
             "java.util.Collection",
+            "java.util.Calendar",
             "java.util.List",
             "java.util.Set",
             "java.util.Map",

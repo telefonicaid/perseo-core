@@ -16,7 +16,7 @@ Each rule is represented as an plain object in JSON with a field `name` with the
 EPL rules can resolve only the following Java classes:
 
 * `java.lang.String`, `java.lang.Boolean`, `java.lang.Byte`, `java.lang.Short`, `java.lang.Integer`, `java.lang.Long`, `java.lang.Float`, `java.lang.Double`, `java.lang.Number`, `java.lang.Character`, `java.lang.Math`
-* `java.util.Collection`, `java.util.List`, `java.util.Set`, `java.util.Map`
+* `java.util.Collection`, `java.util.Calendar`, `java.util.List`, `java.util.Set`, `java.util.Map`
 * `java.time.ZoneId`
 * `com.telefonica.iot.perseo.utils.DateTimeUtils`
 
