@@ -21,18 +21,28 @@ package com.telefonica.iot.perseo;
 
 import com.espertech.esper.common.client.util.ClassForNameProvider;
 import com.espertech.esper.common.client.util.ClassForNameProviderDefault;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class PerseoClassForNameProvider
         implements ClassForNameProvider {
 
-    private static final String ALLOWED_EXTRA_CLASSES_ENV =
-        "PERSEO_EPL_ALLOWED_EXTRA_CLASSES";
+    private static final String ALLOWED_EXTRA_CLASSES_FILE_ENV =
+        "PERSEO_EPL_ALLOWED_EXTRA_CLASSES_FILE";
+
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(PerseoClassForNameProvider.class);
 
     private static final Pattern FULLY_QUALIFIED_CLASS_NAME = Pattern.compile(
         "[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)+"
@@ -85,41 +95,54 @@ public final class PerseoClassForNameProvider
         )));
 
     private final Set<String> allowedClasses;
+    private final String allowedClassesFile;
 
     public PerseoClassForNameProvider() {
-        this(System.getenv(ALLOWED_EXTRA_CLASSES_ENV));
+        this(System.getenv(ALLOWED_EXTRA_CLASSES_FILE_ENV));
     }
 
-    PerseoClassForNameProvider(String extraAllowedClasses) {
-        Set<String> configuredClasses = new HashSet<String>(DEFAULT_ALLOWED_CLASSES);
-        configuredClasses.addAll(parseExtraAllowedClasses(extraAllowedClasses));
-        this.allowedClasses = Collections.unmodifiableSet(configuredClasses);
+    PerseoClassForNameProvider(String extraClassesFile) {
+        this.allowedClasses = DEFAULT_ALLOWED_CLASSES;
+        this.allowedClassesFile = extraClassesFile;
     }
 
-    private static Set<String> parseExtraAllowedClasses(String configuredClasses) {
-        if (configuredClasses == null || configuredClasses.trim().isEmpty()) {
+    private Set<String> readExtraAllowedClassesFile() {
+        if (allowedClassesFile == null || allowedClassesFile.trim().isEmpty()) {
             return Collections.emptySet();
         }
 
-        Set<String> extraClasses = new HashSet<String>();
-        for (String configuredClass : configuredClasses.split(",", -1)) {
-            String className = configuredClass.trim();
-            if (!FULLY_QUALIFIED_CLASS_NAME.matcher(className).matches()) {
-                throw new IllegalArgumentException(
-                    ALLOWED_EXTRA_CLASSES_ENV
-                        + " accepts only comma-separated fully qualified class names: "
-                        + className
-                );
+        try {
+            List<String> lines = Files.readAllLines(
+                Paths.get(allowedClassesFile),
+                StandardCharsets.UTF_8
+            );
+            Set<String> extraClasses = new HashSet<String>();
+            for (String line : lines) {
+                String className = line.trim();
+                if (className.isEmpty() || className.startsWith("#")) {
+                    continue;
+                }
+                if (!FULLY_QUALIFIED_CLASS_NAME.matcher(className).matches()) {
+                    throw new IllegalArgumentException(
+                        "Expected a fully qualified class name: " + className
+                    );
+                }
+                if (isDeniedClass(className)) {
+                    throw new IllegalArgumentException(
+                        "Class is blocked by the EPL class policy: " + className
+                    );
+                }
+                extraClasses.add(className);
             }
-            if (isDeniedClass(className)) {
-                throw new IllegalArgumentException(
-                    "Class cannot be added to " + ALLOWED_EXTRA_CLASSES_ENV
-                        + ": " + className
-                );
-            }
-            extraClasses.add(className);
+            return extraClasses;
+        } catch (IOException | IllegalArgumentException exception) {
+            LOGGER.warn(
+                "Unable to read additional EPL classes from {}: {}",
+                allowedClassesFile,
+                exception.getMessage()
+            );
+            return Collections.emptySet();
         }
-        return extraClasses;
     }
 
     private static boolean isDeniedClass(String className) {
@@ -149,7 +172,8 @@ public final class PerseoClassForNameProvider
         String normalizedClassName = className.trim();
 
         if (isDeniedClass(normalizedClassName)
-            || !allowedClasses.contains(normalizedClassName)) {
+                || (!allowedClasses.contains(normalizedClassName)
+                    && !readExtraAllowedClassesFile().contains(normalizedClassName))) {
             throw new ClassNotFoundException(
                 "Class access from EPL is not allowed: "
                     + normalizedClassName

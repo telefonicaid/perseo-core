@@ -37,7 +37,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -193,7 +197,7 @@ public class RulesManagerTest {
 
     @Test
     public void testClassForNameProviderAllowsConfiguredClasses() throws ClassNotFoundException {
-        PerseoClassForNameProvider provider = new PerseoClassForNameProvider("");
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider(null);
         String[] allowedClasses = {
             "java.lang.String",
             "java.lang.Boolean",
@@ -222,7 +226,7 @@ public class RulesManagerTest {
 
     @Test
     public void testClassForNameProviderRejectsUnlistedClasses() {
-        PerseoClassForNameProvider provider = new PerseoClassForNameProvider("");
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider(null);
         String[] deniedClasses = {
             "java.lang.Runtime",
             "java.lang.ProcessBuilder",
@@ -255,36 +259,51 @@ public class RulesManagerTest {
     }
 
     @Test
-    public void testClassForNameProviderAllowsExtraFullyQualifiedClasses()
-            throws ClassNotFoundException {
-        PerseoClassForNameProvider provider = new PerseoClassForNameProvider(
-            " java.util.Date,java.util.TimeZone "
-        );
-
-        assertSame(java.util.Date.class, provider.classForName("java.util.Date"));
-        assertSame(java.util.TimeZone.class, provider.classForName("java.util.TimeZone"));
-    }
-
-    @Test
-    public void testClassForNameProviderRejectsInvalidExtraClasses() {
-        assertInvalidExtraClasses("Date");
-        assertInvalidExtraClasses("java.util.*");
-        assertInvalidExtraClasses("java.util.Date,");
-        assertInvalidExtraClasses(",java.util.Date");
-        assertInvalidExtraClasses("java.lang.Runtime");
-        assertInvalidExtraClasses("java.lang.Runtime$Version");
-        assertInvalidExtraClasses("java.io.File");
-    }
-
-    private void assertInvalidExtraClasses(String configuredClasses) {
+    public void testClassForNameProviderReloadsExtraClassesFileWithoutRestart()
+            throws Exception {
+        Path allowedClassesFile = Files.createTempFile("perseo-epl-classes", ".txt");
         try {
-            new PerseoClassForNameProvider(configuredClasses);
-            fail("Expected invalid extra class configuration: " + configuredClasses);
-        } catch (IllegalArgumentException expected) {
-            // Invalid or explicitly denied class names must fail provider initialization.
+            Files.write(
+                allowedClassesFile,
+                Arrays.asList("# Additional EPL classes", "java.util.Date"),
+                StandardCharsets.UTF_8
+            );
+            PerseoClassForNameProvider provider = new PerseoClassForNameProvider(
+                allowedClassesFile.toString()
+            );
+
+            assertSame(java.util.Date.class, provider.classForName("java.util.Date"));
+
+            Files.write(
+                allowedClassesFile,
+                Arrays.asList("java.util.TimeZone"),
+                StandardCharsets.UTF_8
+            );
+
+            assertClassNotAllowed(provider, "java.util.Date");
+            assertSame(java.util.TimeZone.class, provider.classForName("java.util.TimeZone"));
+
+            Files.write(
+                allowedClassesFile,
+                Arrays.asList("java.util.*"),
+                StandardCharsets.UTF_8
+            );
+            assertClassNotAllowed(provider, "java.util.TimeZone");
+        } finally {
+            Files.deleteIfExists(allowedClassesFile);
         }
     }
 
+    private void assertClassNotAllowed(
+            PerseoClassForNameProvider provider,
+            String className) {
+        try {
+            provider.classForName(className);
+            fail("Expected class to be rejected: " + className);
+        } catch (ClassNotFoundException expected) {
+            // Expected for a class not in the current allowlist.
+        }
+    }
         /**
          * Test of updateAll method, of class RulesManager.
          */

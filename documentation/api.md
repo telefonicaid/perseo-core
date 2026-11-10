@@ -22,7 +22,7 @@ EPL rules can resolve only the following Java classes:
 
 This is an exact class allowlist; other Java classes are not available to EPL, including other classes in the listed packages. A rule that refers to a class outside this list fails compilation and the Rules API returns `400 Bad Request`. This limits class resolution from EPL but is not a JVM or operating-system sandbox.
 
-Deployments can extend the built-in list with `PERSEO_EPL_ALLOWED_EXTRA_CLASSES`, a comma-separated list of fully qualified class names. Package wildcards and unqualified names are rejected, and blocked classes or packages cannot be re-enabled with this variable. The value is read when the Esper runtime starts; restart Perseo-core and provision the affected rules again after changing it. See [Configuration](config.md) for details.
+Deployments can extend the built-in list with `PERSEO_EPL_ALLOWED_EXTRA_CLASSES_FILE`, pointing to a mounted UTF-8 file with one fully qualified class name per line. Package wildcards and unqualified names are rejected, and blocked classes or packages cannot be enabled through this file. The file is reread during class resolution without restarting Perseo-core; changes affect new or recompiled rules, not rules that are already deployed. Invalid entries and read errors are logged and fail closed for classes supplied by the file. See [Configuration](config.md) for details.
 
 #### GET (all)
 
