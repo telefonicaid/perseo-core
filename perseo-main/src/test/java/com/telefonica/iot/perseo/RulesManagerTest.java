@@ -140,6 +140,45 @@ public class RulesManagerTest {
         }
     }
 
+    @Test
+    public void testMakeRejectsFullyQualifiedRuntimeAccessFromEpl() {
+        String ruleName = "security_test_runtime_access";
+        String epl = "select java.lang.Runtime.getRuntime() as runtime_ref "
+            + "from pattern [every e=iotEvent]";
+        JSONObject rule = new JSONObject()
+            .put("name", ruleName)
+            .put("text", epl);
+
+        Result result = RulesManager.make(epService, rule.toString());
+        assertEquals(
+                     "The fully qualified Runtime access should be rejected",
+                     400,
+                     result.getStatusCode()
+                     );
+        assertNull(Utils.getStatementFromDeployService(
+            epService.getDeploymentService(), ruleName));
+    }
+
+    @Test
+    public void testMakeRejectsRuntimeAliasAccessFromEpl() {
+        String ruleName = "security_test_runtime_access";
+        String epl = "select Runtime.getRuntime() as runtime_ref "
+            + "from pattern [every e=iotEvent]";
+        JSONObject rule = new JSONObject()
+            .put("name", ruleName)
+            .put("text", epl);
+
+        Result result = RulesManager.make(epService, rule.toString());
+        assertEquals(
+                     "The Runtime alias access should be rejected",
+                     400,
+                     result.getStatusCode()
+                     );
+        assertNull(Utils.getStatementFromDeployService(
+            epService.getDeploymentService(), ruleName));
+    }
+
+    
     /**
      * Test of updateAll method, of class RulesManager.
      */
