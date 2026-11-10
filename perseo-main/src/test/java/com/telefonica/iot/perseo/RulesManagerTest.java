@@ -19,35 +19,27 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.common.client.configuration.Configuration;
-import com.espertech.esper.common.client.configuration.*;
-import com.espertech.esper.common.client.configuration.common.*;
-import com.espertech.esper.common.client.configuration.compiler.*;
 import com.espertech.esper.runtime.client.EPRuntime;
-import com.espertech.esper.runtime.client.EPRuntimeProvider;
 import com.espertech.esper.runtime.client.EPStatement;
 import com.espertech.esper.runtime.client.EPDeploymentService;
 import com.espertech.esper.runtime.client.EPDeployment;
-import com.espertech.esper.common.client.EPException;
-import com.espertech.esper.compiler.client.CompilerArguments;
-import com.espertech.esper.common.client.EPCompiled;
-import com.espertech.esper.compiler.client.EPCompilerProvider;
-import com.espertech.esper.compiler.client.EPCompileException;
-import com.espertech.esper.runtime.client.EPDeployException;
 import com.espertech.esper.runtime.client.EPUndeployException;
+import com.espertech.esper.common.client.EventBean;
 import com.espertech.esper.common.client.util.StatementProperty;
 import com.telefonica.iot.perseo.test.Help;
-import java.util.HashMap;
-import java.util.Map;
+import com.telefonica.iot.perseo.test.ServletContextMock;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -60,16 +52,7 @@ public class RulesManagerTest {
     EPRuntime epService;
     private static final Logger logger = LoggerFactory.getLogger(RulesManagerTest.class);
     public RulesManagerTest() {
-        com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
-
-        Map<String, Object> def = new HashMap<String, Object>();
-        def.put("id", String.class);
-        def.put("type", String.class);
-        def.put(Constants.SUBSERVICE_FIELD, String.class);
-        def.put(Constants.SERVICE_FIELD, String.class);
-        configuration.getCommon().addEventType("iotEvent", def);
-
-        epService = EPRuntimeProvider.getDefaultRuntime(configuration);
+        epService = Utils.initEPService(new ServletContextMock());
     }
 
     @BeforeClass
@@ -179,10 +162,100 @@ public class RulesManagerTest {
             epService.getDeploymentService(), ruleName));
     }
 
-    
-    /**
-     * Test of updateAll method, of class RulesManager.
-     */
+    @Test
+    public void testAllowsDocumentedMapAndIntegerUsageFromEpl() {
+        String epl = "select Integer.toHexString(cast(cast(value?,java.util.Map)"
+            + ".get('lastIrrigationTimeReceived'),int)) as irrigationTimeHex "
+            + "from iotEvent";
+        EPDeployment deployment = Utils.compileDeploy(epService, epl, "documented_java_usage");
+        EPStatement statement = deployment.getStatements()[0];
+        ArrayList<Object> results = new ArrayList<Object>();
+        statement.addListener((newEvents, oldEvents, source, runtime) -> {
+            for (EventBean event : newEvents) {
+                results.add(event.get("irrigationTimeHex"));
+            }
+        });
+
+        Map<String, Object> irrigationData = new HashMap<String, Object>();
+        irrigationData.put("lastIrrigationTimeReceived", 255);
+        Map<String, Object> inputEvent = new HashMap<String, Object>();
+        inputEvent.put("id", "documented-java-usage-event");
+        inputEvent.put("type", "DocumentedJavaUsage");
+        inputEvent.put(Constants.SERVICE_FIELD, "test-service");
+        inputEvent.put(Constants.SUBSERVICE_FIELD, "/test");
+        inputEvent.put("value", irrigationData);
+
+        epService.getEventService().sendEventMap(inputEvent, Constants.IOT_EVENT);
+
+        assertEquals(1, results.size());
+        assertEquals("ff", results.get(0));
+    }
+
+    @Test
+    public void testClassForNameProviderAllowsConfiguredClasses() throws ClassNotFoundException {
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider();
+        String[] allowedClasses = {
+            "java.lang.String",
+            "java.lang.Boolean",
+            "java.lang.Byte",
+            "java.lang.Short",
+            "java.lang.Integer",
+            "java.lang.Long",
+            "java.lang.Float",
+            "java.lang.Double",
+            "java.lang.Number",
+            "java.lang.Character",
+            "java.lang.Math",
+            "java.util.Collection",
+            "java.util.List",
+            "java.util.Set",
+            "java.util.Map",
+            "java.time.ZoneId",
+            "com.telefonica.iot.perseo.utils.DateTimeUtils"
+        };
+
+        for (String className : allowedClasses) {
+            assertNotNull(className, provider.classForName(className));
+        }
+    }
+
+    @Test
+    public void testClassForNameProviderRejectsUnlistedClasses() {
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider();
+        String[] deniedClasses = {
+            "java.lang.Runtime",
+            "java.lang.ProcessBuilder",
+            "java.lang.System",
+            "java.lang.Class",
+            "java.lang.ClassLoader",
+            "java.lang.reflect.Method",
+            "java.io.File",
+            "java.util.HashMap",
+            "com.example.UnlistedClass",
+            "",
+            "   "
+        };
+
+        for (String className : deniedClasses) {
+            try {
+                provider.classForName(className);
+                fail("Expected class to be rejected: " + className);
+            } catch (ClassNotFoundException expected) {
+                // Expected for every class outside the allowlist.
+            }
+        }
+
+        try {
+            provider.classForName(null);
+            fail("Expected null class name to be rejected");
+        } catch (ClassNotFoundException expected) {
+            // Expected for a null class name.
+        }
+    }
+
+        /**
+         * Test of updateAll method, of class RulesManager.
+         */
     @Test
     public void testUpdateAll() {
         logger.info("updateAll");
