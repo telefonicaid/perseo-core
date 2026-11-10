@@ -31,6 +31,15 @@ Example:
 INTERNAL_TIMER_MSEC_RESOLUTION=100
 ```
 
+`PERSEO_EPL_ALLOWED_EXTRA_CLASSES` is an optional comma-separated list of fully qualified Java class names to add to the built-in EPL allowlist. Package names, wildcards, and unqualified class names are rejected. Classes and packages blocked by the security policy cannot be added through this variable. Invalid values prevent the EPL class provider from initializing.
+
+Example:
+```
+PERSEO_EPL_ALLOWED_EXTRA_CLASSES=java.util.Date,java.util.TimeZone
+```
+
+The variable is read when the Esper runtime is initialized. Restart Perseo-core after changing it, then provision any rules that previously failed to compile.
+
 
 ### Configure Perseo-core with configuration file
 

@@ -193,7 +193,7 @@ public class RulesManagerTest {
 
     @Test
     public void testClassForNameProviderAllowsConfiguredClasses() throws ClassNotFoundException {
-        PerseoClassForNameProvider provider = new PerseoClassForNameProvider();
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider("");
         String[] allowedClasses = {
             "java.lang.String",
             "java.lang.Boolean",
@@ -222,7 +222,7 @@ public class RulesManagerTest {
 
     @Test
     public void testClassForNameProviderRejectsUnlistedClasses() {
-        PerseoClassForNameProvider provider = new PerseoClassForNameProvider();
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider("");
         String[] deniedClasses = {
             "java.lang.Runtime",
             "java.lang.ProcessBuilder",
@@ -251,6 +251,37 @@ public class RulesManagerTest {
             fail("Expected null class name to be rejected");
         } catch (ClassNotFoundException expected) {
             // Expected for a null class name.
+        }
+    }
+
+    @Test
+    public void testClassForNameProviderAllowsExtraFullyQualifiedClasses()
+            throws ClassNotFoundException {
+        PerseoClassForNameProvider provider = new PerseoClassForNameProvider(
+            " java.util.Date,java.util.TimeZone "
+        );
+
+        assertSame(java.util.Date.class, provider.classForName("java.util.Date"));
+        assertSame(java.util.TimeZone.class, provider.classForName("java.util.TimeZone"));
+    }
+
+    @Test
+    public void testClassForNameProviderRejectsInvalidExtraClasses() {
+        assertInvalidExtraClasses("Date");
+        assertInvalidExtraClasses("java.util.*");
+        assertInvalidExtraClasses("java.util.Date,");
+        assertInvalidExtraClasses(",java.util.Date");
+        assertInvalidExtraClasses("java.lang.Runtime");
+        assertInvalidExtraClasses("java.lang.Runtime$Version");
+        assertInvalidExtraClasses("java.io.File");
+    }
+
+    private void assertInvalidExtraClasses(String configuredClasses) {
+        try {
+            new PerseoClassForNameProvider(configuredClasses);
+            fail("Expected invalid extra class configuration: " + configuredClasses);
+        } catch (IllegalArgumentException expected) {
+            // Invalid or explicitly denied class names must fail provider initialization.
         }
     }
 

@@ -26,11 +26,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public final class PerseoClassForNameProvider
         implements ClassForNameProvider {
 
-    private static final Set<String> ALLOWED_CLASSES =
+    private static final String ALLOWED_EXTRA_CLASSES_ENV =
+        "PERSEO_EPL_ALLOWED_EXTRA_CLASSES";
+
+    private static final Pattern FULLY_QUALIFIED_CLASS_NAME = Pattern.compile(
+        "[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)+"
+    );
+
+    private static final Set<String> DEFAULT_ALLOWED_CLASSES =
         Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
             "java.lang.String",
             "java.lang.Boolean",
@@ -52,6 +60,82 @@ public final class PerseoClassForNameProvider
             "com.telefonica.iot.perseo.utils.DateTimeUtils"
         )));
 
+    private static final Set<String> DENIED_CLASSES =
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+            "java.lang.Runtime",
+            "java.lang.ProcessBuilder",
+            "java.lang.System",
+            "java.lang.Class",
+            "java.lang.ClassLoader",
+            "java.lang.Module",
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Constructor",
+            "java.lang.reflect.Field"
+        )));
+
+    private static final Set<String> DENIED_PACKAGE_PREFIXES =
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+            "java.io.",
+            "java.nio.file.",
+            "java.lang.reflect.",
+            "java.net.",
+            "javax.script.",
+            "jdk.",
+            "sun."
+        )));
+
+    private final Set<String> allowedClasses;
+
+    public PerseoClassForNameProvider() {
+        this(System.getenv(ALLOWED_EXTRA_CLASSES_ENV));
+    }
+
+    PerseoClassForNameProvider(String extraAllowedClasses) {
+        Set<String> configuredClasses = new HashSet<String>(DEFAULT_ALLOWED_CLASSES);
+        configuredClasses.addAll(parseExtraAllowedClasses(extraAllowedClasses));
+        this.allowedClasses = Collections.unmodifiableSet(configuredClasses);
+    }
+
+    private static Set<String> parseExtraAllowedClasses(String configuredClasses) {
+        if (configuredClasses == null || configuredClasses.trim().isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<String> extraClasses = new HashSet<String>();
+        for (String configuredClass : configuredClasses.split(",", -1)) {
+            String className = configuredClass.trim();
+            if (!FULLY_QUALIFIED_CLASS_NAME.matcher(className).matches()) {
+                throw new IllegalArgumentException(
+                    ALLOWED_EXTRA_CLASSES_ENV
+                        + " accepts only comma-separated fully qualified class names: "
+                        + className
+                );
+            }
+            if (isDeniedClass(className)) {
+                throw new IllegalArgumentException(
+                    "Class cannot be added to " + ALLOWED_EXTRA_CLASSES_ENV
+                        + ": " + className
+                );
+            }
+            extraClasses.add(className);
+        }
+        return extraClasses;
+    }
+
+    private static boolean isDeniedClass(String className) {
+        for (String deniedClass : DENIED_CLASSES) {
+            if (className.equals(deniedClass) || className.startsWith(deniedClass + "$")) {
+                return true;
+            }
+        }
+        for (String deniedPackagePrefix : DENIED_PACKAGE_PREFIXES) {
+            if (className.startsWith(deniedPackagePrefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Class classForName(String className)
             throws ClassNotFoundException {
@@ -64,7 +148,8 @@ public final class PerseoClassForNameProvider
 
         String normalizedClassName = className.trim();
 
-        if (!ALLOWED_CLASSES.contains(normalizedClassName)) {
+    if (isDeniedClass(normalizedClassName)
+        || !allowedClasses.contains(normalizedClassName)) {
             throw new ClassNotFoundException(
                 "Class access from EPL is not allowed: "
                     + normalizedClassName
