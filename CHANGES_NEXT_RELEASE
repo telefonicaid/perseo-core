@@ -1,1 +1,3 @@
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
+- Run the Docker image as an unprivileged user with a read-only web application and support for a read-only root filesystem.
+
