@@ -31,6 +31,7 @@ Example:
 INTERNAL_TIMER_MSEC_RESOLUTION=100
 ```
 
+
 `ACTION_HTTP_CONNECT_TIMEOUT_MS` and `ACTION_HTTP_READ_TIMEOUT_MS` set the action HTTP connection
 and response read timeouts in milliseconds. Defaults are `5000` and `10000`, respectively.
 Both values must be positive integers. Environment variables override the corresponding properties
@@ -38,6 +39,22 @@ Both values must be positive integers. Environment variables override the corres
 
 Action POSTs are not automatically retried or redirected. A failed or timed-out request may already
 have reached Perseo-FE, so retrying it without deduplication can duplicate actions.
+
+To extend the built-in EPL allowlist without restarting Perseo-core, set `PERSEO_EPL_ALLOWED_EXTRA_CLASSES_FILE` to a mounted UTF-8 text file containing one fully qualified Java class name per line. Package names, wildcards, and unqualified class names are rejected. Blank lines and lines beginning with `#` are ignored. Classes and packages blocked by the security policy cannot be enabled through this file. Invalid entries and read errors are logged and fail closed for classes supplied by the file; the built-in allowlist remains available.
+
+Example:
+```
+PERSEO_EPL_ALLOWED_EXTRA_CLASSES_FILE=/etc/perseo-core/epl-allowed-classes.txt
+```
+
+For example, `/etc/perseo-core/epl-allowed-classes.txt` can contain:
+```text
+java.util.Date
+java.util.TimeZone
+```
+
+Rules that are already compiled are not revalidated when the file changes. After removing a class, undeploy and provision again any existing rules that used it.
+
 
 
 ### Configure Perseo-core with configuration file
