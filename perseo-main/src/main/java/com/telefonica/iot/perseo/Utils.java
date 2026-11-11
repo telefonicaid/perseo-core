@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.espertech.esper.common.client.configuration.*;
 import com.espertech.esper.common.client.configuration.common.*;
 import com.espertech.esper.common.client.configuration.compiler.*;
+import com.espertech.esper.common.client.util.ClassForNameProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -76,6 +77,14 @@ public class Utils {
      */
     public static synchronized EPRuntime initEPService(ServletContext sc) {        
         com.espertech.esper.common.client.configuration.Configuration configuration = new com.espertech.esper.common.client.configuration.Configuration();
+
+        configuration.getCommon()
+            .getTransientConfiguration()
+            .put(
+                 ClassForNameProvider.NAME,
+                 new PerseoClassForNameProvider()
+                 );
+
         configuration.getCompiler().getExpression().setUdfCache(false);
         configuration.getCompiler().getByteCode().setAllowSubscriber(true);
         configuration.getCompiler().getByteCode().setAccessModifiersPublic();
@@ -94,9 +103,6 @@ public class Utils {
 
             // Add perseo-utils library
             configuration.getCommon().addImport("com.telefonica.iot.perseo.utils.*");
-            // Add Java lang and utils packages
-            configuration.getCommon().addImport("java.lang.*");
-            configuration.getCommon().addImport("java.util.*");
 
             ConfigurationCompiler cfgCpl = configuration.getCompiler();
 
