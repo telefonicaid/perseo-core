@@ -241,6 +241,8 @@ public class UtilsTest {
     @Test
     public void testCompileDeployWithFloatThreshold() {
         Configuration configuration = new Configuration();
+        configuration.getCommon().getTransientConfiguration().put(
+            com.espertech.esper.common.client.util.ClassForNameProvider.NAME, new PerseoClassForNameProvider());
         Map<String, Object> definition = new HashMap<String, Object>();
         definition.put("id", String.class);
         definition.put("type", String.class);
@@ -289,6 +291,8 @@ public class UtilsTest {
     @Test
     public void testCompileDeployWithPatternFloatThreshold() {
         Configuration configuration = new Configuration();
+        configuration.getCommon().getTransientConfiguration().put(
+            com.espertech.esper.common.client.util.ClassForNameProvider.NAME, new PerseoClassForNameProvider());
         RecordingExceptionHandlerFactory.errors.clear();
         configuration.getRuntime().getExceptionHandling().addClass(RecordingExceptionHandlerFactory.class);
         Map<String, Object> definition = new HashMap<String, Object>();

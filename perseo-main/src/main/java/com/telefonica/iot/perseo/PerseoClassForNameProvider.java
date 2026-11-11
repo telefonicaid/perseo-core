@@ -68,7 +68,8 @@ public final class PerseoClassForNameProvider
             "java.util.Map",
             "java.util.Arrays",
             "java.time.ZoneId",
-            "com.telefonica.iot.perseo.utils.DateTimeUtils"
+            "com.telefonica.iot.perseo.utils.DateTimeUtils",
+            "com.telefonica.iot.perseo.EplCompatibility"
         )));
 
     private static final Set<String> DENIED_CLASSES =
