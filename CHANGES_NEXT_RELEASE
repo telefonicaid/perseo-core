@@ -1,2 +1,3 @@
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
 - Restrict Java class resolution in EPL rules to an explicit allowlist, extendable with a reloadable mounted file of fully qualified class names.
+- Run the Docker image as an unprivileged user with a read-only web application and support for a read-only root filesystem (#245)
