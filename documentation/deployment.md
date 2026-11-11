@@ -21,10 +21,20 @@ If you want to know more about images and the building process you can find it i
 
 #### Run the container
 
-The following line will run the container, using a manually built image (see above),
-exposing port `8080`, give it a name -in this case `perseo1`, and present a bash prompt:
+The image runs as the unprivileged user `1000:1000`. The WAR is expanded while building the image and the web application files are read-only. Use a read-only root filesystem and temporary writable mounts only for Tomcat runtime data and logs:
 
-        docker run -d --name perseo1 -p 8080:8080 perseo
+```bash
+docker run -d --name perseo1 \
+    --read-only \
+    --cap-drop=ALL \
+    --security-opt=no-new-privileges \
+    --tmpfs /tmp:rw,nosuid,nodev,size=64m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/temp:rw,nosuid,nodev,size=64m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/work:rw,nosuid,nodev,size=128m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/logs:rw,nosuid,nodev,size=32m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /var/log/perseo:rw,nosuid,nodev,size=16m,uid=1000,gid=1000,mode=1770 \
+    -p 8080:8080 perseo
+```
 
 As a result of this command, there is a PERSEO listening on port 8080 on localhost. Try to see if it works now with
 
@@ -36,22 +46,56 @@ To get access to the log file of Perseo Core you can run:
 docker exec perseo1 tail -f /var/log/perseo/perseo-core.log
 ```
 
+The log directory is temporary in this example; use `docker logs perseo1` for container logs. Do not mount Docker/container-runtime sockets, Kubernetes credentials, or other secrets unless the deployment has a documented need for them. The Perseo-core image does not require these mounts.
+
 #### Run the container together with Perseo Front-End
 
-The following line will run the container, from Dockerhub, exposing port `8080`, give it a name -in this case `perseo_core` (hostname `perseocore`),
-and binding it to a [Perseo Front-End](https://github.com/telefonicaid/perseo-fe)
-instance (hostname `perseo-frontend`) listening on port 9090.
+To connect it to Perseo Front-End, use the same hardening options and set its URL explicitly:
 
-        docker run -d --name perseo_core -h perseocore -p 8080:8080 telefonicaiot/perseo-core:master -perseo_fe_url perseo-frontend:9090
+```bash
+docker run -d --name perseo_core -h perseocore \
+    --read-only \
+    --cap-drop=ALL \
+    --security-opt=no-new-privileges \
+    --tmpfs /tmp:rw,nosuid,nodev,size=64m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/temp:rw,nosuid,nodev,size=64m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/work:rw,nosuid,nodev,size=128m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /usr/local/tomcat/logs:rw,nosuid,nodev,size=32m,uid=1000,gid=1000,mode=1770 \
+    --tmpfs /var/log/perseo:rw,nosuid,nodev,size=16m,uid=1000,gid=1000,mode=1770 \
+    -p 8080:8080 \
+    -e PERSEO_FE_URL=http://perseo-frontend:9090 \
+    telefonicaiot/perseo-core:master
+```
 
 A few points to consider:
 
 * The name `perseo_core` can be anything and doesn't have to be related to the name given to the docker image built.
 * In `-p 8080:8080` the first value represents the port to listen in on localhost. If you wanted to run a second Perseo on your machine
 you should change this value to something else, for example `-p 8081:8080`.
-* Anything after the name of the container image (in this case `telefonicaiot/perseo-core:master`) is interpreted as a parameter for the Perseo CEP. 
+* The command does not mount host sockets or credentials. Do not add mounts for `/var/run/docker.sock`, container-runtime sockets, Kubernetes service-account tokens, or secrets unless strictly required.
 * If you have previously built your own image you can run the same command as above but substituting `telefonicaiot/perseo-core:master` by the
 name given at image build time (`-t` option)
+
+#### Kubernetes security settings
+
+For Kubernetes, use a pod security context equivalent to the Docker options and do not mount host sockets or credentials. Disable automatic ServiceAccount token injection unless the workload explicitly needs Kubernetes API access:
+
+```yaml
+automountServiceAccountToken: false
+securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+        drop: ["ALL"]
+    seccompProfile:
+        type: RuntimeDefault
+```
+
+With `readOnlyRootFilesystem`, provide writable `emptyDir` mounts for `/tmp`, `/usr/local/tomcat/temp`, `/usr/local/tomcat/work`, `/usr/local/tomcat/logs`, and `/var/log/perseo`. These locations contain temporary Tomcat data and container logs, not persistent application state.
 
 ### Installation from Sources
 

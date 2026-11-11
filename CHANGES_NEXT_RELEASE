@@ -6,3 +6,5 @@
 - Preserve running rules on compilation failures and report per-rule bulk update errors without blocking later entries
 - Remove: RPM package stuff
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
+- Run the Docker image as an unprivileged user with a read-only web application and support for a read-only root filesystem (#245)
+
