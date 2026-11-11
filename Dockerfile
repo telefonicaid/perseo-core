@@ -42,10 +42,6 @@ RUN apt-get -y update && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     mkdir -p /usr/local/tomcat/webapps/perseo-core && \
-    (cd /usr/local/tomcat/webapps/perseo-core && jar xf ../perseo-core.war) && \
-    rm /usr/local/tomcat/webapps/perseo-core.war && \
-    chown -R root:root /usr/local/tomcat/webapps && \
-    chmod -R a-w /usr/local/tomcat/webapps && \
     mvn clean && \
     apt-get remove -y openjdk-11-jdk && \
     apt-get clean && \
@@ -53,6 +49,15 @@ RUN apt-get -y update && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
+
+WORKDIR /usr/local/tomcat/webapps/perseo-core
+
+RUN jar xf ../perseo-core.war && \
+    rm ../perseo-core.war && \
+    chown -R root:root /usr/local/tomcat/webapps && \
+    chmod -R a-w /usr/local/tomcat/webapps
+
+WORKDIR /code
 
 RUN mkdir -p /var/log/perseo /usr/local/tomcat/temp /usr/local/tomcat/work /usr/local/tomcat/logs && \
     chown -R 1000:1000 /var/log/perseo /usr/local/tomcat/temp /usr/local/tomcat/work /usr/local/tomcat/logs && \
