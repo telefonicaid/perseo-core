@@ -215,6 +215,7 @@ public class RulesManagerTest {
             "java.util.List",
             "java.util.Set",
             "java.util.Map",
+            "java.util.Arrays",
             "java.time.ZoneId",
             "com.telefonica.iot.perseo.utils.DateTimeUtils"
         };
