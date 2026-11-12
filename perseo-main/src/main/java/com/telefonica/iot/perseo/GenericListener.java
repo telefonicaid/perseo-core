@@ -21,15 +21,22 @@
 
 package com.telefonica.iot.perseo;
 
-import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.PropertyAccessException;
-import com.espertech.esper.client.UpdateListener;
+import com.espertech.esper.common.client.EventBean;
+import com.espertech.esper.common.client.PropertyAccessException;
+import com.espertech.esper.runtime.client.UpdateListener;
+import com.espertech.esper.runtime.client.EPStatement;
+import com.espertech.esper.runtime.client.EPRuntime;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -40,7 +47,7 @@ public class GenericListener implements UpdateListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericListener.class);
     
      /**
-     * Implements method to execute an action whe a rule is fired . It makes an
+     * Implements method to execute an action when a rule is fired . It makes an
      * HTTP POST to the configured URL sending the JSON representation of the
      * Events fired by the rule. If the activated rule is a timed rule, this
      * method set the correct headers for the request.
@@ -48,7 +55,7 @@ public class GenericListener implements UpdateListener {
      * @param oldEvents old events leaving the window
      */
     @Override
-    public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+    public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statement, EPRuntime epruntime) {
         try {          
             for (EventBean event : newEvents) {
 
@@ -56,21 +63,33 @@ public class GenericListener implements UpdateListener {
                 Map<String, Object> eventMap = Utils.JSONObject2Map(jo);
 
                 // Get Rule Information from TimeRulesStore
-                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo((String) eventMap.get("ruleName"));
+                String ruleName = (String) eventMap.get("ruleName");
+
+                // TBD: include service and subservice
+                JSONObject rule = TimeRulesStore.getInstance().getRuleInfo(ruleName);
+                LOGGER.debug(String.format("Rule name: %s event %s jo %s",
+                                           ruleName, event, jo));
 
                 // Alt. if event.getEventType().getName().endsWith("_wrapoutwild_") -> Timed rule?
                 if (rule != null) {
 
                     // Is a timed Rule. Set special headers using rule saved information
                     Utils.setTimerRuleHeaders(rule);
-                    LOGGER.info(String.format("Firing temporal rule: %s",event));
+                    // Timed rule is stored in TImesRuleStored with normalized/unique name)
+                    // But simple rule name should be used in order to post perseo-fe
+                    List<String> name = new ArrayList(Arrays.asList(ruleName.split("@")));
+                    jo.put("ruleName", name.get(0));
+                    LOGGER.info(String.format("Firing temporal rule: %s with name %s from event: %s",
+                                               rule.toString(), ruleName, event));
 
                 } else {
-
-                    LOGGER.info(String.format("Firing Rule: %s",event));
+                    LOGGER.info(String.format("Firing Rule with name: %s from Event: %s Jo: %s",
+                                              ruleName, event, jo));
                 }
-
-                LOGGER.debug(String.format("result errors: %s",jo.optJSONObject("errors")));
+                JSONObject errors = jo.optJSONObject("errors");
+                if (errors != null) {
+                    LOGGER.info(String.format("result errors: %s", errors));
+                }
                 LOGGER.debug(String.format("result json: %s", jo));
 
                 boolean ok = Utils.DoHTTPPost(Configuration.getActionURL(), jo.toString());

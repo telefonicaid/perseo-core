@@ -1,6 +1,6 @@
 # Logs
 
-Logs have levels `FATAL`, `ERROR`, `INFO` and `DEBUG`. The log level must be set in the configuration file `log4j.xml`
+Logs have levels `FATAL`, `ERROR`, `WARN`, `INFO` and `DEBUG`. The log level must be set in the configuration file `log4j.xml`
 
 ```xml
         <priority value="info" />
@@ -29,6 +29,10 @@ The log level can be changed at run-time, with an HTTP PUT request
 ```
  curl --request PUT <host>:<port>/perseo-core/admin/log?level=<FATAL|ERROR|WARNING|WARN|INFO|DEBUG>
  ```
+
+# LogLevel of Docker container
+
+There is an environmente variable named `PERSEO_LOG_LEVEL` which could be used to provide container a log level to switch after docker starts. The possible values for that variable could be `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO` and `DEBUG`.
 
 # Alarms
 

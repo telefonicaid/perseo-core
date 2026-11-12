@@ -16,9 +16,10 @@
 # For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
 #
 
-FROM tomcat:8
+FROM tomcat:9
+# tomcat:9 already cames with jdk25 by default: current aliases are 9-jdk25 9-jdk25-temurin 9.0-jdk25-temurin, 9.0-jdk25-temurin-resolute, 9.0.123, 9.0.123-jdk25, 9.0.123-jdk25-temurin, 9.0.123-jdk25-temurin-resolute
 ARG GITHUB_ACCOUNT=telefonicaid
-ARG GITHUB_REPOSITORY=perseo-fe
+ARG GITHUB_REPOSITORY=perseo-core
 
 # Install maven
 
@@ -30,16 +31,18 @@ COPY perseo-main /code/perseo-main/
 COPY perseo-utils /code/perseo-utils/
 COPY perseo_core-entrypoint.sh /code
 
-# hadolint ignore=DL3008
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y maven openjdk-11-jdk && \
+
+# hadolint ignore=DL3005,DL3008
+RUN apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get install --no-install-recommends -y maven curl openjdk-11-jdk && \
+    # perseo-core is built using JDK 11, as this is a safer and more compatible choice for Esper 8.4.0 and other legacy dependencies than newer Java versions such as JDK 17 or JDK 25. At runtime, it uses the default Java version (JDK 25) provided by the Tomcat 9 image.
     mvn install && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
     cp logging.properties.template /usr/local/tomcat/conf/logging.properties && \
-    chown -R 1000:1000 /usr/local/tomcat/webapps && \
-    chmod -R 777 /usr/local/tomcat/webapps && \
+    mkdir -p /usr/local/tomcat/webapps/perseo-core && \
     mvn clean && \
     apt-get remove -y openjdk-11-jdk && \
     apt-get clean && \
@@ -48,9 +51,19 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /code/src
 
-RUN mkdir /var/log/perseo && \
-    chown -R 1000:1000 /var/log/perseo && \
-    chmod -R 777 /var/log/perseo
+WORKDIR /usr/local/tomcat/webapps/perseo-core
+
+RUN jar xf ../perseo-core.war && \
+    rm ../perseo-core.war && \
+    chown -R root:root /usr/local/tomcat/webapps && \
+    chmod -R a-w /usr/local/tomcat/webapps
+
+WORKDIR /code
+
+RUN mkdir -p /var/log/perseo /usr/local/tomcat/temp /usr/local/tomcat/work /usr/local/tomcat/logs && \
+    chown -R 1000:1000 /var/log/perseo /usr/local/tomcat/temp /usr/local/tomcat/work /usr/local/tomcat/logs && \
+    chmod 0750 /var/log/perseo /usr/local/tomcat/temp /usr/local/tomcat/work /usr/local/tomcat/logs && \
+    chmod 0555 /code/perseo_core-entrypoint.sh
 
 LABEL "maintainer"="FIWARE Perseo Team. Telefónica I+D"
 LABEL "org.opencontainers.image.authors"="iot_support@tid.es"
@@ -64,5 +77,9 @@ LABEL "org.opencontainers.image.source"="https://github.com/${GITHUB_ACCOUNT}/${
 EXPOSE 8080
 
 HEALTHCHECK CMD curl --fail http://localhost:8080/perseo-core/version || exit 1
+
+ENV HOME=/tmp
+
+USER 1000:1000
 
 ENTRYPOINT ["/code/perseo_core-entrypoint.sh"]
