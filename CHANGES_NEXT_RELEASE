@@ -3,3 +3,4 @@
 - Upgrade: Log4j dependencies from 2.17.2 to 2.25.5 (addresses CVE-2025-68161)
 - Upgrade: minor encoder dep version from 1.2.2 to 1.2.3
 - Run the Docker image as an unprivileged user with a read-only web application and support for a read-only root filesystem (#245)
+- Upgrade: json dep version from  20231013 to 20260719 due to CWE-400, CWE-770, CVE-2026-59171
