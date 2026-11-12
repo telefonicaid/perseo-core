@@ -1,6 +1,6 @@
 # Administration
 
-Perseo-core is run as a web application inside a Tomcat 7, acting as a servlet container. The administration is the usual of an application in a [Tomcat](http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html)
+Perseo-core is run as a web application inside a Tomcat 9, acting as a servlet container. The administration is the usual of an application in a [Tomcat](http://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html)
 
 The way of starting Tomcat would be
 ```
