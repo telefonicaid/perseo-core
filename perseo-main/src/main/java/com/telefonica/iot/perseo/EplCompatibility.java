@@ -43,7 +43,8 @@ public final class EplCompatibility {
         return value instanceof String && ((String) value).trim().isEmpty();
     }
 
-    static Module prepare(EPCompiler compiler, String epl, CompilerArguments args) throws Exception {
+        static Module prepare(EPCompiler compiler, String epl, CompilerArguments args,
+            boolean protectEmptyNumericCasts) throws Exception {
         Module module = compiler.parseModule(epl);
         for (int index = 0; index < module.getItems().size(); index++) {
             ModuleItem item = module.getItems().get(index);
@@ -51,13 +52,17 @@ public final class EplCompatibility {
                 continue;
             }
             EPStatementObjectModel model = compiler.eplToModel(item.getExpression(), args.getConfiguration());
-            boolean changed = guard(model.getWhereClause());
+            boolean changed = protectEmptyNumericCasts && guard(model.getWhereClause());
             if (model.getFromClause() != null) {
                 for (Stream stream : model.getFromClause().getStreams()) {
                     if (stream instanceof FilterStream) {
-                        changed |= guard(((FilterStream) stream).getFilter().getFilter());
+                        if (protectEmptyNumericCasts) {
+                            changed |= guard(((FilterStream) stream).getFilter().getFilter());
+                        }
                     } else if (stream instanceof PatternStream) {
-                        changed |= guardPattern(((PatternStream) stream).getExpression());
+                        if (protectEmptyNumericCasts) {
+                            changed |= guardPattern(((PatternStream) stream).getExpression());
+                        }
                     }
                 }
             }

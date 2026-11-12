@@ -126,7 +126,7 @@ public class RulesServletTest {
             ja.put(jr);
             jr = new JSONObject();
             jr.put("name", "test doPost rule 2");
-            jr.put("text", Help.ExampleRules()[1]);
+            jr.put("text", Help.ExampleRules()[0]);
             Help.Res r = Help.sendPut(url, ja.toString(2));
             assertEquals(200, r.getCode());
         } finally {

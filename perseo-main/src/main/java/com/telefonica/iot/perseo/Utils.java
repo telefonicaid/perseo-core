@@ -261,19 +261,29 @@ public class Utils {
      */
     
     public static boolean DoHTTPPost(String urlStr, String content) {
-        return DoHTTPPost(urlStr, content, com.telefonica.iot.perseo.Configuration.getActionConnectTimeout(),
-                com.telefonica.iot.perseo.Configuration.getActionReadTimeout());
+        boolean hardeningEnabled = com.telefonica.iot.perseo.Configuration.isActionHttpHardeningEnabled();
+        return DoHTTPPost(urlStr, content,
+            hardeningEnabled ? com.telefonica.iot.perseo.Configuration.getActionConnectTimeout() : 0,
+            hardeningEnabled ? com.telefonica.iot.perseo.Configuration.getActionReadTimeout() : 0,
+            hardeningEnabled);
     }
 
     static boolean DoHTTPPost(String urlStr, String content, int connectTimeout, int readTimeout) {
+        return DoHTTPPost(urlStr, content, connectTimeout, readTimeout, true);
+        }
+
+        private static boolean DoHTTPPost(String urlStr, String content, int connectTimeout, int readTimeout,
+            boolean hardeningEnabled) {
         HttpURLConnection urlConn = null;
         try {
             URL url = new URL(urlStr);
             urlConn = (HttpURLConnection) url.openConnection();
             urlConn.setRequestMethod("POST");
-            urlConn.setConnectTimeout(connectTimeout);
-            urlConn.setReadTimeout(readTimeout);
-            urlConn.setInstanceFollowRedirects(false);
+            if (hardeningEnabled) {
+                urlConn.setConnectTimeout(connectTimeout);
+                urlConn.setReadTimeout(readTimeout);
+            }
+            urlConn.setInstanceFollowRedirects(!hardeningEnabled);
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             urlConn.setRequestProperty(Constants.CORRELATOR_HEADER, ThreadContext.get(Constants.CORRELATOR_ID));
@@ -441,7 +451,20 @@ public class Utils {
         return deployCompiled(runtime, compile(runtime, epl, name), epl, name);
     }
 
+    static EPDeployment compileDeploy(EPRuntime runtime, String epl, String name,
+            boolean basicFilterFallback, boolean protectEmptyNumericCasts) {
+        return deployCompiled(runtime, compile(runtime, epl, name, basicFilterFallback,
+                protectEmptyNumericCasts), epl, name);
+    }
+
     public static EPCompiled compile(EPRuntime runtime, String epl, String name) {
+        return compile(runtime, epl, name,
+                com.telefonica.iot.perseo.Configuration.isEsperBasicFilterFallbackEnabled(),
+                com.telefonica.iot.perseo.Configuration.isEmptyNumericCastsEnabled());
+    }
+
+    static EPCompiled compile(EPRuntime runtime, String epl, String name,
+            boolean basicFilterFallback, boolean protectEmptyNumericCasts) {
 
         try {
             // Obtain a copy of the engine configuration
@@ -466,12 +489,14 @@ public class Utils {
 
             // Compile
             com.espertech.esper.common.client.module.Module module =
-                    EplCompatibility.prepare(EPCompilerProvider.getCompiler(), epl, args);
+                    EplCompatibility.prepare(EPCompilerProvider.getCompiler(), epl, args,
+                        protectEmptyNumericCasts);
             EPCompiled compiled;
             try {
                 compiled = EPCompilerProvider.getCompiler().compile(module, args);
             } catch (EPCompileException ex) {
-                if (configuration.getCompiler().getExecution().getFilterIndexPlanning()
+                if (!basicFilterFallback
+                    || configuration.getCompiler().getExecution().getFilterIndexPlanning()
                         != ConfigurationCompilerExecution.FilterIndexPlanning.ADVANCED
                         || ex.getMessage() == null
                         || !ex.getMessage().contains("(strict filter type coercion)")) {

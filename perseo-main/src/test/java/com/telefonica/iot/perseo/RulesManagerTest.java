@@ -116,7 +116,7 @@ public class RulesManagerTest {
             logger.info("make ruleName: " + ruleName + " epl: " + epl);
             String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
 
-            Result result = RulesManager.make(epService, text);
+            Result result = RulesManager.make(epService, text, true, true, true);
             assertEquals(200, result.getStatusCode());
 
             EPDeploymentService epa = epService.getDeploymentService();
@@ -348,7 +348,7 @@ public class RulesManagerTest {
             .put(new org.json.JSONObject().put("name", "valid")
                 .put("text", "select id, type from iotEvent"));
 
-        Result result = RulesManager.updateAll(epService, batch.toString());
+        Result result = RulesManager.updateAll(epService, batch.toString(), true, false, false);
 
         assertEquals(400, result.getStatusCode());
         org.json.JSONArray errors = new org.json.JSONObject(result.getMessage()).getJSONArray("details");
@@ -365,7 +365,7 @@ public class RulesManagerTest {
         public void testMakePreservesRuleOnCompilationFailure() {
         EPDeployment original = Utils.compileDeploy(epService, "select id from iotEvent", "existing");
         Result result = RulesManager.make(epService, new org.json.JSONObject().put("name", "existing")
-            .put("text", "select * from MissingEventType").toString());
+            .put("text", "select * from MissingEventType").toString(), true, false, false);
 
         assertEquals(400, result.getStatusCode());
         EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
@@ -377,8 +377,8 @@ public class RulesManagerTest {
         public void testMakeRestoresRuleOnDeploymentFailure() {
             String oldEpl = "create window ExistingWindow#keepall as iotEvent";
             Utils.compileDeploy(epService, oldEpl, "existing");
-            Result result = RulesManager.make(epService, new org.json.JSONObject().put("name", "existing")
-                    .put("text", "select * from ExistingWindow").toString());
+                Result result = RulesManager.make(epService, new org.json.JSONObject().put("name", "existing")
+                    .put("text", "select * from ExistingWindow").toString(), true, false, false);
 
             assertEquals(400, result.getStatusCode());
             EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
@@ -389,7 +389,7 @@ public class RulesManagerTest {
 
         @Test
         public void testUpdateAllDoesNotRedeployProtectedRule() {
-            String epl = "select * from iotEvent(cast(cast(temperature?,String),float)>1.5)";
+            String epl = "select id from iotEvent";
             EPDeployment original = Utils.compileDeploy(epService, epl, "existing");
             org.json.JSONArray batch = new org.json.JSONArray().put(new org.json.JSONObject()
                     .put("name", "existing").put("text", epl));

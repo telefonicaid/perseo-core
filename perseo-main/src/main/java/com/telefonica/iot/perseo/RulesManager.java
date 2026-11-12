@@ -108,6 +108,14 @@ public class RulesManager {
      * @return Result object with a code and a JSON response
      */
     public static synchronized Result make(EPRuntime epService, String text) {
+        return make(epService, text,
+            com.telefonica.iot.perseo.Configuration.isRuleUpdateSafetyEnabled(),
+            com.telefonica.iot.perseo.Configuration.isEsperBasicFilterFallbackEnabled(),
+            com.telefonica.iot.perseo.Configuration.isEmptyNumericCastsEnabled());
+        }
+
+        static synchronized Result make(EPRuntime epService, String text, boolean safeUpdates,
+            boolean basicFilterFallback, boolean protectEmptyNumericCasts) {
         try {
             logger.debug(String.format("rule text: %s", text));
             org.json.JSONObject jo = new JSONObject(text);
@@ -134,7 +142,8 @@ public class RulesManager {
             if (prevStmnt == null) {
                 logger.debug(String.format("found new statement: %s", name));
 
-                EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name);
+                EPDeployment deployment = Utils.compileDeploy(epService, newEpl, name,
+                    basicFilterFallback, protectEmptyNumericCasts);
                 String dId = deployment.getDeploymentId();
                 statement = deployment.getStatements()[0];
                 logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
@@ -148,7 +157,8 @@ public class RulesManager {
                 logger.debug(String.format("old epl: %s", oldEpl));
                 if (!newEpl.equals(oldEpl)) {
                     logger.debug(String.format("found changed statement: %s",name));
-                    EPDeployment deployment = replace(epService, prevStmnt, newEpl, name);
+                        EPDeployment deployment = replace(epService, prevStmnt, newEpl, name,
+                            safeUpdates, basicFilterFallback, protectEmptyNumericCasts);
                     String dId = deployment.getDeploymentId();
                     statement = deployment.getStatements()[0];
                     logger.debug(String.format("re-created statement: %s", name));
@@ -190,6 +200,14 @@ public class RulesManager {
      * @return Result object with a code and a JSON response
      */
     public static synchronized Result updateAll(EPRuntime epService, String text) {
+        return updateAll(epService, text,
+            com.telefonica.iot.perseo.Configuration.isRuleUpdateSafetyEnabled(),
+            com.telefonica.iot.perseo.Configuration.isEsperBasicFilterFallbackEnabled(),
+            com.telefonica.iot.perseo.Configuration.isEmptyNumericCastsEnabled());
+        }
+
+        static synchronized Result updateAll(EPRuntime epService, String text, boolean safeUpdates,
+            boolean basicFilterFallback, boolean protectEmptyNumericCasts) {
         try {
             long maxAge = com.telefonica.iot.perseo.Configuration.getMaxAge();
             logger.debug(String.format("rule block text: %s",text));
@@ -232,7 +250,8 @@ public class RulesManager {
                     if (!oldOnesNames.contains(n)) {
                         logger.debug(String.format("found new statement: %s", n));
 
-                        EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n);
+                        EPDeployment deployment = Utils.compileDeploy(epService, newEpl, n,
+                            basicFilterFallback, protectEmptyNumericCasts);
                         logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
                                 deployment.getStatements()[0], epa, deployment.getDeploymentId())));
                         deployment.getStatements()[0].addListener(new GenericListener());
@@ -242,7 +261,8 @@ public class RulesManager {
                         String oldEPL = Utils.getStatementEpl(prevStmnt);
                         if (!oldEPL.equals(newOnes.get(n))) {
                             logger.debug(String.format("found changed statement: %s", n));
-                            EPDeployment deployment = replace(epService, prevStmnt, newEpl, n);
+                                EPDeployment deployment = replace(epService, prevStmnt, newEpl, n,
+                                    safeUpdates, basicFilterFallback, protectEmptyNumericCasts);
                             logger.debug(String.format("re-created statement: %s" ,n));
                             logger.debug(String.format("statement json: %s", Utils.Statement2JSONObject(
                                     deployment.getStatements()[0], epa, deployment.getDeploymentId())));
@@ -253,6 +273,9 @@ public class RulesManager {
                         oldOnesNames.remove(n);
                     }
                 } catch (EPException ex) {
+                    if (!safeUpdates) {
+                        throw ex;
+                    }
                     logger.error(String.format("updating rule %s failed", n), ex);
                     errors.put(new JSONObject().put("name", n).put("error", ex.getMessage()));
                 }
@@ -292,8 +315,17 @@ public class RulesManager {
         }
     }
 
-    private static EPDeployment replace(EPRuntime runtime, EPStatement previous, String epl, String name) {
-        EPCompiled compiled = Utils.compile(runtime, epl, name);
+    private static EPDeployment replace(EPRuntime runtime, EPStatement previous, String epl, String name,
+            boolean safeUpdates, boolean basicFilterFallback, boolean protectEmptyNumericCasts) {
+        if (!safeUpdates) {
+            try {
+                runtime.getDeploymentService().undeploy(previous.getDeploymentId());
+            } catch (EPUndeployException ex) {
+                throw new EPException(ex.getMessage(), ex);
+            }
+            return Utils.compileDeploy(runtime, epl, name, basicFilterFallback, protectEmptyNumericCasts);
+        }
+        EPCompiled compiled = Utils.compile(runtime, epl, name, basicFilterFallback, protectEmptyNumericCasts);
         String oldEpl = Utils.getStatementEpl(previous);
         try {
             runtime.getDeploymentService().undeploy(previous.getDeploymentId());
@@ -304,7 +336,8 @@ public class RulesManager {
             return Utils.deployCompiled(runtime, compiled, epl, name);
         } catch (EPException failure) {
             try {
-                Utils.compileDeploy(runtime, oldEpl, name).getStatements()[0].addListener(new GenericListener());
+                Utils.compileDeploy(runtime, oldEpl, name, basicFilterFallback, protectEmptyNumericCasts)
+                    .getStatements()[0].addListener(new GenericListener());
             } catch (EPException restoreFailure) {
                 failure.addSuppressed(restoreFailure);
                 logger.error(String.format("restoring rule %s failed", name), restoreFailure);

@@ -261,7 +261,8 @@ public class UtilsTest {
                     + "AND subservice='/dumps' AND udpl_flowName?='user_rule') "
                     + "where coalesce(cast(fillingLevel?, float), 0)!=1 "
                     + "AND cast(fillingLevel?, float) >= 0.89";
-            EPStatement statement = Utils.compileDeploy(runtime, epl, "alarm_threshold_04").getStatements()[0];
+                EPStatement statement = Utils.compileDeploy(runtime, epl, "alarm_threshold_04", true, true)
+                    .getStatements()[0];
             assertEquals(epl, Utils.getStatementEpl(statement));
             ArrayList<String> received = new ArrayList<String>();
             statement.addListener((newEvents, oldEvents, source, service) ->
@@ -289,6 +290,26 @@ public class UtilsTest {
     }
 
     @Test
+    public void testBasicFilterFallbackCanBeDisabled() {
+        Configuration configuration = new Configuration();
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("value", Object.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("basicFilterFallbackDisabled", configuration);
+        try {
+            try {
+                Utils.compileDeploy(runtime,
+                        "select * from iotEvent(cast(value?,float)>0.89)", "strict_filter", false, false);
+                fail("Expected strict filter coercion to reject the rule without BASIC fallback");
+            } catch (EPException expected) {
+                assertTrue(expected.getMessage().contains("strict filter type coercion"));
+            }
+        } finally {
+            runtime.destroy();
+        }
+    }
+
+    @Test
     public void testCompileDeployWithPatternFloatThreshold() {
         Configuration configuration = new Configuration();
         configuration.getCommon().getTransientConfiguration().put(
@@ -309,7 +330,7 @@ public class UtilsTest {
                 String epl = "context ctxt$pattern$ select ev.id as id from pattern "
                         + "[every ev=iotEvent(cast(cast(" + property + "?,String),Float)>1.5 "
                         + "and type='entity')]";
-                EPDeployment deployment = Utils.compileDeploy(runtime, epl, property);
+                EPDeployment deployment = Utils.compileDeploy(runtime, epl, property, true, true);
                 ArrayList<String> received = new ArrayList<String>();
                 deployment.getStatements()[0].addListener((newEvents, oldEvents, source, service) ->
                         received.add((String) newEvents[0].get("id")));
@@ -428,6 +449,21 @@ public class UtilsTest {
     public void testURLValidator() {
         assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
         assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
+    }
+
+    @Test
+    public void testFeatureFlagParsingDefaultsOffAndRequiresBooleanValues() {
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag(null, "TEST_FEATURE"));
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("  ", "TEST_FEATURE"));
+        assertTrue(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("true", "TEST_FEATURE"));
+        assertTrue(com.telefonica.iot.perseo.Configuration.parseFeatureFlag(" TRUE ", "TEST_FEATURE"));
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("false", "TEST_FEATURE"));
+        try {
+            com.telefonica.iot.perseo.Configuration.parseFeatureFlag("yes", "TEST_FEATURE");
+            fail("Expected a non-boolean flag value to be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue(expected.getMessage().contains("TEST_FEATURE"));
+        }
     }
 
     public static class RecordingExceptionHandlerFactory

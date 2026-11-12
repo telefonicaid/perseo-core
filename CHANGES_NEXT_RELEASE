@@ -1,9 +1,9 @@
 - Upgrade to use Esper 9.0.0 from Esper 8.4
 - Require Java 17 or later for building and running; update Docker and CI to Java 17
-- Retry legacy numeric filters rejected by strict coercion with BASIC index planning without changing their EPL
-- Protect numeric casts in filters from empty inputs while preserving original events and the rules API EPL
-- Bound action HTTP connection/read times, close resources and avoid automatic POST replay
-- Preserve running rules on compilation failures and report per-rule bulk update errors without blocking later entries
+- Add opt-in (disabled by default; `PERSEO_ESPER_BASIC_FILTER_FALLBACK_ENABLED`) BASIC index planning fallback for legacy numeric filter coercion failures
+- Add opt-in (disabled by default; `PERSEO_ESPER_EMPTY_NUMERIC_CASTS_ENABLED`) protection for empty numeric casts in filters
+- Add opt-in (disabled by default; `PERSEO_ACTION_HTTP_HARDENING_ENABLED`) action HTTP timeouts and disable redirects; always close resources and do not add POST retries
+- Add opt-in (disabled by default; `PERSEO_RULE_UPDATE_SAFETY_ENABLED`) safe rule replacement and per-rule bulk update error reporting
 - Remove: RPM package stuff
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
 - Add: restrict Java class resolution in EPL rules to an explicit allowlist, extendable with a reloadable mounted file of fully qualified class names (#243)
