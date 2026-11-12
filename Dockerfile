@@ -30,6 +30,7 @@ COPY pom.xml /code/pom.xml
 COPY perseo-main /code/perseo-main/
 COPY perseo-utils /code/perseo-utils/
 COPY perseo_core-entrypoint.sh /code
+COPY logging.properties.template /usr/local/tomcat/conf/logging.properties
 
 
 # hadolint ignore=DL3005,DL3008
@@ -41,7 +42,6 @@ RUN apt-get -y update && \
     mvn package && \
     rm -rf /usr/local/tomcat/webapps/* && \
     cp perseo-main/target/perseo-main-*.war /usr/local/tomcat/webapps/perseo-core.war && \
-    cp logging.properties.template /usr/local/tomcat/conf/logging.properties && \
     mkdir -p /usr/local/tomcat/webapps/perseo-core && \
     mvn clean && \
     apt-get remove -y openjdk-11-jdk && \
