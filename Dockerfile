@@ -32,6 +32,8 @@ COPY perseo-utils /code/perseo-utils/
 COPY perseo_core-entrypoint.sh /code
 COPY logging.properties.template /usr/local/tomcat/conf/logging.properties
 
+# The base Tomcat image enables a file-based access log by default.
+RUN sed -i '/<Valve className="org.apache.catalina.valves.AccessLogValve"/,/\/>/d' /usr/local/tomcat/conf/server.xml
 
 # hadolint ignore=DL3005,DL3008
 RUN apt-get -y update && \

@@ -1,4 +1,4 @@
-- Configure Tomcat JUL logging to route Catalina logs to the container console
+- Route Tomcat JUL logs to the console and disable file-based access logs
 - Add missed curl dependency from latest docker image versions of tomcat 9 (9.0.123)
 - Add: restrict Java class resolution in EPL rules to an explicit allowlist, extendable with a reloadable mounted file of fully qualified class names (#243)
 - Run the Docker image as an unprivileged user with a read-only web application and support for a read-only root filesystem (#245)

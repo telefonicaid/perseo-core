@@ -22,26 +22,6 @@ handlers = java.util.logging.ConsoleHandler
 # Describes specific configuration info for Handlers.
 ############################################################
 
-1catalina.org.apache.juli.AsyncFileHandler.level = FINE
-1catalina.org.apache.juli.AsyncFileHandler.directory = ${catalina.base}/logs
-1catalina.org.apache.juli.AsyncFileHandler.prefix = catalina.
-1catalina.org.apache.juli.AsyncFileHandler.encoding = UTF-8
-
-2localhost.org.apache.juli.AsyncFileHandler.level = FINE
-2localhost.org.apache.juli.AsyncFileHandler.directory = ${catalina.base}/logs
-2localhost.org.apache.juli.AsyncFileHandler.prefix = localhost.
-2localhost.org.apache.juli.AsyncFileHandler.encoding = UTF-8
-
-3manager.org.apache.juli.AsyncFileHandler.level = FINE
-3manager.org.apache.juli.AsyncFileHandler.directory = ${catalina.base}/logs
-3manager.org.apache.juli.AsyncFileHandler.prefix = manager.
-3manager.org.apache.juli.AsyncFileHandler.encoding = UTF-8
-
-4host-manager.org.apache.juli.AsyncFileHandler.level = FINE
-4host-manager.org.apache.juli.AsyncFileHandler.directory = ${catalina.base}/logs
-4host-manager.org.apache.juli.AsyncFileHandler.prefix = host-manager.
-4host-manager.org.apache.juli.AsyncFileHandler.encoding = UTF-8
-
 java.util.logging.ConsoleHandler.level = FINE
 java.util.logging.ConsoleHandler.formatter = org.apache.juli.OneLineFormatter
 java.util.logging.ConsoleHandler.encoding = UTF-8
@@ -53,13 +33,10 @@ java.util.logging.ConsoleHandler.encoding = UTF-8
 ############################################################
 
 org.apache.catalina.core.ContainerBase.[Catalina].[localhost].level = INFO
-org.apache.catalina.core.ContainerBase.[Catalina].[localhost].handlers = 2localhost.org.apache.juli.AsyncFileHandler
 
 org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager].level = INFO
-org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/manager].handlers = 3manager.org.apache.juli.AsyncFileHandler
 
 org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager].level = INFO
-org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager].handlers = 4host-manager.org.apache.juli.AsyncFileHandler
 
 # For example, set the org.apache.catalina.util.LifecycleBase logger to log
 # each component that extends LifecycleBase changing state:
