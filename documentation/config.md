@@ -120,3 +120,10 @@ deployment fails, Perseo-core attempts to restore the prior EPL and listener. Bu
 individual failures, return HTTP 400 with a `details` array, keep successful changes, and skip cleanup of
 rules absent from the request. This is best-effort, not an atomic transaction; window contents and timer
 state are not restored.
+
+**Timer-rule consistency warning:** this flag does not make timer-rule metadata updates transactional.
+`RulesServlet` saves timer metadata from the request before validating and applying the rules. If a timed-rule
+update fails, the saved metadata can describe the submitted rule while the active EPL remains at its previous
+version; other rules in the same batch may already have been updated. Reconcile the active rules and resend a
+corrected complete rule set after a failed `PUT`. Making metadata saving conditional on successful rule updates
+is a separate change and is not provided by this option.

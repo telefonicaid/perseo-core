@@ -264,6 +264,11 @@ leaves the previous rule running. If deployment subsequently fails, Perseo-core 
 previous EPL and listener. Restoration failures are logged; window contents, timer state and other runtime
 state are not restored. The same replacement protection applies to POST updates of an existing rule.
 
+Timer-rule metadata is saved from the request before validation and rule updates. If a timed-rule update
+fails, its metadata may describe the submitted rule while its active EPL remains at the previous version;
+other rules in the batch may already have changed. The rule-update safety option does not roll back or
+defer timer metadata. Reconcile the active rules and resend a corrected complete set after a failed `PUT`.
+
 Example: All the rules were processed correctly
 ```JSON
 {}
