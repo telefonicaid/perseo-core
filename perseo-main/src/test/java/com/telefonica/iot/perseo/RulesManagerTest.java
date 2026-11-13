@@ -212,6 +212,7 @@ public class RulesManagerTest {
             "java.lang.Math",
             "java.util.Collection",
             "java.util.Calendar",
+            "java.util.GregorianCalendar",
             "java.util.List",
             "java.util.Set",
             "java.util.Map",
