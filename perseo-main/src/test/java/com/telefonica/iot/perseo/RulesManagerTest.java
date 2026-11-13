@@ -116,13 +116,13 @@ public class RulesManagerTest {
             logger.info("make ruleName: " + ruleName + " epl: " + epl);
             String text = String.format("{\"name\":\"%s\",\"text\":\"%s\"}", ruleName, epl);
 
-            Result result = RulesManager.make(epService, text);
+            Result result = RulesManager.make(epService, text, true, true, true);
             assertEquals(200, result.getStatusCode());
 
             EPDeploymentService epa = epService.getDeploymentService();
             EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
-            assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
+            assertEquals(epl, Utils.getStatementEpl(st));
             assertEquals(ruleName, st.getName());
             i++;
         }
@@ -335,13 +335,76 @@ public class RulesManagerTest {
 
         EPStatement st = Utils.getStatementFromDeployService(epa, ruleName);
 
-        assertEquals(epl, st.getProperty(StatementProperty.EPL).toString());
+        assertEquals(epl, Utils.getStatementEpl(st));
         assertEquals(ruleName, st.getName());
     }
 
-    /**
-     * Test of delete method, of class RulesManager.
-     */
+        @Test
+        public void testUpdateAllContinuesAfterInvalidRule() {
+        String oldEpl = "select id from iotEvent";
+        EPDeployment original = Utils.compileDeploy(epService, oldEpl, "existing");
+        org.json.JSONArray batch = new org.json.JSONArray()
+            .put(new org.json.JSONObject().put("name", "existing")
+                .put("text", "select * from MissingEventType"))
+            .put(new org.json.JSONObject().put("name", "valid")
+                .put("text", "select id, type from iotEvent"));
+
+        Result result = RulesManager.updateAll(epService, batch.toString(), true, false, false);
+
+        assertEquals(400, result.getStatusCode());
+        org.json.JSONArray errors = new org.json.JSONObject(result.getMessage()).getJSONArray("details");
+        assertEquals(1, errors.length());
+        assertEquals("existing", errors.getJSONObject(0).getString("name"));
+        EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
+        assertNotNull(existing);
+        assertEquals(original.getDeploymentId(), existing.getDeploymentId());
+        assertEquals(oldEpl, Utils.getStatementEpl(existing));
+        assertNotNull(Utils.getStatementFromDeployService(epService.getDeploymentService(), "valid"));
+        }
+
+        @Test
+        public void testMakePreservesRuleOnCompilationFailure() {
+        EPDeployment original = Utils.compileDeploy(epService, "select id from iotEvent", "existing");
+        Result result = RulesManager.make(epService, new org.json.JSONObject().put("name", "existing")
+            .put("text", "select * from MissingEventType").toString(), true, false, false);
+
+        assertEquals(400, result.getStatusCode());
+        EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
+        assertNotNull(existing);
+        assertEquals(original.getDeploymentId(), existing.getDeploymentId());
+        }
+
+        @Test
+        public void testMakeRestoresRuleOnDeploymentFailure() {
+            String oldEpl = "create window ExistingWindow#keepall as iotEvent";
+            Utils.compileDeploy(epService, oldEpl, "existing");
+                Result result = RulesManager.make(epService, new org.json.JSONObject().put("name", "existing")
+                    .put("text", "select * from ExistingWindow").toString(), true, false, false);
+
+            assertEquals(400, result.getStatusCode());
+            EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
+            assertNotNull(existing);
+            assertEquals(oldEpl, Utils.getStatementEpl(existing));
+            assertTrue(existing.getUpdateListeners().hasNext());
+        }
+
+        @Test
+        public void testUpdateAllDoesNotRedeployProtectedRule() {
+            String epl = "select id from iotEvent";
+            EPDeployment original = Utils.compileDeploy(epService, epl, "existing");
+            org.json.JSONArray batch = new org.json.JSONArray().put(new org.json.JSONObject()
+                    .put("name", "existing").put("text", epl));
+
+            Result result = RulesManager.updateAll(epService, batch.toString());
+
+            assertEquals(200, result.getStatusCode());
+            EPStatement existing = Utils.getStatementFromDeployService(epService.getDeploymentService(), "existing");
+            assertEquals(original.getDeploymentId(), existing.getDeploymentId());
+        }
+
+        /**
+         * Test of delete method, of class RulesManager.
+         */
     @Test
     public void testDelete() {
         logger.info("delete");

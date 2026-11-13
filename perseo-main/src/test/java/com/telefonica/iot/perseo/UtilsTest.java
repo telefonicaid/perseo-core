@@ -39,7 +39,6 @@ import com.espertech.esper.compiler.client.EPCompilerProvider;
 import com.espertech.esper.compiler.client.EPCompileException;
 import com.espertech.esper.runtime.client.EPDeployException;
 import com.espertech.esper.runtime.client.EPUndeployException;
-import com.espertech.esper.common.client.util.StatementProperty;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -186,9 +185,177 @@ public class UtilsTest {
 
         JSONObject result = Utils.Statement2JSONObject(st, epa, deployment.getDeploymentId());
         assertEquals(st.getName(), result.getString("name"));
-        assertEquals(st.getProperty(StatementProperty.EPL).toString(), result.getString("text"));
+        assertEquals(epl, result.getString("text"));
         assertEquals(st.isDestroyed(), result.get("state"));
         assertEquals(epa.getDeployment(deployment.getDeploymentId()).getLastUpdateDate().getTime(), result.getLong("timeLastStateChange"));
+    }
+
+    @Test
+    public void testCompileDeployWithDollarNames() throws EPUndeployException {
+        Configuration configuration = new Configuration();
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("id", String.class);
+        definition.put("type", String.class);
+        definition.put(Constants.SUBSERVICE_FIELD, String.class);
+        definition.put(Constants.SERVICE_FIELD, String.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("compileDeployDollarNames", configuration);
+        String contextName = "ctxt$alcobendas$inmotica";
+        String ruleName = "rule$alcobendas$inmotica";
+        try {
+            EPDeployment contextDeployment = Utils.compileDeploy(runtime,
+                    "create context " + contextName + " partition by service from "
+                    + "iotEvent(service=\"alcobendas\" and subservice=\"/inmotica\")", contextName);
+            EPDeployment ruleDeployment = Utils.compileDeploy(runtime,
+                    "context " + contextName + " select * from iotEvent", ruleName);
+            EPDeploymentService deployments = runtime.getDeploymentService();
+            EPStatement statement = ruleDeployment.getStatements()[0];
+
+            assertEquals(contextName, contextDeployment.getStatements()[0].getName());
+            assertEquals(ruleName, statement.getName());
+            assertSame(contextDeployment.getStatements()[0],
+                    Utils.getStatementFromDeployService(deployments, contextName));
+            assertSame(statement, Utils.getStatementFromDeployService(deployments, ruleName));
+
+            ArrayList<EventBean> received = new ArrayList<EventBean>();
+            statement.addListener((newEvents, oldEvents, source, service) -> received.add(newEvents[0]));
+            Map<String, Object> event = new HashMap<String, Object>();
+            event.put("id", "sensor1");
+            event.put("type", "sensor");
+            event.put(Constants.SERVICE_FIELD, "alcobendas");
+            event.put(Constants.SUBSERVICE_FIELD, "/inmotica");
+            runtime.getEventService().sendEventMap(event, "iotEvent");
+
+            assertEquals(1, received.size());
+            assertEquals("sensor1", received.get(0).get("id"));
+
+            deployments.undeploy(statement.getDeploymentId());
+            deployments.undeploy(contextDeployment.getDeploymentId());
+            assertNull(Utils.getStatementFromDeployService(deployments, ruleName));
+            assertNull(Utils.getStatementFromDeployService(deployments, contextName));
+        } finally {
+            runtime.destroy();
+        }
+    }
+
+    @Test
+    public void testCompileDeployWithFloatThreshold() {
+        Configuration configuration = new Configuration();
+        configuration.getCommon().getTransientConfiguration().put(
+            com.espertech.esper.common.client.util.ClassForNameProvider.NAME, new PerseoClassForNameProvider());
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("id", String.class);
+        definition.put("type", String.class);
+        definition.put(Constants.SUBSERVICE_FIELD, String.class);
+        definition.put(Constants.SERVICE_FIELD, String.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("compileDeployFloatThreshold", configuration);
+        try {
+            Utils.compileDeploy(runtime, "create context ctxt$alcobendas$dumps partition by service from "
+                    + "iotEvent(service='alcobendas' and subservice='/dumps')", "ctxt$alcobendas$dumps");
+            String epl = "context ctxt$alcobendas$dumps select *, \"alarm_threshold_04\" as ruleName, "
+                    + "\"alert_fillingLevel\" as alert_attrib, \"fillingLevel\" AS attribute, "
+                    + "current_timestamp().format(\"yyyy-MM-dd'T'HH:mm:ss.SSSX\") as newActuationTime, "
+                    + "location? as loc, municipality? as mun, TimeInstant? as timeinstant "
+                    + "from iotEvent(type = 'WasteContainer' and service='alcobendas' "
+                    + "AND subservice='/dumps' AND udpl_flowName?='user_rule') "
+                    + "where coalesce(cast(fillingLevel?, float), 0)!=1 "
+                    + "AND cast(fillingLevel?, float) >= 0.89";
+                EPStatement statement = Utils.compileDeploy(runtime, epl, "alarm_threshold_04", true, true)
+                    .getStatements()[0];
+            assertEquals(epl, Utils.getStatementEpl(statement));
+            ArrayList<String> received = new ArrayList<String>();
+            statement.addListener((newEvents, oldEvents, source, service) ->
+                    received.add((String) newEvents[0].get("id")));
+
+            Map<String, Object> event = new HashMap<String, Object>();
+            event.put("type", "WasteContainer");
+            event.put(Constants.SERVICE_FIELD, "alcobendas");
+            event.put(Constants.SUBSERVICE_FIELD, "/dumps");
+            event.put("udpl_flowName", "user_rule");
+            Object[] levels = {0.88d, 0.9d, 0.95f, "0.99", 1.0d, null};
+            for (int index = 0; index < levels.length; index++) {
+                event.put("id", "level" + index);
+                event.put("fillingLevel", levels[index]);
+                runtime.getEventService().sendEventMap(event, "iotEvent");
+            }
+            event.put("id", "missing");
+            event.remove("fillingLevel");
+            runtime.getEventService().sendEventMap(event, "iotEvent");
+
+            assertEquals(java.util.Arrays.asList("level1", "level2"), received);
+        } finally {
+            runtime.destroy();
+        }
+    }
+
+    @Test
+    public void testBasicFilterFallbackCanBeDisabled() {
+        Configuration configuration = new Configuration();
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("value", Object.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("basicFilterFallbackDisabled", configuration);
+        try {
+            try {
+                Utils.compileDeploy(runtime,
+                        "select * from iotEvent(cast(value?,float)>0.89)", "strict_filter", false, false);
+                fail("Expected strict filter coercion to reject the rule without BASIC fallback");
+            } catch (EPException expected) {
+                assertTrue(expected.getMessage().contains("strict filter type coercion"));
+            }
+        } finally {
+            runtime.destroy();
+        }
+    }
+
+    @Test
+    public void testCompileDeployWithPatternFloatThreshold() {
+        Configuration configuration = new Configuration();
+        configuration.getCommon().getTransientConfiguration().put(
+            com.espertech.esper.common.client.util.ClassForNameProvider.NAME, new PerseoClassForNameProvider());
+        RecordingExceptionHandlerFactory.errors.clear();
+        configuration.getRuntime().getExceptionHandling().addClass(RecordingExceptionHandlerFactory.class);
+        Map<String, Object> definition = new HashMap<String, Object>();
+        definition.put("id", String.class);
+        definition.put("type", String.class);
+        definition.put(Constants.SUBSERVICE_FIELD, String.class);
+        definition.put(Constants.SERVICE_FIELD, String.class);
+        configuration.getCommon().addEventType("iotEvent", definition);
+        EPRuntime runtime = EPRuntimeProvider.getRuntime("compileDeployPatternFloatThreshold", configuration);
+        try {
+            Utils.compileDeploy(runtime, "create context ctxt$pattern$ partition by service from "
+                    + "iotEvent(service='pattern' and subservice='/')", "ctxt$pattern$");
+            for (String property : java.util.Arrays.asList("temperature", "temperature__metadata__accuracy")) {
+                String epl = "context ctxt$pattern$ select ev.id as id from pattern "
+                        + "[every ev=iotEvent(cast(cast(" + property + "?,String),Float)>1.5 "
+                        + "and type='entity')]";
+                EPDeployment deployment = Utils.compileDeploy(runtime, epl, property, true, true);
+                ArrayList<String> received = new ArrayList<String>();
+                deployment.getStatements()[0].addListener((newEvents, oldEvents, source, service) ->
+                        received.add((String) newEvents[0].get("id")));
+                Map<String, Object> event = new HashMap<String, Object>();
+                event.put("type", "entity");
+                event.put(Constants.SERVICE_FIELD, "pattern");
+                event.put(Constants.SUBSERVICE_FIELD, "/");
+                Object[] values = {1.0d, 2.0d, "3.0", null, "", "  ", "4.0"};
+                for (int index = 0; index < values.length; index++) {
+                    event.put("id", "value" + index);
+                    event.put(property, values[index]);
+                    runtime.getEventService().sendEventMap(event, "iotEvent");
+                }
+                assertEquals(java.util.Arrays.asList("value1", "value2", "value6"), received);
+                assertTrue(RecordingExceptionHandlerFactory.errors.toString(),
+                    RecordingExceptionHandlerFactory.errors.isEmpty());
+                try {
+                    runtime.getDeploymentService().undeploy(deployment.getDeploymentId());
+                } catch (EPUndeployException ex) {
+                    throw new AssertionError(ex);
+                }
+            }
+        } finally {
+            runtime.destroy();
+        }
     }
 
     /**
@@ -236,8 +403,77 @@ public class UtilsTest {
      * Test of isValidURL method, of class Utils.
      */
     @Test
+    public void testDoHTTPPostFailureHandling() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        java.util.concurrent.CountDownLatch release = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.atomic.AtomicInteger droppedRequests = new java.util.concurrent.atomic.AtomicInteger();
+        server.createContext("/empty", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            exchange.sendResponseHeaders(204, -1);
+            exchange.close();
+        });
+        server.createContext("/error", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            exchange.sendResponseHeaders(503, -1);
+            exchange.close();
+        });
+        server.createContext("/drop", exchange -> {
+            droppedRequests.incrementAndGet();
+            exchange.getRequestBody().readAllBytes();
+            exchange.close();
+        });
+        server.createContext("/slow", exchange -> {
+            try {
+                release.await(5, java.util.concurrent.TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            } finally {
+                exchange.close();
+            }
+        });
+        server.start();
+        String base = "http://127.0.0.1:" + server.getAddress().getPort();
+        try {
+            assertTrue(Utils.DoHTTPPost(base + "/empty", "{}", 200, 200));
+            assertFalse(Utils.DoHTTPPost(base + "/error", "{}", 200, 200));
+            assertFalse(Utils.DoHTTPPost(base + "/drop", "{}", 200, 200));
+            assertEquals(1, droppedRequests.get());
+            assertFalse(Utils.DoHTTPPost(base + "/slow", "{}", 200, 200));
+        } finally {
+            release.countDown();
+            server.stop(0);
+        }
+    }
+
+    @Test
     public void testURLValidator() {
         assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
         assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
+    }
+
+    @Test
+    public void testFeatureFlagParsingDefaultsOffAndRequiresBooleanValues() {
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag(null, "TEST_FEATURE"));
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("  ", "TEST_FEATURE"));
+        assertTrue(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("true", "TEST_FEATURE"));
+        assertTrue(com.telefonica.iot.perseo.Configuration.parseFeatureFlag(" TRUE ", "TEST_FEATURE"));
+        assertFalse(com.telefonica.iot.perseo.Configuration.parseFeatureFlag("false", "TEST_FEATURE"));
+        try {
+            com.telefonica.iot.perseo.Configuration.parseFeatureFlag("yes", "TEST_FEATURE");
+            fail("Expected a non-boolean flag value to be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue(expected.getMessage().contains("TEST_FEATURE"));
+        }
+    }
+
+    public static class RecordingExceptionHandlerFactory
+            implements com.espertech.esper.common.client.hook.exception.ExceptionHandlerFactory {
+        static final ArrayList<Throwable> errors = new ArrayList<Throwable>();
+
+        @Override
+        public com.espertech.esper.common.client.hook.exception.ExceptionHandler getHandler(
+                com.espertech.esper.common.client.hook.exception.ExceptionHandlerFactoryContext context) {
+            return failure -> errors.add(failure.getThrowable());
+        }
     }
 }
