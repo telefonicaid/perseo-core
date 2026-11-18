@@ -208,7 +208,7 @@ public class Help {
             rule.put("text", ExampleRules()[0]);
             ja.put(rule);
             rule.put("name", "manyrules_b_" + i);
-            rule.put("text", ExampleRules()[1]);
+            rule.put("text", ExampleRules()[0]);
             ja.put(rule);
         }
         return ja.toString();

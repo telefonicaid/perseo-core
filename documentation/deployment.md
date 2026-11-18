@@ -2,7 +2,9 @@
 
 ### Dependencies
 
-The only dependecy for perseo-core is the servlet engine container for its WAR file, in particular, a Tomcat 7.
+Perseo-core requires Java 17 or later and a servlet container for its WAR file, in particular Tomcat 9.
+Esper 9.0.0 requires Java 17 for both building and running the application.
+Tomcat 10 and later use Jakarta Servlet and are not compatible with the current `javax.servlet` application.
 
 ### Installation using Docker
 
@@ -97,18 +99,20 @@ With `readOnlyRootFilesystem`, provide writable `emptyDir` mounts for `/tmp`, `/
 
 ### Installation from Sources
 
-Deployment requires a Tomcat 7 with Java 7. The basic steps for deploying it would be
+Deployment requires Tomcat 9 running on Java 17 or later. The basic steps for deploying it would be
 
 * Put the war into the webapps directory of the Tomcat server
 * Use [environment variables](config.md#configure-perseo-core-with-environment-vars) or copy the [configuration file](config.md#configure-perseo-core-with-configuration-file) (in src/main/resources/perseo-core.properties) to /etc and update the values in the configuration file.
 
 * Verify that the directory for logs exists and has the proper permissions. The log is generated in the /var/log/perseo/perseo.log
 
-Building the .war file can be done by executing
+Building the .war file requires Maven 3.6.3 or later and JDK 17 or later.
+Check that `mvn -version` reports the intended JDK. Build and run the tests by executing
 ```
-    mvn package
+    mvn clean verify
 ```
 from the root directory of the project.
+The WAR file is generated at `perseo-main/target/perseo-main-1.13.0-SNAPSHOT.war`.
 
 #### Undeployment
 In order to undeploy the proxy just remove the .war and the directoryin webapps/.

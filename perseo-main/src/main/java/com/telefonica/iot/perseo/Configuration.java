@@ -47,6 +47,10 @@ public final class Configuration {
     private static final String PERSEO_FE_URL_ENV = "PERSEO_FE_URL";
     private static final String PERSEO_MAX_AGE_ENV = "MAX_AGE";
     private static final String PERSEO_INTERNAL_TIMER_MSEC_RESOLUTION_ENV = "INTERNAL_TIMER_MSEC_RESOLUTION";
+    private static final String ESPER_BASIC_FILTER_FALLBACK_ENV = "PERSEO_ESPER_BASIC_FILTER_FALLBACK_ENABLED";
+    private static final String EMPTY_NUMERIC_CASTS_ENV = "PERSEO_ESPER_EMPTY_NUMERIC_CASTS_ENABLED";
+    private static final String ACTION_HTTP_HARDENING_ENV = "PERSEO_ACTION_HTTP_HARDENING_ENABLED";
+    private static final String RULE_UPDATE_SAFETY_ENV = "PERSEO_RULE_UPDATE_SAFETY_ENABLED";
 
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/etc/perseo-core.properties";
@@ -57,6 +61,12 @@ public final class Configuration {
     private static String actionRule;
     private static long maxAge;
     private static long internalTimerMsecResolution;
+    private static int actionConnectTimeout = 5000;
+    private static int actionReadTimeout = 10000;
+    private static boolean esperBasicFilterFallbackEnabled;
+    private static boolean emptyNumericCastsEnabled;
+    private static boolean actionHttpHardeningEnabled;
+    private static boolean ruleUpdateSafetyEnabled;
 
     static {
         LOGGER.debug(String.format("Configuration init: %s",reload()));
@@ -131,7 +141,68 @@ public final class Configuration {
         }
         LOGGER.info(String.format("internalTimerMsecResolution configuration is: %s",internalTimerMsecResolution));
 
+        try {
+            actionConnectTimeout = positiveTimeout("ACTION_HTTP_CONNECT_TIMEOUT_MS", "action.http.connect_timeout_ms", 5000);
+            actionReadTimeout = positiveTimeout("ACTION_HTTP_READ_TIMEOUT_MS", "action.http.read_timeout_ms", 10000);
+            esperBasicFilterFallbackEnabled = featureFlag(ESPER_BASIC_FILTER_FALLBACK_ENV);
+            emptyNumericCastsEnabled = featureFlag(EMPTY_NUMERIC_CASTS_ENV);
+            actionHttpHardeningEnabled = featureFlag(ACTION_HTTP_HARDENING_ENV);
+            ruleUpdateSafetyEnabled = featureFlag(RULE_UPDATE_SAFETY_ENV);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("Invalid feature flag or action HTTP timeout configuration", ex);
+            return false;
+        }
         return true;
+    }
+
+    private static boolean featureFlag(String environment) {
+        return parseFeatureFlag(System.getenv(environment), environment);
+    }
+
+    static boolean parseFeatureFlag(String value, String environment) {
+        if (value == null || value.trim().isEmpty()) {
+            return false;
+        }
+        if ("true".equalsIgnoreCase(value.trim())) {
+            return true;
+        }
+        if ("false".equalsIgnoreCase(value.trim())) {
+            return false;
+        }
+        throw new IllegalArgumentException(environment + " must be true or false");
+    }
+
+    private static int positiveTimeout(String environment, String property, int defaultValue) {
+        String value = System.getenv(environment);
+        int timeout = Integer.parseInt(value != null ? value : PROPERTIES.getProperty(property, String.valueOf(defaultValue)));
+        if (timeout <= 0) {
+            throw new IllegalArgumentException(environment + " must be positive");
+        }
+        return timeout;
+    }
+
+    public static synchronized int getActionConnectTimeout() {
+        return actionConnectTimeout;
+    }
+
+    public static synchronized int getActionReadTimeout() {
+        return actionReadTimeout;
+    }
+
+    public static synchronized boolean isEsperBasicFilterFallbackEnabled() {
+        return esperBasicFilterFallbackEnabled;
+    }
+
+    public static synchronized boolean isEmptyNumericCastsEnabled() {
+        return emptyNumericCastsEnabled;
+    }
+
+    public static synchronized boolean isActionHttpHardeningEnabled() {
+        return actionHttpHardeningEnabled;
+    }
+
+    public static synchronized boolean isRuleUpdateSafetyEnabled() {
+        return ruleUpdateSafetyEnabled;
     }
 
     /**
