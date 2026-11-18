@@ -446,6 +446,41 @@ public class UtilsTest {
     }
 
     @Test
+    public void testActionHttpHardeningControlsRedirects() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        java.util.concurrent.atomic.AtomicInteger redirectRequests = new java.util.concurrent.atomic.AtomicInteger();
+        java.util.concurrent.atomic.AtomicInteger targetRequests = new java.util.concurrent.atomic.AtomicInteger();
+        java.util.concurrent.atomic.AtomicReference<String> targetMethod = new java.util.concurrent.atomic.AtomicReference<String>();
+        server.createContext("/redirect", exchange -> {
+            redirectRequests.incrementAndGet();
+            exchange.getRequestBody().readAllBytes();
+            exchange.getResponseHeaders().add("Location", "/target");
+            exchange.sendResponseHeaders(303, -1);
+            exchange.close();
+        });
+        server.createContext("/target", exchange -> {
+            targetRequests.incrementAndGet();
+            targetMethod.set(exchange.getRequestMethod());
+            exchange.sendResponseHeaders(204, -1);
+            exchange.close();
+        });
+        server.start();
+        String url = "http://127.0.0.1:" + server.getAddress().getPort() + "/redirect";
+        try {
+            assertFalse(Utils.DoHTTPPost(url, "{}", 200, 200, true));
+            assertEquals(1, redirectRequests.get());
+            assertEquals(0, targetRequests.get());
+
+            assertTrue(Utils.DoHTTPPost(url, "{}", 200, 200, false));
+            assertEquals(2, redirectRequests.get());
+            assertEquals(1, targetRequests.get());
+            assertEquals("GET", targetMethod.get());
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     public void testURLValidator() {
         assertEquals(Utils.isValidURL("https://valid.url/forTest"), true);
         assertEquals(Utils.isValidURL("invalid.url_forTest"), false);
@@ -464,6 +499,14 @@ public class UtilsTest {
         } catch (IllegalArgumentException expected) {
             assertTrue(expected.getMessage().contains("TEST_FEATURE"));
         }
+    }
+
+    @Test
+    public void testActionHttpHardeningFlagUsesEnvironmentValue() {
+        String value = System.getenv("PERSEO_ACTION_HTTP_HARDENING_ENABLED");
+        boolean expected = com.telefonica.iot.perseo.Configuration.parseFeatureFlag(
+                value, "PERSEO_ACTION_HTTP_HARDENING_ENABLED");
+        assertEquals(expected, com.telefonica.iot.perseo.Configuration.isActionHttpHardeningEnabled());
     }
 
     public static class RecordingExceptionHandlerFactory

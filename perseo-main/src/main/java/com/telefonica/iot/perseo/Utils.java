@@ -272,7 +272,7 @@ public class Utils {
         return DoHTTPPost(urlStr, content, connectTimeout, readTimeout, true);
         }
 
-        private static boolean DoHTTPPost(String urlStr, String content, int connectTimeout, int readTimeout,
+    static boolean DoHTTPPost(String urlStr, String content, int connectTimeout, int readTimeout,
             boolean hardeningEnabled) {
         HttpURLConnection urlConn = null;
         try {
@@ -292,7 +292,9 @@ public class Utils {
             urlConn.setRequestProperty(Constants.REALIP_HEADER, ThreadContext.get(Constants.REALIP_FIELD));
             
             byte[] payload = content.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-            urlConn.setFixedLengthStreamingMode(payload.length);
+            if (hardeningEnabled) {
+                urlConn.setFixedLengthStreamingMode(payload.length);
+            }
             try (OutputStream output = urlConn.getOutputStream()) {
                 output.write(payload);
             }
